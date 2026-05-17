@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nak.api.br — Laboratório Operacional</title>
+<meta name="description" content="Documentação pública de automações, integrações e aprendizados construídos para resolver gargalos reais de operação.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--max:1100px;--radius:10px;--mono:ui-monospace,SFMono-Regular,"Cascadia Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+.hero{padding:96px 0 64px;border-bottom:1px solid var(--border)}
+.hero .eyebrow{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-size:60px;font-weight:700;line-height:1.05;margin:0 0 24px;letter-spacing:-.03em}
+.hero .sub{font-size:20px;color:var(--muted);max-width:640px;margin:0 0 16px}
+.hero p.lead{font-size:15px;color:var(--muted);max-width:640px;margin:0 0 36px}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:12px 20px;border-radius:var(--radius);font-size:14px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--muted);text-decoration:none}
+.btn.primary{background:var(--text);color:var(--bg);border-color:var(--text)}
+.btn.primary:hover{opacity:.9}
+section{padding:80px 0;border-bottom:1px solid var(--border)}
+section h2{font-size:32px;font-weight:600;letter-spacing:-.02em;margin:0 0 12px}
+section .section-sub{color:var(--muted);font-size:16px;margin:0 0 40px;max-width:600px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:border-color .15s}
+.card:hover{border-color:#2d3748}
+.card h3{font-size:16px;font-weight:600;margin:0 0 8px}
+.card p{color:var(--muted);font-size:14px;margin:0}
+.case-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;display:block;color:var(--text)}
+.case-card:hover{border-color:var(--accent);text-decoration:none}
+.case-card .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tag{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--border);color:var(--muted);border-radius:4px;text-transform:lowercase}
+.case-card h3{font-size:18px;margin:0 0 12px;letter-spacing:-.01em}
+.case-card .meta{font-size:14px;color:var(--text);margin:0 0 14px;line-height:1.5}
+.case-card .meta-label{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;font-weight:500}
+.case-card .meta-label.problem{color:var(--accent)}
+.case-card .meta-label.result{color:var(--accent-2)}
+.case-card .arrow{font-family:var(--mono);font-size:13px;color:var(--accent);margin-top:16px;display:inline-block}
+.flow{font-family:var(--mono);font-size:13px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;white-space:pre;overflow-x:auto;line-height:1.7}
+.stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+.stack-item{font-family:var(--mono);font-size:13px;color:var(--muted);padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:6px}
+footer{padding:48px 0;color:var(--muted);font-size:13px}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--muted)}
+/* HERO 2-COL */
+.hero .hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:64px;align-items:center}
+.hero-visual{position:relative;min-height:420px}
+.mock-window{background:#0d1117;border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:0 20px 60px -20px rgba(0,0,0,.6)}
+.mock-dots{display:flex;gap:6px;margin-bottom:20px}
+.mock-dots span{width:12px;height:12px;border-radius:50%}
+.mock-dots .d1{background:#ff5f57}
+.mock-dots .d2{background:#febc2e}
+.mock-dots .d3{background:#28c840}
+.mock-log{font-family:var(--mono);font-size:13px;background:#0a0e13;border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:10px;line-height:1.5}
+.mock-log.ok{color:#22C55E}
+.mock-log.warn{color:#F59E0B}
+.mock-log.err{color:#EF4444}
+.mock-log.info{color:var(--muted)}
+.mock-flow{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:16px;padding-top:16px;border-top:1px dashed var(--border);line-height:1.7}
+.mock-flow .label{color:var(--text);font-weight:500;display:block;margin-bottom:6px}
+.callout-float{position:absolute;bottom:-30px;left:-30px;background:var(--card);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:18px 22px;max-width:260px;box-shadow:0 20px 50px -10px rgba(0,0,0,.7)}
+.callout-float .lbl{font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.callout-float p{margin:0;font-size:14px;color:var(--text);font-style:italic;line-height:1.5}
+@media(max-width:900px){.hero .hero-grid{grid-template-columns:1fr;gap:48px}.callout-float{position:relative;bottom:auto;left:auto;margin-top:20px;max-width:none}}
+@media(max-width:720px){.hero{padding:60px 0 40px}.hero h1{font-size:40px}.hero .sub{font-size:17px}section{padding:56px 0}section h2{font-size:26px}nav .links{gap:16px}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <a href="/" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <div class="links">
+      <a href="#cases">Cases</a>
+      <a href="#filosofia">Filosofia</a>
+      <a href="#stack">Stack</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="eyebrow">Laboratório Operacional</div>
+        <h1>Automações reais.<br>Problemas reais.</h1>
+        <p class="sub">Soluções construídas dentro da operação — não em sala de aula.</p>
+        <p class="lead">Documentação pública de sistemas, integrações e aprendizados desenvolvidos para resolver gargalos reais de atendimento, logística, financeiro e gestão.</p>
+        <div class="cta-row">
+          <a href="#cases" class="btn primary">Explorar cases</a>
+          <a href="#filosofia" class="btn">Como construo</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="mock-window">
+          <div class="mock-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+          <div class="mock-log ok">[OK]    ml-notifications: 0 cancelamentos pagos</div>
+          <div class="mock-log ok">[OK]    motoboy: 12 separações impressas</div>
+          <div class="mock-log warn">[WARN]  tiny-api: rate limit, aguardando 60s</div>
+          <div class="mock-log err">[ERROR] frenet: timeout rastreio NF 8421</div>
+          <div class="mock-log ok">[OK]    fretes-consolidado: 87 NFs do dia</div>
+          <div class="mock-flow">
+            <span class="label">Arquitetura</span>
+            Tiny ERP → Apps Script → Sheets → Logs → Slack
+          </div>
+        </div>
+        <div class="callout-float">
+          <div class="lbl">Aprendizado</div>
+          <p>"Automatizar processo ruim só acelera o caos."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="filosofia">
+  <div class="container">
+    <h2>Tecnologia aplicada à operação</h2>
+    <p class="section-sub">Aqui não tem hype. Tem dor real, solução prática e o impacto que isso gerou no dia a dia.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Automações reais</h3>
+        <p>Criadas para resolver dores internas do dia a dia, não para vitrine.</p>
+      </div>
+      <div class="card">
+        <h3>Bastidores operacionais</h3>
+        <p>Processos, integrações e arquitetura sem cara de software house.</p>
+      </div>
+      <div class="card">
+        <h3>Aprendizados reais</h3>
+        <p>Incluindo falhas, gargalos e decisões erradas que ensinaram mais que os acertos.</p>
+      </div>
+      <div class="card">
+        <h3>Integrações práticas</h3>
+        <p>Tiny ERP, Apps Script, APIs, Sheets, WhatsApp, IA e monitoramentos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cases">
+  <div class="container">
+    <h2>Casos documentados</h2>
+    <p class="section-sub">Cada case segue a mesma estrutura: dor, impacto, solução, como funciona, resultado e insight.</p>
+    <div class="grid">
+
+      <a href="cases/atendimento-insights.html" class="case-card">
+        <div class="tags">
+          <span class="tag">apps-script</span>
+          <span class="tag">gemini</span>
+          <span class="tag">slack</span>
+          <span class="tag">atendimento</span>
+        </div>
+        <h3>Insights diários de atendimento com IA</h3>
+        <p class="meta"><span class="meta-label problem">Problema</span>Dono não tem tempo de ler emails da equipe e perde sinais de venda escapando.</p>
+        <p class="meta"><span class="meta-label result">Resultado</span>Resumo diário no Slack às 8h com objeções, vendas perdidas e ações pra hoje.</p>
+        <span class="arrow">ver documentação →</span>
+      </a>
+
+      <div class="case-card" style="opacity: 0.4;">
+        <div class="tags"><span class="tag">em breve</span></div>
+        <h3>Próximos cases</h3>
+        <p class="meta">Motoboy automation, fretes consolidado, ML notifications, separação Printloja e outros estão sendo documentados.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2>Como as soluções são construídas</h2>
+    <p class="section-sub">Não existe atalho. Automação sem processo só acelera o caos.</p>
+    <div class="flow">Problema operacional
+        ↓
+  Mapeamento da dor real
+        ↓
+   Padronização de dados
+        ↓
+     Automação mínima
+        ↓
+      Monitoramento
+        ↓
+    Melhoria contínua</div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="container">
+    <h2>Stack utilizado</h2>
+    <p class="section-sub">Ferramentas escolhidas por custo-benefício real e baixo atrito de manutenção — não por moda.</p>
+    <div class="stack-grid">
+      <div class="stack-item">Google Apps Script</div>
+      <div class="stack-item">Google Sheets</div>
+      <div class="stack-item">Tiny ERP API</div>
+      <div class="stack-item">Gemini</div>
+      <div class="stack-item">Slack Webhooks</div>
+      <div class="stack-item">WhatsApp / Baileys</div>
+      <div class="stack-item">Python</div>
+      <div class="stack-item">Node.js</div>
+      <div class="stack-item">Fly.io</div>
+      <div class="stack-item">Cloudflare</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container row">
+    <div>
+      <strong style="color: var(--text);">nak.api.br</strong> — Laboratório operacional independente.
+    </div>
+    <div>
+      <a href="#cases">Cases</a> · <a href="#stack">Stack</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
