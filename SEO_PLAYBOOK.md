@@ -107,7 +107,9 @@ Mês 2: primeiras impressões orgânicas
 Mês 3: primeiras visitas orgânicas
 Mês 6: 50+ visitas orgânicas/dia (depende de quantos cases foram publicados)
 
-Vira case **quando tiver 6 meses de dados**.
+Vira case **quando tiver 6 meses de dados E resultado mensurável** (vide princípio 1 do ANTI_IA.md).
+
+Se em 6 meses não tiver tração orgânica real, o aprendizado é outro: "como NÃO funcionou SEO num portal técnico de nicho" — também serve como case, mas honesto. Tentativa fracassada documentada com honestidade vale mais que tentativa em andamento vendida como sucesso.
 
 ## Anti-padrões (NÃO fazer)
 

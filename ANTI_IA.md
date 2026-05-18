@@ -1,6 +1,22 @@
-# Princípio do nak.api.br: NÃO PODE TER CARA DE IA
+# Princípios do nak.api.br
 
-Esta é a regra mais importante do projeto. Vale pra layout, pra escrita, pra geração automática.
+## 1. Case ≠ tentativa
+
+**Um case só é um case se trouxer resultado mensurável.**
+Sem resultado, é experimento em andamento. Tentativa publicada não é autoridade — é só barulho.
+
+Antes de publicar qualquer coisa como "case":
+- [ ] A automação está rodando em produção há tempo suficiente pra ter dado
+- [ ] Existe número/medida real do impacto (tempo economizado, dinheiro, erro evitado, volume)
+- [ ] O número não foi inventado pra preencher a seção "Resultado"
+
+Se ainda não tem resultado, o lugar é uma seção tipo "Experimentos em andamento" ou "Em observação" — não "Cases".
+
+Isso vale especialmente pro SEO, pra crescimento, pra qualquer coisa cujo resultado depende de tempo. Não escrever "como cresci X" antes de ter X.
+
+## 2. NÃO PODE TER CARA DE IA
+
+Esta é a regra de execução mais importante. Vale pra layout, pra escrita, pra geração automática.
 
 ## Por quê?
 
