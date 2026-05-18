@@ -3,8 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Custo real de frete por NF — nak.api.br</title>
-<meta name="description" content="3 empresas, várias transportadoras, frete embutido no produto. Apps Script + Sheets juntando NF do Tiny com fatura real da transportadora pra calcular prejuízo por pedido.">
+<title>Calcular custo real de frete por NF (Tiny ERP + Frenet + Apps Script) — nak.api.br</title>
+<meta name="description" content="Frete embutido no preço sem custo real é prejuízo invisível. Apps Script + Sheets consolidando 3 contas Tiny com Frenet (Jadlog, J&T, Loggi) pra calcular margem verdadeira por pedido.">
+<meta name="keywords" content="custo real frete nf, tiny erp frenet integração, apps script sheets frete, margem pedido ecommerce, jadlog jt loggi consolidado">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/cases/fretes-consolidado.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="Custo real de frete por NF — Tiny + Frenet + Apps Script">
+<meta property="og:description" content="3 empresas, várias transportadoras, frete embutido. Apps Script casa NF do Tiny com fatura real Frenet pra calcular margem por pedido.">
+<meta property="og:url" content="https://nak.api.br/cases/fretes-consolidado.html">
+<meta property="og:locale" content="pt_BR">
+<meta property="article:section" content="Financeiro">
+<meta property="article:tag" content="apps-script">
+<meta property="article:tag" content="tiny-api">
+<meta property="article:tag" content="frenet">
+<meta property="article:tag" content="financeiro">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Custo real de frete por NF (Tiny + Frenet)">
+<meta name="twitter:description" content="Frete embutido sem custo real é prejuízo invisível. Como consolidar 3 Tinys + Frenet num Sheets.">
+
+<!-- Schema.org Article -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Custo real de frete por NF",
+  "description": "Apps Script + Sheets consolidando NFs de 3 contas Tiny com lançamentos Frenet pra calcular margem real por pedido.",
+  "author": { "@type": "Person", "name": "nak" },
+  "publisher": { "@type": "Organization", "name": "nak.api.br" },
+  "datePublished": "2026-05-17",
+  "inLanguage": "pt-BR",
+  "url": "https://nak.api.br/cases/fretes-consolidado.html",
+  "about": ["Tiny ERP", "Frenet", "Custo logístico", "Margem real"],
+  "keywords": "custo frete, tiny erp, frenet, jadlog, apps script, sheets, margem real"
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -237,6 +276,27 @@ footer a{color:var(--muted)}
       <p>"O Apps Script só automatizou o que eu já fazia no Excel à mão. Antes de automatizar, fiz o processo manual pra ter certeza de que ele fazia sentido."</p>
     </div>
     <p>O case que mais mostra: <strong>automação sem processo só acelera o caos</strong>. Foi necessário primeiro entender o casamento de dados na mão, descobrir os edge cases (transportadora fora da Frenet, NF cancelada, devolução), antes do código.</p>
+  </div>
+</section>
+
+<section class="case-section" style="background:#0a0e13">
+  <div class="container">
+    <div class="label">Cases relacionados</div>
+    <h2>Outras automações sobre operação e custo</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <a href="motoboy-impressao.html" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Tiny + Python</div>
+        <div style="font-size:16px;font-weight:500">Separação Motoboy impressa sozinha →</div>
+      </a>
+      <a href="ml-cancelamentos.html" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Mercado Livre</div>
+        <div style="font-size:16px;font-weight:500">Cancelamento pago no ML em 5 min →</div>
+      </a>
+      <a href="atendimento-insights.html" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Atendimento · IA</div>
+        <div style="font-size:16px;font-weight:500">Insights diários de atendimento com IA →</div>
+      </a>
+    </div>
   </div>
 </section>
 

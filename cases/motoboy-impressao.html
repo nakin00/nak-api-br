@@ -3,8 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Separação Motoboy impressa sozinha — nak.api.br</title>
-<meta name="description" content="Python no PC da impressora ouvindo o Tiny e imprimindo separação Motoboy assim que o pedido aparece. Sem ninguém clicar nada.">
+<title>Imprimir separação Motoboy do Tiny ERP automaticamente (Python + térmica) — nak.api.br</title>
+<meta name="description" content="Python rodando no PC da impressora térmica fazendo polling no Tiny ERP a cada 30s. Pedido com forma de envio Motoboy aparece, papel sai sozinho, status atualiza, Slack avisa.">
+<meta name="keywords" content="tiny erp python automação, impressora térmica python, separação pedido automática, polling tiny api, motoboy ecommerce">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/cases/motoboy-impressao.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="Separação Motoboy impressa sozinha — Tiny ERP + Python">
+<meta property="og:description" content="Python local ouvindo o Tiny. Pedido cai, papel sai, status anda, Slack avisa. Zero clique humano.">
+<meta property="og:url" content="https://nak.api.br/cases/motoboy-impressao.html">
+<meta property="og:locale" content="pt_BR">
+<meta property="article:section" content="Operação">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="tiny-api">
+<meta property="article:tag" content="impressora-térmica">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Imprimir separação Motoboy do Tiny automaticamente">
+<meta name="twitter:description" content="Python no PC da impressora ouvindo o Tiny. Zero clique humano entre pedido e papel impresso.">
+
+<!-- Schema.org Article -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Separação Motoboy impressa sozinha",
+  "description": "Python local ouvindo Tiny ERP, imprimindo separação Motoboy e atualizando status automaticamente.",
+  "author": { "@type": "Person", "name": "nak" },
+  "publisher": { "@type": "Organization", "name": "nak.api.br" },
+  "datePublished": "2026-05-17",
+  "inLanguage": "pt-BR",
+  "url": "https://nak.api.br/cases/motoboy-impressao.html",
+  "about": ["Tiny ERP", "Automação de impressão", "Logística operacional"],
+  "keywords": "tiny erp, python, impressora térmica, motoboy, separação automática"
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -239,6 +277,27 @@ footer a{color:var(--muted)}
       <p>"O ganho não foi automatizar a impressão. Foi tirar uma decisão de cabeça da equipe — 'tem alguma coisa pra imprimir agora?'."</p>
     </div>
     <p>Esse case prova uma coisa que repete em quase toda automação operacional: o valor real não está na tarefa que foi automatizada. Está na <strong>carga mental</strong> que saiu da cabeça da equipe.</p>
+  </div>
+</section>
+
+<section class="case-section" style="background:#0a0e13">
+  <div class="container">
+    <div class="label">Cases relacionados</div>
+    <h2>Outras automações no Tiny ERP</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <a href="fretes-consolidado.html" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Financeiro · Tiny + Frenet</div>
+        <div style="font-size:16px;font-weight:500">Custo real de frete por NF →</div>
+      </a>
+      <a href="ml-cancelamentos.html" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Mercado Livre</div>
+        <div style="font-size:16px;font-weight:500">Cancelamento pago no ML em 5 min →</div>
+      </a>
+      <a href="atendimento-insights.html" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Atendimento · IA</div>
+        <div style="font-size:16px;font-weight:500">Insights diários de atendimento com IA →</div>
+      </a>
+    </div>
   </div>
 </section>
 

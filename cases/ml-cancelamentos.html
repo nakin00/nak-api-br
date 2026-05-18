@@ -3,8 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cancelamento pago no ML chega no Slack em 5 minutos — nak.api.br</title>
-<meta name="description" content="Apps Script polling a API do Mercado Livre cada 5min, filtra cancelamentos de pedidos já pagos, manda Slack. Evita que mercadoria saia depois do cancelamento.">
+<title>Alerta de cancelamento de pedido pago Mercado Livre no Slack (Apps Script) — nak.api.br</title>
+<meta name="description" content="Apps Script consulta API do Mercado Livre cada 5 minutos, filtra cancelamentos de pedidos já pagos (approved, refunded, charged_back), e manda Slack. Evita mercadoria sair depois do cancelamento.">
+<meta name="keywords" content="mercado livre cancelamento api, apps script ml oauth, alerta slack mercadolivre, pedido cancelado pago ml, automação ecommerce ml">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/cases/ml-cancelamentos.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="Cancelamento pago no Mercado Livre no Slack em 5 min">
+<meta property="og:description" content="Apps Script polling API ML, filtra pedidos pagos cancelados, manda Slack. Evita frete duplo e estoque pra repor.">
+<meta property="og:url" content="https://nak.api.br/cases/ml-cancelamentos.html">
+<meta property="og:locale" content="pt_BR">
+<meta property="article:section" content="Operação">
+<meta property="article:tag" content="apps-script">
+<meta property="article:tag" content="mercado-livre">
+<meta property="article:tag" content="oauth">
+<meta property="article:tag" content="slack">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Alerta de cancelamento de pedido pago ML no Slack">
+<meta name="twitter:description" content="5 minutos entre cancelar e equipe saber. Apps Script + API Mercado Livre + Slack.">
+
+<!-- Schema.org Article -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Cancelamento pago no ML chega no Slack em 5 minutos",
+  "description": "Apps Script monitora API Mercado Livre, filtra cancelamentos de pedidos pagos, alerta no Slack.",
+  "author": { "@type": "Person", "name": "nak" },
+  "publisher": { "@type": "Organization", "name": "nak.api.br" },
+  "datePublished": "2026-05-17",
+  "inLanguage": "pt-BR",
+  "url": "https://nak.api.br/cases/ml-cancelamentos.html",
+  "about": ["Mercado Livre", "OAuth", "Alertas operacionais", "E-commerce"],
+  "keywords": "mercado livre, ml api, oauth, apps script, slack, cancelamento pedido"
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -233,6 +272,27 @@ footer a{color:var(--muted)}
       <p>"Deduplicar via PropertiesService funcionou. Tentei via Sheets primeiro — era lento demais pra polling de 5 minutos."</p>
     </div>
     <p>O ganho aqui não é "tecnologia avançada". É <strong>frequência</strong> e <strong>filtro certo</strong>. Olhar mais vezes e ignorar o que não importa.</p>
+  </div>
+</section>
+
+<section class="case-section" style="background:#0a0e13">
+  <div class="container">
+    <div class="label">Cases relacionados</div>
+    <h2>Outras automações com Slack e operação</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <a href="atendimento-insights.html" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Atendimento · Gemini + Slack</div>
+        <div style="font-size:16px;font-weight:500">Insights diários de atendimento com IA →</div>
+      </a>
+      <a href="motoboy-impressao.html" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Tiny + Slack</div>
+        <div style="font-size:16px;font-weight:500">Separação Motoboy impressa sozinha →</div>
+      </a>
+      <a href="fretes-consolidado.html" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Financeiro · Sheets</div>
+        <div style="font-size:16px;font-weight:500">Custo real de frete por NF →</div>
+      </a>
+    </div>
   </div>
 </section>
 

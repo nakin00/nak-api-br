@@ -3,8 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Insights diários de atendimento com IA — nak.api.br</title>
-<meta name="description" content="Como transformei emails de 3 atendentes em um resumo diário no Slack focado em perda de venda, usando Apps Script e Gemini.">
+<title>Insights diários de atendimento com IA (Gemini + Slack) — nak.api.br</title>
+<meta name="description" content="Como ler emails de 3 atendentes automaticamente, mandar pro Gemini com foco em perda de venda, e receber resumo diário no Slack. Apps Script + Sheets + Gemini Flash, custo zero.">
+<meta name="keywords" content="apps script gemini atendimento, análise emails ia, slack atendimento ecommerce, perda de venda atendimento, automação atendimento brasil">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/cases/atendimento-insights.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="Insights diários de atendimento com IA — Apps Script + Gemini + Slack">
+<meta property="og:description" content="3 atendentes, emails do dia inteiro, dono sem tempo de ler. Apps Script + Gemini gera resumo focado em perda de venda e posta no Slack às 8h.">
+<meta property="og:url" content="https://nak.api.br/cases/atendimento-insights.html">
+<meta property="og:locale" content="pt_BR">
+<meta property="article:section" content="Atendimento">
+<meta property="article:tag" content="apps-script">
+<meta property="article:tag" content="gemini">
+<meta property="article:tag" content="slack">
+<meta property="article:tag" content="atendimento">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Insights diários de atendimento com IA (Gemini + Slack)">
+<meta name="twitter:description" content="Apps Script + Gemini analisando emails da equipe com foco em perda de venda. Resumo no Slack às 8h.">
+
+<!-- Schema.org Article -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Insights diários de atendimento com IA",
+  "description": "Apps Script + Gemini analisando emails de atendentes com foco em perda de venda, resumo diário no Slack.",
+  "author": { "@type": "Person", "name": "nak" },
+  "publisher": { "@type": "Organization", "name": "nak.api.br" },
+  "datePublished": "2026-05-17",
+  "inLanguage": "pt-BR",
+  "url": "https://nak.api.br/cases/atendimento-insights.html",
+  "about": ["Atendimento ao cliente", "Automação operacional", "Análise com IA"],
+  "keywords": "apps script, gemini, slack, atendimento, perda de venda, ecommerce, automação"
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -308,6 +347,27 @@ footer a{color:var(--muted)}
       <p>"Coletar em conta separada da que analisa foi a melhor decisão de arquitetura. Permissão Gmail é por conta — se eu tentasse ler tudo da minha, não funcionava."</p>
     </div>
     <p>Conhecimento disperso em três caixas virou <strong>uma única página por dia</strong>. O resumo não substitui leitura — direciona. No primeiro café da manhã o dono já sabe o que precisa virar conversa com o time hoje.</p>
+  </div>
+</section>
+
+<section class="case-section" style="background:#0a0e13">
+  <div class="container">
+    <div class="label">Cases relacionados</div>
+    <h2>Outras automações no mesmo padrão</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <a href="ml-cancelamentos.html" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Slack</div>
+        <div style="font-size:16px;font-weight:500">Cancelamento pago no ML em 5 min →</div>
+      </a>
+      <a href="fretes-consolidado.html" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Financeiro · Sheets</div>
+        <div style="font-size:16px;font-weight:500">Custo real de frete por NF →</div>
+      </a>
+      <a href="motoboy-impressao.html" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Python</div>
+        <div style="font-size:16px;font-weight:500">Separação Motoboy impressa sozinha →</div>
+      </a>
+    </div>
   </div>
 </section>
 
