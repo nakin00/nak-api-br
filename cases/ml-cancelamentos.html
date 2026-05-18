@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cancelamento pago no ML chega no Slack em 5 minutos — nak.api.br</title>
+<meta name="description" content="Apps Script polling a API do Mercado Livre cada 5min, filtra cancelamentos de pedidos já pagos, manda Slack. Evita que mercadoria saia depois do cancelamento.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--danger:#EF4444;--warn:#F59E0B;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--radius:10px;--max:1100px}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+.case-hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.case-hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+.breadcrumb{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:24px}
+.category{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.case-hero h1{font-size:42px;font-weight:700;line-height:1.1;margin:0 0 20px;letter-spacing:-.02em}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.tag{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--border);color:var(--muted);border-radius:4px;text-transform:lowercase}
+.lead{color:var(--muted);font-size:17px;max-width:600px;margin:0}
+.mock-window{background:#0d1117;border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:0 20px 60px -20px rgba(0,0,0,.6)}
+.mock-dots{display:flex;gap:6px;margin-bottom:20px}
+.mock-dots span{width:12px;height:12px;border-radius:50%}
+.mock-dots .d1{background:#ff5f57}.mock-dots .d2{background:#febc2e}.mock-dots .d3{background:#28c840}
+.mock-log{font-family:var(--mono);font-size:13px;background:#0a0e13;border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:10px;line-height:1.5}
+.mock-log.ok{color:var(--accent-2)}.mock-log.warn{color:var(--warn)}.mock-log.err{color:var(--danger)}.mock-log.info{color:var(--muted)}
+.case-section{padding:64px 0;border-bottom:1px solid var(--border)}
+.case-section:last-child{border-bottom:none}
+.label{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.case-section h2{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0 0 24px}
+.case-section p{font-size:16px;color:var(--text);margin:0 0 16px;max-width:760px}
+.case-section ul{font-size:16px;color:var(--text);padding-left:20px;max-width:760px}
+.case-section ul li{margin-bottom:10px}
+.case-section ul li::marker{color:var(--muted)}
+.callout{border-left:3px solid var(--accent);background:var(--card);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin:24px 0;max-width:760px}
+.callout p{margin:0;font-style:italic;color:var(--muted)}
+.flow-grid{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:32px 0;max-width:760px}
+.flow-node{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;flex:1;min-width:110px}
+.flow-node .icon{font-family:var(--mono);font-size:22px;color:var(--accent);margin-bottom:6px}
+.flow-node .name{font-size:13px;font-weight:500}
+.flow-node .sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px}
+.flow-arrow{font-family:var(--mono);color:var(--muted);font-size:18px;flex-shrink:0}
+.flow-note{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--muted);max-width:760px;text-align:center}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;max-width:760px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.kpi .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.kpi .val{font-size:24px;font-weight:600;font-family:var(--mono);color:var(--accent-2);line-height:1}
+.kpi .delta{font-size:11px;color:var(--accent-2);margin-top:8px;font-family:var(--mono)}
+.kpi.alt .val{color:var(--accent)}
+footer{padding:48px 0;color:var(--muted);font-size:13px}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--muted)}
+@media(max-width:900px){.case-hero-grid{grid-template-columns:1fr;gap:40px}.dash-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.case-hero h1{font-size:32px}.case-section{padding:48px 0}.case-section h2{font-size:24px}.flow-grid{flex-direction:column}.flow-arrow{transform:rotate(90deg)}nav .links{gap:16px}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <a href="../index.html" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <div class="links">
+      <a href="../index.html#cases">Cases</a>
+      <a href="../index.html#filosofia">Filosofia</a>
+      <a href="../index.html#stack">Stack</a>
+    </div>
+  </div>
+</nav>
+
+<header class="case-hero">
+  <div class="container">
+    <div class="case-hero-grid">
+      <div>
+        <div class="breadcrumb"><a href="../index.html">~</a> / cases / ml-cancelamentos</div>
+        <div class="category">Operação</div>
+        <h1>Cancelamento pago no ML chega no Slack em 5 min</h1>
+        <div class="tags">
+          <span class="tag">apps-script</span>
+          <span class="tag">mercado-livre</span>
+          <span class="tag">oauth</span>
+          <span class="tag">slack</span>
+        </div>
+        <p class="lead">Apps Script consulta a API do ML a cada 5 minutos, filtra cancelamentos de pedidos que já estavam pagos, e avisa no Slack. Evita que a mercadoria saia depois do cancelamento.</p>
+      </div>
+      <div>
+        <div class="mock-window">
+          <div class="mock-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+          <div class="mock-log info">14:00:00  trigger 5min disparado</div>
+          <div class="mock-log info">14:00:01  ML conta-1: 0 cancelados</div>
+          <div class="mock-log info">14:00:02  ML conta-2: 1 cancelado</div>
+          <div class="mock-log warn">14:00:02  pedido 2000123: status=approved</div>
+          <div class="mock-log ok">14:00:03  slack: "Cancelado pago — pedido 2000123"</div>
+          <div class="mock-log info">14:00:03  dedup salvo (500 IDs em cache)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">01 · Dor operacional</div>
+    <h2>Mercadoria sai antes da equipe ver o cancelamento</h2>
+    <p>O pedido cai pago no Mercado Livre. Separação rola, motoboy pega, mercadoria sai. No meio do caminho — às vezes minutos depois do pagamento — o cliente cancela.</p>
+    <p>Se ninguém da equipe vê o cancelamento rápido, o pacote já está com o transportador. Quando a devolução chega de volta: frete pago duas vezes, estoque pra repor, dinheiro pra estornar.</p>
+    <div class="callout">
+      <p>"O pior cenário é descobrir o cancelamento na conciliação do mês. Quando vê, o prejuízo já aconteceu três vezes."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">02 · Impacto do problema</div>
+    <h2>Custo invisível somando todo mês</h2>
+    <ul>
+      <li><strong>Frete duplo</strong> — ida pro cliente, volta pra base.</li>
+      <li><strong>Reposição de estoque fora de ordem</strong> — produto volta sem aviso, vai pra prateleira fora da rotina.</li>
+      <li><strong>Estorno só descoberto na conciliação</strong> — dinheiro saiu antes da equipe entender o que aconteceu.</li>
+      <li><strong>Equipe atendendo cliente no escuro</strong> — cliente liga perguntando do estorno, equipe não sabe que cancelou.</li>
+      <li><strong>Painel do ML sem aviso ativo</strong> — precisa abrir e procurar pra saber.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">03 · Solução criada</div>
+    <h2>Polling 5 min na API do ML + filtro de pagamento + dedup</h2>
+    <p>Um Apps Script roda a cada 5 minutos. Pra cada conta do ML, faz uma chamada simples na API: dá os pedidos cancelados nas últimas 24h.</p>
+    <p>Filtra os que estavam realmente pagos (status <code>approved</code>, <code>refunded</code>, <code>in_process</code>, <code>in_mediation</code>, <code>charged_back</code>) — descarta os que cancelaram antes do pagamento, que não importam.</p>
+    <ul>
+      <li><strong>Trigger 5 min</strong> — janela suficiente pra pegar antes da mercadoria sair, sem estourar limite da API.</li>
+      <li><strong>Filtro de status de pagamento</strong> — só interessa cancelamento que CUSTOU. Cancelamento sem pagamento é ruído.</li>
+      <li><strong>Dedup via PropertiesService</strong> — chave <code>NOTIFIED_CANCEL_&lt;conta&gt;</code>, mantém os 500 IDs mais recentes. Não notifica o mesmo pedido duas vezes.</li>
+      <li><strong>OAuth ML via Web App</strong> — Apps Script publicado como Web App pra ter URL de redirect. Múltiplas redirect URIs convivem com o projeto <code>ml_etiquetas</code> sem conflito.</li>
+      <li><strong>Webhook Slack por conta</strong> — canal recebe a notificação com link direto pro pedido.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">04 · Como funciona</div>
+    <h2>Pipeline curto, frequência alta</h2>
+    <div class="flow-grid">
+      <div class="flow-node">
+        <div class="icon">⏱</div>
+        <div class="name">Trigger</div>
+        <div class="sub">5 min</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">🛒</div>
+        <div class="name">ML API</div>
+        <div class="sub">cancelled 24h</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">⚙</div>
+        <div class="name">Filtro</div>
+        <div class="sub">pago / dedup</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">#</div>
+        <div class="name">Slack</div>
+        <div class="sub">webhook</div>
+      </div>
+    </div>
+    <p class="flow-note">PropertiesService guarda 500 IDs recentes · 1 webhook Slack por conta ML</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">05 · Resultado</div>
+    <h2>Equipe vê antes do produto sair</h2>
+    <div class="dash-grid">
+      <div class="kpi">
+        <div class="lbl">Latência máxima</div>
+        <div class="val">5 min</div>
+        <div class="delta">entre cancelar e Slack</div>
+      </div>
+      <div class="kpi alt">
+        <div class="lbl">Contas monitoradas</div>
+        <div class="val">2</div>
+        <div class="delta">multi-conta ML</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Custo mensal</div>
+        <div class="val">R$ 0</div>
+        <div class="delta">Apps Script grátis</div>
+      </div>
+      <div class="kpi alt">
+        <div class="lbl">Falsos alertas</div>
+        <div class="val">0</div>
+        <div class="delta">dedup funcionando</div>
+      </div>
+    </div>
+    <ul>
+      <li>Cancelamento de pedido já enviado virou caso raro.</li>
+      <li>Equipe consegue ligar pro cliente pra confirmar antes do envio.</li>
+      <li>Estorno entra na rotina, não na conciliação surpresa do mês.</li>
+      <li>Devolução por cancelamento foi praticamente eliminada.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">06 · Insights aprendidos</div>
+    <h2>O que essa automação ensinou</h2>
+    <div class="callout">
+      <p>"5 minutos de latência em alerta é a diferença entre 'voltei do correio' e 'cliente pediu pra cancelar antes'."</p>
+    </div>
+    <div class="callout">
+      <p>"OAuth do ML obriga publicar Apps Script como Web App. Não tem jeito mais bonito. Achei chato, fiz, segui."</p>
+    </div>
+    <div class="callout">
+      <p>"Deduplicar via PropertiesService funcionou. Tentei via Sheets primeiro — era lento demais pra polling de 5 minutos."</p>
+    </div>
+    <p>O ganho aqui não é "tecnologia avançada". É <strong>frequência</strong> e <strong>filtro certo</strong>. Olhar mais vezes e ignorar o que não importa.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="container row">
+    <div><strong style="color:var(--text);">nak.api.br</strong> · <a href="../index.html">voltar pro laboratório</a></div>
+    <div>Caso documentado em 2026</div>
+  </div>
+</footer>
+
+</body>
+</html>

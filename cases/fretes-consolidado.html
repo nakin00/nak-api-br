@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custo real de frete por NF — nak.api.br</title>
+<meta name="description" content="3 empresas, várias transportadoras, frete embutido no produto. Apps Script + Sheets juntando NF do Tiny com fatura real da transportadora pra calcular prejuízo por pedido.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--danger:#EF4444;--warn:#F59E0B;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--radius:10px;--max:1100px}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+.case-hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.case-hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+.breadcrumb{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:24px}
+.category{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.case-hero h1{font-size:42px;font-weight:700;line-height:1.1;margin:0 0 20px;letter-spacing:-.02em}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.tag{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--border);color:var(--muted);border-radius:4px;text-transform:lowercase}
+.lead{color:var(--muted);font-size:17px;max-width:600px;margin:0}
+.case-section{padding:64px 0;border-bottom:1px solid var(--border)}
+.case-section:last-child{border-bottom:none}
+.label{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.case-section h2{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0 0 24px}
+.case-section p{font-size:16px;color:var(--text);margin:0 0 16px;max-width:760px}
+.case-section ul{font-size:16px;color:var(--text);padding-left:20px;max-width:760px}
+.case-section ul li{margin-bottom:10px}
+.case-section ul li::marker{color:var(--muted)}
+.callout{border-left:3px solid var(--accent);background:var(--card);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin:24px 0;max-width:760px}
+.callout p{margin:0;font-style:italic;color:var(--muted)}
+.flow-grid{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:32px 0;max-width:760px}
+.flow-node{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;flex:1;min-width:110px}
+.flow-node .icon{font-family:var(--mono);font-size:22px;color:var(--accent);margin-bottom:6px}
+.flow-node .name{font-size:13px;font-weight:500}
+.flow-node .sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px}
+.flow-arrow{font-family:var(--mono);color:var(--muted);font-size:18px;flex-shrink:0}
+.flow-note{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--muted);max-width:760px;text-align:center}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;max-width:760px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.kpi .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.kpi .val{font-size:24px;font-weight:600;font-family:var(--mono);color:var(--accent-2);line-height:1}
+.kpi .delta{font-size:11px;color:var(--accent-2);margin-top:8px;font-family:var(--mono)}
+.kpi.alt .val{color:var(--accent)}
+.kpi.warn .val{color:var(--warn)}
+.kpi-wide{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin:0 0 24px;max-width:760px}
+.kpi-wide .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.bar-row .name{width:90px}
+.bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent)}
+.bar-row .num{width:48px;text-align:right;color:var(--text)}
+.hero-visual-dash{display:flex;flex-direction:column;gap:10px}
+footer{padding:48px 0;color:var(--muted);font-size:13px}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--muted)}
+@media(max-width:900px){.case-hero-grid{grid-template-columns:1fr;gap:40px}.dash-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.case-hero h1{font-size:32px}.case-section{padding:48px 0}.case-section h2{font-size:24px}.flow-grid{flex-direction:column}.flow-arrow{transform:rotate(90deg)}nav .links{gap:16px}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <a href="../index.html" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <div class="links">
+      <a href="../index.html#cases">Cases</a>
+      <a href="../index.html#filosofia">Filosofia</a>
+      <a href="../index.html#stack">Stack</a>
+    </div>
+  </div>
+</nav>
+
+<header class="case-hero">
+  <div class="container">
+    <div class="case-hero-grid">
+      <div>
+        <div class="breadcrumb"><a href="../index.html">~</a> / cases / fretes-consolidado</div>
+        <div class="category">Financeiro</div>
+        <h1>Custo real de frete por NF</h1>
+        <div class="tags">
+          <span class="tag">apps-script</span>
+          <span class="tag">sheets</span>
+          <span class="tag">tiny-api</span>
+          <span class="tag">frenet</span>
+          <span class="tag">financeiro</span>
+        </div>
+        <p class="lead">3 empresas, várias transportadoras, frete embutido no preço do produto. Apps Script + Sheets juntando NF do Tiny com lançamento real da transportadora pra calcular margem verdadeira por pedido.</p>
+      </div>
+      <div>
+        <div class="hero-visual-dash">
+          <div class="kpi-wide">
+            <div class="lbl">Distribuição por transportadora · 30 dias</div>
+            <div class="bar-row"><span class="name">Jadlog</span><div class="bar"><div class="fill" style="width:68%"></div></div><span class="num">412</span></div>
+            <div class="bar-row"><span class="name">J&amp;T</span><div class="bar"><div class="fill" style="width:54%;background:var(--accent-2)"></div></div><span class="num">328</span></div>
+            <div class="bar-row"><span class="name">Loggi</span><div class="bar"><div class="fill" style="width:31%;background:var(--warn)"></div></div><span class="num">188</span></div>
+            <div class="bar-row"><span class="name">Correios</span><div class="bar"><div class="fill" style="width:22%;background:var(--danger)"></div></div><span class="num">133</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">01 · Dor operacional</div>
+    <h2>Frete embutido sem custo real é prejuízo disfarçado</h2>
+    <p>O produto sai com frete embutido no preço. O cliente paga. A NF é emitida. Mas o valor real que a transportadora vai cobrar só aparece na fatura, dias ou semanas depois.</p>
+    <p>Quando o produto é pequeno e leve, sobra. Quando é grande, pesado, ou pra ponta de país, perde. Sem ver pedido a pedido, a margem média esconde o prejuízo dos casos específicos.</p>
+    <div class="callout">
+      <p>"A planilha de vendas dizia que eu tava ganhando. A fatura da transportadora dizia o contrário. Faltava juntar as duas."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">02 · Impacto do problema</div>
+    <h2>Decisão de preço sem base, comparação no feeling</h2>
+    <ul>
+      <li><strong>Margem distorcida</strong> — média escondia prejuízo de pedidos específicos.</li>
+      <li><strong>Sem comparativo entre transportadoras</strong> — decisão era "achismo" sobre qual era mais barata pra cada região.</li>
+      <li><strong>Multas e diferenças passando batidas</strong> — cobrança extra de excedente de peso, taxa de devolução, sem visibilidade.</li>
+      <li><strong>3 empresas, 3 painéis</strong> — Print Loja, PL Print, PLBBR. Cada uma com Tiny próprio, contas separadas.</li>
+      <li><strong>Renegociação cega</strong> — sentar com transportadora pra renegociar tabela sem número na mão.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">03 · Solução criada</div>
+    <h2>Sheets central + Apps Script casando NF com fatura</h2>
+    <p>Uma planilha funciona como banco. Apps Script puxa os dois lados: NFs dos 3 Tinys e lançamentos da Frenet (que centraliza Jadlog, J&T, Loggi). Manualmente entram as faturas de transportadoras fora da Frenet.</p>
+    <ul>
+      <li><strong>Aba <code>notas_fiscais</code></strong> — 1 linha por NF emitida nos 3 Tinys. Append diário.</li>
+      <li><strong>Aba <code>fretes_brutos</code></strong> — 1 linha por lançamento de transportadora. Append-only, fonte da verdade do custo.</li>
+      <li><strong>Aba <code>config</code></strong> — tokens, mapeamento de-para (CNPJ → empresa), formas de envio a ignorar.</li>
+      <li><strong>Aba <code>log</code></strong> — histórico de execução pra rastrear o que rodou quando.</li>
+      <li><strong>Apps Script</strong> deployado via <code>clasp</code>, código em <code>src/</code>. Diário automático.</li>
+    </ul>
+    <p>Match entre NF e frete real é feito por número da NF + transportadora. Diferença vira coluna "prejuízo/sobra".</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">04 · Como funciona</div>
+    <h2>Pipeline diário, 3 fontes, 1 visão</h2>
+    <div class="flow-grid">
+      <div class="flow-node">
+        <div class="icon">⊞</div>
+        <div class="name">3 Tinys</div>
+        <div class="sub">notas_fiscais</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">📦</div>
+        <div class="name">Frenet API</div>
+        <div class="sub">fretes_brutos</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">⊞</div>
+        <div class="name">Sheet central</div>
+        <div class="sub">match NF↔frete</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">📊</div>
+        <div class="name">Margem real</div>
+        <div class="sub">por pedido</div>
+      </div>
+    </div>
+    <p class="flow-note">Apps Script diário · clasp pra deploy · faturas fora da Frenet entram manual</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">05 · Resultado</div>
+    <h2>Decisão de preço com dado, renegociação com número</h2>
+    <div class="dash-grid">
+      <div class="kpi alt">
+        <div class="lbl">Empresas integradas</div>
+        <div class="val">3</div>
+        <div class="delta">visão consolidada</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Transportadoras</div>
+        <div class="val">4+</div>
+        <div class="delta">Jadlog/J&amp;T/Loggi/Correios</div>
+      </div>
+      <div class="kpi alt">
+        <div class="lbl">Granularidade</div>
+        <div class="val">1 NF</div>
+        <div class="delta">margem por pedido</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Atualização</div>
+        <div class="val">diária</div>
+        <div class="delta">automática</div>
+      </div>
+    </div>
+    <ul>
+      <li>Pedido a pedido virou possível — não só média do mês.</li>
+      <li>Renegociação com transportadora passou a ter números reais por região.</li>
+      <li>Preço de produtos pesados e de longa distância foi ajustado com base no custo real.</li>
+      <li>Diferenças e taxas extras pararam de passar despercebidas.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">06 · Insights aprendidos</div>
+    <h2>O que essa automação ensinou</h2>
+    <div class="callout">
+      <p>"Frete embutido em produto sem dado real é prejuízo disfarçado de venda. Pode parecer margem boa no agregado e ser prejuízo gritante em casos específicos."</p>
+    </div>
+    <div class="callout">
+      <p>"Append-only em planilha grande funciona — desde que tenha índice (no caso, número da NF) e que matching seja batch, não tempo real."</p>
+    </div>
+    <div class="callout">
+      <p>"O Apps Script só automatizou o que eu já fazia no Excel à mão. Antes de automatizar, fiz o processo manual pra ter certeza de que ele fazia sentido."</p>
+    </div>
+    <p>O case que mais mostra: <strong>automação sem processo só acelera o caos</strong>. Foi necessário primeiro entender o casamento de dados na mão, descobrir os edge cases (transportadora fora da Frenet, NF cancelada, devolução), antes do código.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="container row">
+    <div><strong style="color:var(--text);">nak.api.br</strong> · <a href="../index.html">voltar pro laboratório</a></div>
+    <div>Caso documentado em 2026</div>
+  </div>
+</footer>
+
+</body>
+</html>

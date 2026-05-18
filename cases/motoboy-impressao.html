@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Separação Motoboy impressa sozinha — nak.api.br</title>
+<meta name="description" content="Python no PC da impressora ouvindo o Tiny e imprimindo separação Motoboy assim que o pedido aparece. Sem ninguém clicar nada.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--danger:#EF4444;--warn:#F59E0B;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--radius:10px;--max:1100px}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+.case-hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.case-hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+.breadcrumb{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:24px}
+.category{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.case-hero h1{font-size:42px;font-weight:700;line-height:1.1;margin:0 0 20px;letter-spacing:-.02em}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.tag{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--border);color:var(--muted);border-radius:4px;text-transform:lowercase}
+.lead{color:var(--muted);font-size:17px;max-width:600px;margin:0}
+.mock-window{background:#0d1117;border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:0 20px 60px -20px rgba(0,0,0,.6)}
+.mock-dots{display:flex;gap:6px;margin-bottom:20px}
+.mock-dots span{width:12px;height:12px;border-radius:50%}
+.mock-dots .d1{background:#ff5f57}.mock-dots .d2{background:#febc2e}.mock-dots .d3{background:#28c840}
+.mock-log{font-family:var(--mono);font-size:13px;background:#0a0e13;border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:10px;line-height:1.5}
+.mock-log.ok{color:var(--accent-2)}.mock-log.warn{color:var(--warn)}.mock-log.err{color:var(--danger)}.mock-log.info{color:var(--muted)}
+.case-section{padding:64px 0;border-bottom:1px solid var(--border)}
+.case-section:last-child{border-bottom:none}
+.label{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.case-section h2{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0 0 24px}
+.case-section p{font-size:16px;color:var(--text);margin:0 0 16px;max-width:760px}
+.case-section ul{font-size:16px;color:var(--text);padding-left:20px;max-width:760px}
+.case-section ul li{margin-bottom:10px}
+.case-section ul li::marker{color:var(--muted)}
+.callout{border-left:3px solid var(--accent);background:var(--card);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin:24px 0;max-width:760px}
+.callout p{margin:0;font-style:italic;color:var(--muted)}
+.flow-grid{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:32px 0;max-width:760px}
+.flow-node{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;flex:1;min-width:110px}
+.flow-node .icon{font-family:var(--mono);font-size:22px;color:var(--accent);margin-bottom:6px}
+.flow-node .name{font-size:13px;font-weight:500}
+.flow-node .sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px}
+.flow-arrow{font-family:var(--mono);color:var(--muted);font-size:18px;flex-shrink:0}
+.flow-note{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--muted);max-width:760px;text-align:center}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;max-width:760px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.kpi .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.kpi .val{font-size:24px;font-weight:600;font-family:var(--mono);color:var(--accent-2);line-height:1}
+.kpi .delta{font-size:11px;color:var(--accent-2);margin-top:8px;font-family:var(--mono)}
+.kpi.alt .val{color:var(--accent)}
+footer{padding:48px 0;color:var(--muted);font-size:13px}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--muted)}
+@media(max-width:900px){.case-hero-grid{grid-template-columns:1fr;gap:40px}.dash-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.case-hero h1{font-size:32px}.case-section{padding:48px 0}.case-section h2{font-size:24px}.flow-grid{flex-direction:column}.flow-arrow{transform:rotate(90deg)}nav .links{gap:16px}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <a href="../index.html" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <div class="links">
+      <a href="../index.html#cases">Cases</a>
+      <a href="../index.html#filosofia">Filosofia</a>
+      <a href="../index.html#stack">Stack</a>
+    </div>
+  </div>
+</nav>
+
+<header class="case-hero">
+  <div class="container">
+    <div class="case-hero-grid">
+      <div>
+        <div class="breadcrumb"><a href="../index.html">~</a> / cases / motoboy-impressao</div>
+        <div class="category">Operação</div>
+        <h1>Separação Motoboy impressa sozinha</h1>
+        <div class="tags">
+          <span class="tag">python</span>
+          <span class="tag">tiny-api</span>
+          <span class="tag">impressora-térmica</span>
+          <span class="tag">slack</span>
+        </div>
+        <p class="lead">Python no PC da impressora ouvindo o Tiny. Pedido novo cai, papel sai. Sem ninguém clicar nada.</p>
+      </div>
+      <div>
+        <div class="mock-window">
+          <div class="mock-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+          <div class="mock-log info">14:02:11  polling tiny... 0 novas</div>
+          <div class="mock-log info">14:02:41  polling tiny... 1 nova</div>
+          <div class="mock-log ok">14:02:41  imprime NF 8421 (Cliente: M. Silva)</div>
+          <div class="mock-log ok">14:02:42  tiny: status → Em separação</div>
+          <div class="mock-log ok">14:02:42  slack: "Motoboy - NF 8421 - M. Silva"</div>
+          <div class="mock-log info">14:03:12  polling tiny... 0 novas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">01 · Dor operacional</div>
+    <h2>Motoboy não pode esperar</h2>
+    <p>Pedido com forma de envio <strong>Motoboy</strong> tem janela curta. O motoboy chega, pega o pacote, sai. Se a separação não tá pronta, ele espera no balcão — ou pior, vai embora e volta depois.</p>
+    <p>Antes da automação, alguém da equipe precisava ficar olhando o Tiny, ver que entrou pedido Motoboy, imprimir, separar. Quando a equipe estava ocupada com outra coisa, o pedido escapava.</p>
+    <div class="callout">
+      <p>"Motoboy parado custa duas vezes: paga ele, e atrasa o próximo cliente."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">02 · Impacto do problema</div>
+    <h2>Pedido escapa quando ninguém olha</h2>
+    <ul>
+      <li><strong>Motoboy esperando no balcão</strong> — tempo dele pago à toa.</li>
+      <li><strong>Pedido só visto depois</strong> que o motoboy já tinha ido embora.</li>
+      <li><strong>Separação fora de ordem</strong> de chegada quando a equipe lembrava.</li>
+      <li><strong>Cliente sem rastreio rápido</strong> porque o status no Tiny não andava.</li>
+      <li><strong>Decisão manual</strong> de "tem alguma coisa pra imprimir?" o tempo todo na cabeça da equipe.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">03 · Solução criada</div>
+    <h2>Python rodando direto no PC da impressora</h2>
+    <p>Um script Python que vive no PC ligado na impressora térmica. Loop simples: a cada X segundos, dentro do horário de trabalho, consulta a API do Tiny por separações novas com forma de envio Motoboy.</p>
+    <p>Achou? Imprime. Atualiza status no Tiny pra "Em separação". Manda Slack avisando que tem coisa nova pra separar.</p>
+    <ul>
+      <li><strong>Python local</strong> — não tem servidor, não tem cloud, não tem custo. Roda no mesmo PC que tem a impressora.</li>
+      <li><strong>Polling no Tiny</strong> — webhook seria mais elegante, mas polling local é a prova de bala: se a internet caí, ele tenta de novo no próximo ciclo.</li>
+      <li><strong>Estado em JSON local</strong> — <code>processed_orders.json</code> e <code>printed_separacoes.json</code>. Sem banco. Sem complicação.</li>
+      <li><strong>Janela de horário</strong> — começa em <code>HORA_INICIO</code>, para em <code>HORA_FIM</code>. À noite não fica gastando chamada de API.</li>
+      <li><strong>Reimpressão por script</strong> — <code>reimprimir.bat</code> reprocessa quando precisa.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">04 · Como funciona</div>
+    <h2>Loop simples, nenhum lugar onde travar</h2>
+    <div class="flow-grid">
+      <div class="flow-node">
+        <div class="icon">⏱</div>
+        <div class="name">Loop</div>
+        <div class="sub">polling X seg</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">⊞</div>
+        <div class="name">Tiny API</div>
+        <div class="sub">forma=Motoboy</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">🖨</div>
+        <div class="name">Térmica</div>
+        <div class="sub">printer.py</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">⊞</div>
+        <div class="name">Tiny</div>
+        <div class="sub">status update</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">#</div>
+        <div class="name">Slack</div>
+        <div class="sub">notifica</div>
+      </div>
+    </div>
+    <p class="flow-note">start.bat liga · processed_orders.json guarda estado · reimprimir.bat reprocessa</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">05 · Resultado</div>
+    <h2>A decisão "tem coisa pra imprimir?" saiu da cabeça da equipe</h2>
+    <div class="dash-grid">
+      <div class="kpi">
+        <div class="lbl">Cliques humanos</div>
+        <div class="val">0</div>
+        <div class="delta">do pedido à impressão</div>
+      </div>
+      <div class="kpi alt">
+        <div class="lbl">Custo do servidor</div>
+        <div class="val">R$ 0</div>
+        <div class="delta">roda local</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Janela de polling</div>
+        <div class="val">~30s</div>
+        <div class="delta">entre ciclos</div>
+      </div>
+      <div class="kpi alt">
+        <div class="lbl">Pedido escapando</div>
+        <div class="val">0</div>
+        <div class="delta">dentro do horário</div>
+      </div>
+    </div>
+    <ul>
+      <li>Motoboy chega, pacote já está separado.</li>
+      <li>Equipe parou de checar Tiny "só pra ver se tinha pedido".</li>
+      <li>Status no Tiny anda sozinho — cliente vê o pedido mover.</li>
+      <li>Faturamento (que rola num Apps Script irmão) continua independente — uma engrenagem não trava a outra.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">06 · Insights aprendidos</div>
+    <h2>O que essa automação ensinou</h2>
+    <div class="callout">
+      <p>"Polling simples bate webhook complicado quando o ambiente é local. Se a internet caí, polling tenta de novo. Webhook perdeu, perdeu."</p>
+    </div>
+    <div class="callout">
+      <p>"Estado em JSON local funciona melhor que banco quando é uma máquina só. Não precisa de Postgres pra guardar lista de IDs já impressos."</p>
+    </div>
+    <div class="callout">
+      <p>"O ganho não foi automatizar a impressão. Foi tirar uma decisão de cabeça da equipe — 'tem alguma coisa pra imprimir agora?'."</p>
+    </div>
+    <p>Esse case prova uma coisa que repete em quase toda automação operacional: o valor real não está na tarefa que foi automatizada. Está na <strong>carga mental</strong> que saiu da cabeça da equipe.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="container row">
+    <div><strong style="color:var(--text);">nak.api.br</strong> · <a href="../index.html">voltar pro laboratório</a></div>
+    <div>Caso documentado em 2026</div>
+  </div>
+</footer>
+
+</body>
+</html>
