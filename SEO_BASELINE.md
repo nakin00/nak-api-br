@@ -66,11 +66,16 @@ Cada ação manual que possa influenciar SEO vai aqui. Permite medir efeito real
 
 | Data | Experimento | Hipótese | Resultado (preencher depois) |
 |------|-------------|----------|------------------------------|
-| 2026-05-24 | Solicitar indexação manual via GSC (4 URLs de cases) | Indexação dos 4 cases acontece em ≤7 dias em vez de 2-4 semanas naturais | __ |
+| 2026-05-24 | Solicitar indexação manual via GSC de 2 URLs ainda não indexadas (motoboy + ml-cancelamentos) | URLs indexam em ≤7 dias em vez de 2-4 semanas naturais | __ |
+
+## Insights de processo (observações que viram conteúdo no case)
+
+- **2026-05-24:** O relatório agregado "Indexação > Páginas" do GSC tem ~7 dias de lag. Mostrou 1 indexada quando inspeção individual revelou 3. Sempre cross-checar com Inspeção de URL pra estado real.
+- **2026-05-24 (hipótese a confirmar):** Google parece priorizar indexação de páginas com conteúdo mais rico/estruturado. As 2 primeiras a indexar foram as com 4 visuais (atendimento-insights) e dashboard no hero (fretes-consolidado). As 2 pendentes têm hero mais simples (só logs). Testar se essa correlação se mantém em cases futuros.
 
 ## Tabela de medições
 
 | Data | Pgs indexadas | Impressões 28d | Cliques 28d | Posição média | Notas |
 |------|---------------|----------------|-------------|---------------|-------|
 | 2026-05-17 | 0 | 0 | 0 | — | Marco zero |
-| 2026-05-24 | 1 | — | — | — | Check 1 semana. Sitemap processado pelo Google (5 URLs encontradas, última leitura 24/05). Home indexada (em HTTP — vai consolidar via canonical). 5 "Rastreadas mas não indexadas" + 1 "Detectada mas não indexada" — normal pra domínio novo sem autoridade. 0 erros. Bing ainda em "Processing", sem 1ª varredura. |
+| 2026-05-24 | 3 (real) / 1 (report) | — | — | — | Check 1 semana. Sitemap processado (Google leu 24/05). Relatório agregado mostra 1 indexada por lag de 7d, mas inspeção individual revelou 3 indexadas (home, atendimento-insights, fretes-consolidado) e 2 pendentes (motoboy, ml-cancelamentos) — pedi indexação manual das 2 pendentes. 0 erros. Bing ainda em "Processing", sem 1ª varredura. |
