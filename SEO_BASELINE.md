@@ -65,5 +65,4 @@ Anotar números neste arquivo, datados. Sem anotação, não tem baseline; sem b
 | Data | Pgs indexadas | Impressões 28d | Cliques 28d | Posição média | Notas |
 |------|---------------|----------------|-------------|---------------|-------|
 | 2026-05-17 | 0 | 0 | 0 | — | Marco zero |
-|  |  |  |  |  |  |
-|  |  |  |  |  |  |
+| 2026-05-24 | 1 | — | — | — | Check 1 semana. Sitemap processado pelo Google (5 URLs encontradas, última leitura 24/05). Home indexada (em HTTP — vai consolidar via canonical). 5 "Rastreadas mas não indexadas" + 1 "Detectada mas não indexada" — normal pra domínio novo sem autoridade. 0 erros. Bing ainda em "Processing", sem 1ª varredura. |
