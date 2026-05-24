@@ -60,6 +60,14 @@ Importante: cenário C não é fracasso do projeto nak.api.br. É só feedback d
 
 Anotar números neste arquivo, datados. Sem anotação, não tem baseline; sem baseline, não tem case.
 
+## Experimentos registrados
+
+Cada ação manual que possa influenciar SEO vai aqui. Permite medir efeito real depois.
+
+| Data | Experimento | Hipótese | Resultado (preencher depois) |
+|------|-------------|----------|------------------------------|
+| 2026-05-24 | Solicitar indexação manual via GSC (4 URLs de cases) | Indexação dos 4 cases acontece em ≤7 dias em vez de 2-4 semanas naturais | __ |
+
 ## Tabela de medições
 
 | Data | Pgs indexadas | Impressões 28d | Cliques 28d | Posição média | Notas |
