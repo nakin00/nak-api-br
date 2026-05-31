@@ -76,6 +76,14 @@ Cada ação manual que possa influenciar SEO vai aqui. Permite medir efeito real
 - **2026-05-31:** A hipótese de "conteúdo denso" acima estava **errada**. Investigação na 2ª semana mostrou que TODAS as URLs `.html` retornavam **307 redirect** pra versão sem `.html` (feature do Cloudflare Workers/Pages). Sitemap apontava pra `.html`, então Googlebot batia em redirect toda vez. As 2 que indexaram (atendimento e fretes) foram pura sorte do crawler ter seguido o redirect daquela vez. Insight: **erro técnico se disfarça de padrão**. Sempre verificar o raw HTTP behavior antes de inferir comportamento de algoritmo. Esse é exatamente o tipo de "data não-rigoroso" que viraria conclusão falsa num case escrito sem investigação técnica.
 - **2026-05-31:** Quando o GSC fala "Erro de redirecionamento", ele está dizendo algo CONCRETO. Não é apenas "demora pra indexar". É problema técnico que deve ser investigado com `curl -v` ou equivalente antes de fazer mudança de conteúdo.
 - **2026-05-31 (pente fino completo):** Após achar o bug do `.html`, fizemos varredura completa pra checar se havia mais. Encontramos: (1) os 24 links internos pra home (`../index.html`) ainda usavam `.html` — corrigi pra `../`. (2) HTTP não força HTTPS (Cloudflare config a fazer). (3) `www.nak.api.br` não resolve. (4) Titles e meta descriptions excediam limites de SERP (60 e 160 chars) — todos reescritos abaixo do limite mantendo termos buscáveis. (5) 404 padrão do Cloudflare era genérica — criada `/404.html` com estética do site. Lição: ao achar um bug técnico, o pente fino imediato vale mais que esperar próximo check.
+- **2026-05-31 (achado em aberto):** O `404.html` criado NÃO está sendo servido em produção. Cloudflare Workers (arquitetura nova) não pega 404.html automaticamente como Pages legado. Precisa `wrangler.toml` com `not_found_handling = "404-page"`. Adiar configuração — mexer em config de deploy tem risco de quebrar o que funciona. Pendente: configurar em sessão dedicada.
+
+## Pendências técnicas (não-urgentes)
+
+- [ ] **404.html não servido em prod** — configurar `wrangler.toml` ou Worker custom (mexer com cuidado, risco de quebrar deploy).
+- [ ] **Cache-Control max-age=0** — atualmente cada request revalida no Cloudflare. Configurar Cache Rules pra cachear assets/HTML por X tempo. Custo grátis então low priority.
+- [ ] **Imagem Open Graph real** — atualmente OG/Twitter Cards apontam pra texto. Gerar imagem 1200x630 dinâmica por case (Apps Script com SVG, ou serviço tipo og-image).
+- [ ] **Cloudflare Analytics ou GA4** — pra medir tráfego total (não só orgânico do GSC).
 
 ## Tabela de medições
 
