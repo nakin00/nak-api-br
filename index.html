@@ -76,15 +76,16 @@ section .section-sub{color:var(--muted);font-size:16px;margin:0 0 40px;max-width
 .card:hover{border-color:#2d3748}
 .card h3{font-size:16px;font-weight:600;margin:0 0 8px}
 .card p{color:var(--muted);font-size:14px;margin:0}
-.philosophy-blocks{max-width:780px;margin-top:40px}
-.philo-block{margin-bottom:56px;padding-bottom:48px;border-bottom:1px solid var(--border)}
-.philo-block:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
-.philo-block h3{font-size:24px;font-weight:600;letter-spacing:-.02em;margin:0 0 16px;color:var(--text)}
-.philo-block p{font-size:16px;color:var(--text);margin:0 0 16px;line-height:1.65}
-.philo-block ul{font-size:16px;color:var(--text);padding-left:22px;margin:0 0 16px}
-.philo-block ul li{margin-bottom:6px;line-height:1.65}
-.philo-block ul li::marker{color:var(--muted)}
-.philo-quote{border-left:3px solid var(--accent);background:var(--card);padding:18px 22px;border-radius:0 var(--radius) var(--radius) 0;margin:20px 0;font-size:18px;font-style:italic;color:var(--text);max-width:680px}
+.philo-section{max-width:760px;margin-top:48px;margin-bottom:80px}
+.philo-section:last-child{margin-bottom:0}
+.philo-section h3{font-size:22px;font-weight:600;margin:0 0 16px;letter-spacing:-.01em}
+.philo-section p{font-size:16px;color:var(--text);line-height:1.7;margin:0 0 16px;max-width:680px}
+.philo-prelude{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin:0 0 24px}
+.philo-big-quote{font-size:32px;font-weight:600;line-height:1.3;color:var(--text);margin:0 0 32px;letter-spacing:-.02em;border-left:3px solid var(--accent);padding-left:24px;font-style:normal}
+.philo-aftertext{font-size:16px;color:var(--muted);line-height:1.7;margin:0;max-width:640px}
+.philo-inline-quote{margin:24px 0;padding:16px 22px;background:var(--card);border-left:3px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;font-style:italic;color:var(--muted);font-size:17px;max-width:640px;line-height:1.55}
+.philo-inline-quote cite{display:block;margin-top:8px;font-style:normal;font-size:12px;font-family:var(--mono);color:var(--muted);opacity:.7}
+@media(max-width:720px){.philo-big-quote{font-size:24px}}
 .case-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;display:block;color:var(--text)}
 .case-card:hover{border-color:var(--accent);text-decoration:none}
 .case-card .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
@@ -177,99 +178,27 @@ footer a{color:var(--muted)}
   <div class="container">
     <h2>Filosofia</h2>
 
-    <div class="philosophy-blocks">
-
-      <div class="philo-block">
-        <h3>Tudo começa com uma pergunta</h3>
-        <blockquote class="philo-quote">"Isso é ridículo, ninguém deveria estar fazendo isso na mão."</blockquote>
-        <p>Grande parte das automações, integrações e sistemas documentados no nak.api.br começou exatamente assim.</p>
-        <ul>
-          <li>Um processo repetitivo.</li>
-          <li>Uma planilha atualizada manualmente.</li>
-          <li>Uma conferência operacional feita várias vezes por dia.</li>
-          <li>Um erro recorrente causado por tarefas que dependem exclusivamente de intervenção humana.</li>
-        </ul>
-        <p>Quando algo parece absurdo dentro de uma operação, normalmente existe uma oportunidade de melhoria através de automação, integração de sistemas ou inteligência artificial.</p>
-      </div>
-
-      <div class="philo-block">
-        <h3>Tecnologia é consequência</h3>
-        <p>Não começo um projeto pensando em IA, APIs, Python ou Apps Script.</p>
-        <ul>
-          <li>Primeiro identifico o problema.</li>
-          <li>Depois entendo o processo.</li>
-          <li>Só então escolho as ferramentas.</li>
-        </ul>
-        <p>A tecnologia não é o objetivo. Ela é apenas o meio utilizado para reduzir retrabalho, aumentar produtividade e <strong>reduzir tempo perdido em conferências manuais</strong>.</p>
-      </div>
-
-      <div class="philo-block">
-        <h3>Automação aplicada à operação</h3>
-        <p>O foco do nak.api.br não é criar tecnologia por criar. O foco é aplicar tecnologia para resolver problemas reais de empresas.</p>
-        <p>Os casos documentados aqui envolvem:</p>
-        <ul>
-          <li>automação de processos internos;</li>
-          <li>integração entre sistemas;</li>
-          <li>Google Apps Script;</li>
-          <li>APIs REST;</li>
-          <li>WhatsApp Business;</li>
-          <li>inteligência artificial aplicada ao atendimento;</li>
-          <li>ERP Tiny;</li>
-          <li>monitoramento operacional;</li>
-          <li>automação financeira;</li>
-          <li>automação logística;</li>
-          <li>automação de pós-venda.</li>
-        </ul>
-        <p>Cada solução nasce de uma necessidade operacional concreta.</p>
-      </div>
-
-      <div class="philo-block">
-        <h3>Curiosidade acima da ferramenta</h3>
-        <p>Não existe apego a linguagem, plataforma ou fornecedor.</p>
-        <ul>
-          <li>Se a solução estiver em Python, ótimo.</li>
-          <li>Se estiver em Google Apps Script, ótimo.</li>
-          <li>Se estiver em uma integração entre APIs, também.</li>
-        </ul>
-        <p>O compromisso não é com a tecnologia. O compromisso é com o resultado operacional.</p>
-      </div>
-
-      <div class="philo-block">
-        <h3>Operações são sistemas vivos</h3>
-        <p>Empresas mudam. Processos mudam. Pessoas mudam.</p>
-        <p>Por isso acredito que boas automações precisam acompanhar a evolução da operação.</p>
-        <p>A melhor solução nem sempre é a mais sofisticada. Muitas vezes é a mais simples, desde que continue funcionando meses depois da implementação.</p>
-      </div>
-
-      <div class="philo-block">
-        <h3>Falhas também são conhecimento</h3>
-        <p>Nem toda automação funciona na primeira tentativa. Nem toda integração vale a pena. Nem toda hipótese se confirma.</p>
-        <p>Por isso os cases documentados aqui mostram não apenas os resultados, mas também os erros, gargalos e aprendizados encontrados durante o desenvolvimento.</p>
-        <p>Acredito que compartilhar falhas acelera o aprendizado tanto quanto compartilhar acertos.</p>
-      </div>
-
-      <div class="philo-block">
-        <h3>O que você encontrará aqui</h3>
-        <p>O nak.api.br documenta experiências reais envolvendo:</p>
-        <ul>
-          <li>automação empresarial;</li>
-          <li>inteligência artificial aplicada à operação;</li>
-          <li>integração de sistemas;</li>
-          <li>desenvolvimento com APIs;</li>
-          <li>Google Apps Script;</li>
-          <li>Python;</li>
-          <li>ERP Tiny;</li>
-          <li>WhatsApp Business;</li>
-          <li>produtividade operacional;</li>
-          <li>redução de retrabalho;</li>
-          <li>gestão de processos;</li>
-          <li>monitoramento de operações;</li>
-          <li>automação operacional para PMEs.</li>
-        </ul>
-        <p>Sem teoria desnecessária. Sem apresentações para investidores. Apenas problemas reais, soluções reais e os resultados obtidos.</p>
-      </div>
-
+    <div class="philo-section">
+      <p class="philo-prelude">tudo começa com uma pergunta</p>
+      <blockquote class="philo-big-quote">"Isso é ridículo, ninguém deveria estar fazendo isso na mão."</blockquote>
+      <p class="philo-aftertext">Foi a frase que veio antes de praticamente toda automação publicada aqui. Uma planilha atualizada manualmente, uma conferência repetida três vezes por dia, um erro que sempre acontece quando alguém esquece. Quando o "isso é ridículo" chega, normalmente tem uma solução técnica esperando do outro lado.</p>
     </div>
+
+    <div class="philo-section">
+      <h3>A tecnologia vem depois</h3>
+      <p>Não começo um projeto pensando em IA, Python ou Apps Script. Começo perguntando pra quem faz, vendo onde o tempo escapa, mapeando o ponto exato onde quebra. A ferramenta é a última decisão — e às vezes nem precisa de código, só de um processo melhor.</p>
+    </div>
+
+    <div class="philo-section">
+      <h3>Erros também viram conteúdo</h3>
+      <p>Cada case aqui carrega não só o que funcionou, mas o que foi tentado antes e não rolou. Aparece nos insights, no fim de cada documento — frases tipo:</p>
+      <blockquote class="philo-inline-quote">
+        "A maior dificuldade não foi programar. Foi decidir o que ignorar."
+        <cite>insight do case Atendimento Insights</cite>
+      </blockquote>
+      <p>Compartilhar erro acelera tanto quanto compartilhar acerto. E geralmente é mais útil pra quem está chegando.</p>
+    </div>
+
   </div>
 </section>
 
