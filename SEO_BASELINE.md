@@ -64,14 +64,17 @@ Anotar números neste arquivo, datados. Sem anotação, não tem baseline; sem b
 
 Cada ação manual que possa influenciar SEO vai aqui. Permite medir efeito real depois.
 
-| Data | Experimento | Hipótese | Resultado (preencher depois) |
-|------|-------------|----------|------------------------------|
-| 2026-05-24 | Solicitar indexação manual via GSC de 2 URLs ainda não indexadas (motoboy + ml-cancelamentos) | URLs indexam em ≤7 dias em vez de 2-4 semanas naturais | __ |
+| Data | Experimento | Hipótese | Resultado |
+|------|-------------|----------|-----------|
+| 2026-05-24 | Solicitar indexação manual via GSC de 2 URLs ainda não indexadas (motoboy + ml-cancelamentos) | URLs indexam em ≤7 dias em vez de 2-4 semanas naturais | **INCONCLUSIVO** — em 31/05 descobrimos que o real bloqueio era erro de redirecionamento 307 (`.html` → sem `.html`). A indexação manual não pôde funcionar enquanto o redirect estava lá. Experimento invalidado por variável oculta. |
+| 2026-05-31 | Remover `.html` de todas URLs (sitemap, canonical, og:url, schema, links internos). Cloudflare Workers fazia redirect 307 automático que confundia o Googlebot. | Sem o redirect, motoboy e ml-cancelamentos indexam em ≤7 dias. As 2 já indexadas (atendimento, fretes) mantêm indexação após cache do Google atualizar (pode haver flutuação temporária). | __ |
 
 ## Insights de processo (observações que viram conteúdo no case)
 
 - **2026-05-24:** O relatório agregado "Indexação > Páginas" do GSC tem ~7 dias de lag. Mostrou 1 indexada quando inspeção individual revelou 3. Sempre cross-checar com Inspeção de URL pra estado real.
 - **2026-05-24 (hipótese a confirmar):** Google parece priorizar indexação de páginas com conteúdo mais rico/estruturado. As 2 primeiras a indexar foram as com 4 visuais (atendimento-insights) e dashboard no hero (fretes-consolidado). As 2 pendentes têm hero mais simples (só logs). Testar se essa correlação se mantém em cases futuros.
+- **2026-05-31:** A hipótese de "conteúdo denso" acima estava **errada**. Investigação na 2ª semana mostrou que TODAS as URLs `.html` retornavam **307 redirect** pra versão sem `.html` (feature do Cloudflare Workers/Pages). Sitemap apontava pra `.html`, então Googlebot batia em redirect toda vez. As 2 que indexaram (atendimento e fretes) foram pura sorte do crawler ter seguido o redirect daquela vez. Insight: **erro técnico se disfarça de padrão**. Sempre verificar o raw HTTP behavior antes de inferir comportamento de algoritmo. Esse é exatamente o tipo de "data não-rigoroso" que viraria conclusão falsa num case escrito sem investigação técnica.
+- **2026-05-31:** Quando o GSC fala "Erro de redirecionamento", ele está dizendo algo CONCRETO. Não é apenas "demora pra indexar". É problema técnico que deve ser investigado com `curl -v` ou equivalente antes de fazer mudança de conteúdo.
 
 ## Tabela de medições
 
@@ -79,3 +82,4 @@ Cada ação manual que possa influenciar SEO vai aqui. Permite medir efeito real
 |------|---------------|----------------|-------------|---------------|-------|
 | 2026-05-17 | 0 | 0 | 0 | — | Marco zero |
 | 2026-05-24 | 3 (real) / 1 (report) | — | — | — | Check 1 semana. Sitemap processado (Google leu 24/05). Relatório agregado mostra 1 indexada por lag de 7d, mas inspeção individual revelou 3 indexadas (home, atendimento-insights, fretes-consolidado) e 2 pendentes (motoboy, ml-cancelamentos) — pedi indexação manual das 2 pendentes. 0 erros. Bing ainda em "Processing", sem 1ª varredura. |
+| 2026-05-31 | (a confirmar) | (a confirmar) | (a confirmar) | — | Check 2 semanas. **ACHADO CRÍTICO:** GSC reportou "Erro de redirecionamento" no motoboy. Investigação revelou que TODAS URLs `.html` retornam 307 → versão sem `.html`. Sitemap apontava `.html`, causando confusão pro Googlebot. Fix aplicado: removido `.html` de sitemap, canonical, og:url, schema, todos links internos (home + blocos Cases relacionados). Gerador.gs atualizado também. Aguardando resubmissão de sitemap no GSC + reinspeção das URLs. |
