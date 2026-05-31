@@ -57,14 +57,14 @@ nav .links a{color:var(--muted);font-size:14px}
 nav .links a:hover{color:var(--text);text-decoration:none}
 .hero{padding:96px 0 64px;border-bottom:1px solid var(--border)}
 .hero .eyebrow{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
-.hero h1{font-size:60px;font-weight:700;line-height:1.05;margin:0 0 24px;letter-spacing:-.03em}
+.hero h1{font-size:52px;font-weight:700;line-height:1.1;margin:0 0 24px;letter-spacing:-.03em;text-wrap:balance;max-width:520px}
 .hero .sub{font-size:20px;color:var(--muted);max-width:640px;margin:0 0 16px}
 .hero p.lead{font-size:15px;color:var(--muted);max-width:640px;margin:0 0 36px}
-.cta-row{display:flex;gap:12px;flex-wrap:wrap}
-.btn{display:inline-block;padding:12px 20px;border-radius:var(--radius);font-size:14px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;transition:all .15s}
-.btn:hover{border-color:var(--muted);text-decoration:none}
-.btn.primary{background:var(--text);color:var(--bg);border-color:var(--text)}
-.btn.primary:hover{opacity:.9}
+.cta-row{display:flex;gap:32px;flex-wrap:wrap;align-items:center}
+.link-cli{font-family:var(--mono);font-size:14px;color:var(--text);text-decoration:none;padding:6px 0;border-bottom:1px solid var(--border);transition:all .15s;letter-spacing:.01em}
+.link-cli:hover{border-bottom-color:var(--accent);color:var(--accent);text-decoration:none}
+.link-cli.primary{color:var(--accent);border-bottom-color:var(--accent)}
+.link-cli.primary:hover{color:var(--text);border-bottom-color:var(--text)}
 .contact-line{margin-top:24px;color:var(--muted);font-size:14px}
 .contact-line a{color:var(--text);border-bottom:1px solid var(--accent);padding-bottom:1px}
 .contact-line a:hover{color:var(--accent);text-decoration:none}
@@ -133,12 +133,12 @@ footer a{color:var(--muted)}
     <div class="hero-grid">
       <div class="hero-text">
         <div class="eyebrow">Laboratório Operacional</div>
-        <h1>Automações reais.<br>Problemas reais.</h1>
+        <h1>Automações reais. Problemas reais.</h1>
         <p class="sub">Soluções construídas dentro da operação — não em sala de aula.</p>
         <p class="lead">Documentação pública de sistemas, integrações e aprendizados desenvolvidos para resolver gargalos reais de atendimento, logística, financeiro e gestão.</p>
         <div class="cta-row">
-          <a href="#cases" class="btn primary">Explorar cases</a>
-          <a href="#filosofia" class="btn">Como construo</a>
+          <a href="#cases" class="link-cli primary">→ explorar cases</a>
+          <a href="#filosofia" class="link-cli">→ como construo</a>
         </div>
         <p class="contact-line">Quer trocar ideia? <a href="mailto:labs@nak.api.br">labs@nak.api.br</a></p>
       </div>
