@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Atendimento WhatsApp com IA (Baileys + Gemini) · nak.api.br</title>
-<meta name="description" content="Captura WhatsApp Business via Baileys no Fly.io, análise diária com Gemini, relatório no Slack + Sheets. Sem API oficial, sem Omnichat. Custo efetivo R$ 0.">
-<meta name="keywords" content="baileys whatsapp, fly.io node, gemini analise atendimento, whatsapp business sem api oficial, automacao atendimento ecommerce, sem omnichat">
+<title>Análise diária do WhatsApp Business com IA · nak.api.br</title>
+<meta name="description" content="Gemini analisa todos os atendimentos do WhatsApp Business todo dia às 6h. Relatório com KPIs, oportunidades perdidas, destaques e plano de ação. Sem API oficial, sem Omnichat.">
+<meta name="keywords" content="analise atendimento whatsapp ia, baileys gemini, fly.io node, whatsapp business sem api oficial, auditoria atendimento ecommerce, sem omnichat">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://nak.api.br/cases/atendimento-insights">
 
 <!-- Open Graph -->
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="nak.api.br">
-<meta property="og:title" content="Atendimento WhatsApp com IA — Baileys + Gemini + Slack">
-<meta property="og:description" content="160 atendimentos/semana no WhatsApp Business analisados diariamente por IA. Sem API oficial, sem serviço pago. Custo efetivo R$ 0.">
+<meta property="og:title" content="Análise diária do WhatsApp Business com IA">
+<meta property="og:description" content="Gemini lê todos os atendimentos do dia e entrega no Slack: KPIs, oportunidades perdidas, destaques, plano de ação. Sem API oficial, sem Omnichat.">
 <meta property="og:url" content="https://nak.api.br/cases/atendimento-insights">
 <meta property="og:locale" content="pt_BR">
 <meta property="article:section" content="Atendimento">
@@ -25,16 +25,16 @@
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Atendimento WhatsApp com IA (Baileys + Gemini)">
-<meta name="twitter:description" content="160 atendimentos/semana analisados por IA. Sem API oficial, sem Omnichat. Custo efetivo zero.">
+<meta name="twitter:title" content="Análise diária do WhatsApp Business com IA">
+<meta name="twitter:description" content="Gemini auditando ~160 atendimentos/semana. KPIs + oportunidades perdidas + destaques + plano de ação no Slack.">
 
 <!-- Schema.org Article -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  "headline": "Atendimento WhatsApp com IA",
-  "description": "Baileys captura WhatsApp Business, Gemini analisa diariamente, Slack + Sheets entregam relatórios. Sem API oficial, sem Omnichat, custo efetivo R$ 0.",
+  "headline": "Análise diária do WhatsApp Business com IA",
+  "description": "Baileys captura, Gemini analisa, Slack entrega relatório com KPIs, oportunidades perdidas, destaques e plano de ação. Sem API oficial, sem Omnichat.",
   "author": { "@type": "Person", "name": "nak" },
   "publisher": { "@type": "Organization", "name": "nak.api.br" },
   "datePublished": "2026-05-17",
@@ -97,6 +97,35 @@ nav .links a:hover{color:var(--text);text-decoration:none}
 /* CALLOUT */
 .callout{border-left:3px solid var(--accent);background:var(--card);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin:24px 0;max-width:760px}
 .callout p{margin:0;font-style:italic;color:var(--muted)}
+
+/* RELATÓRIO MOCK — mostra estrutura do relatório que chega no Slack */
+.report-mock{max-width:760px;margin:32px 0;background:#1a1d21;border:1px solid var(--border);border-radius:12px;overflow:hidden;font-size:14px;line-height:1.55}
+.report-mock-bar{background:#0f1115;padding:10px 18px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+.report-mock-bar .slack-channel{color:var(--accent-2)}
+.report-mock-bar .mock-tag{font-size:10px;background:var(--border);padding:2px 8px;border-radius:3px;color:var(--muted)}
+.report-mock-body{padding:24px;color:#e6edf3}
+.report-mock-header{display:flex;align-items:baseline;gap:8px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.report-mock-header .bot-name{font-weight:600;font-size:15px;color:#e6edf3}
+.report-mock-header .bot-time{font-size:11px;color:var(--muted)}
+.report-mock-title{font-size:17px;font-weight:600;margin:0 0 14px;color:#e6edf3}
+.report-mock-resumo{color:#c9d1d9;margin-bottom:20px;font-size:13.5px}
+.report-mock-resumo strong{color:#e6edf3}
+.report-mock-kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 24px;margin-bottom:22px;padding:14px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.report-mock-kpi-row .k{font-size:13px;color:#e6edf3}
+.report-mock-kpi-row .k-lbl{color:var(--muted);font-size:11px;display:flex;align-items:center;gap:4px;margin-bottom:2px}
+.report-mock-section{margin-bottom:20px}
+.report-mock-section .sec-title{font-size:13px;font-weight:600;color:#e6edf3;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.report-mock-section ul{margin:0;padding:0;list-style:none}
+.report-mock-section li{padding:4px 0;font-size:13px;color:#c9d1d9}
+.report-mock-section li .lbl-name{color:#e6edf3;font-weight:500}
+.report-mock-section li .lbl-meta{color:var(--muted);font-style:italic}
+.report-mock-section .sub-action{margin-left:14px;color:var(--muted);font-size:12.5px;padding:3px 0 6px}
+.report-mock-section .sub-action::before{content:"↳ ";color:var(--accent)}
+.priority-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
+.priority-dot.red{background:#EF4444}
+.priority-dot.white{background:#9CA3AF}
+.priority-dot.green{background:#22C55E}
+.report-mock-note{margin-top:20px;font-family:var(--mono);font-size:11px;color:var(--muted);text-align:center;font-style:italic;opacity:.7}
 
 /* ERRO BLOCK — específico pra seção de erros */
 .erro-block{max-width:760px;margin:32px 0;padding:24px;background:#0d1117;border:1px solid var(--border);border-radius:var(--radius);border-left:3px solid var(--warn)}
@@ -161,7 +190,7 @@ footer a{color:var(--muted)}
       <div>
         <div class="breadcrumb"><a href="../">~</a> / cases / atendimento-insights</div>
         <div class="category">Atendimento</div>
-        <h1>Atendimento WhatsApp com IA, sem API oficial e sem Omnichat</h1>
+        <h1>Análise diária dos atendimentos do WhatsApp Business</h1>
         <div class="tags">
           <span class="tag">baileys</span>
           <span class="tag">fly.io</span>
@@ -170,7 +199,7 @@ footer a{color:var(--muted)}
           <span class="tag">slack</span>
           <span class="tag">sheets</span>
         </div>
-        <p class="lead">160 atendimentos por semana no WhatsApp Business analisados todo dia às 6h. Relatório no Slack + planilha. Custo efetivo R$ 0.</p>
+        <p class="lead">A IA não atende — ela lê tudo que aconteceu no dia anterior e devolve resumo, KPIs, oportunidades perdidas, destaques e plano de ação. ~160 atendimentos/semana, sem API oficial, sem Omnichat, custo efetivo R$ 0.</p>
       </div>
       <div>
         <div class="mock-window">
@@ -310,10 +339,111 @@ footer a{color:var(--muted)}
   </div>
 </section>
 
-<!-- 06 ERROS REAIS -->
+<!-- 06 O RELATÓRIO -->
 <section class="case-section">
   <div class="container">
-    <div class="label">06 · Erros e aprendizados</div>
+    <div class="label">06 · O relatório que chega</div>
+    <h2>Como o Gemini me entrega o dia</h2>
+    <p>Todo dia às 6h da manhã, antes do expediente, chega um relatório estruturado no canal <code>#whatsapp-relatorios</code> do Slack. A estrutura é fixa (mesmas seções todo dia), o conteúdo é gerado pelo Gemini com base nas conversas das últimas 24h.</p>
+    <p>Abaixo, a estrutura ilustrativa do relatório — dados são fictícios pra preservar informação real da operação:</p>
+
+    <div class="report-mock">
+      <div class="report-mock-bar">
+        <span class="slack-channel">#whatsapp-relatorios</span>
+        <span class="mock-tag">exemplo ilustrativo</span>
+      </div>
+      <div class="report-mock-body">
+        <div class="report-mock-header">
+          <span class="bot-name">App</span>
+          <span class="bot-time">06:03</span>
+        </div>
+
+        <div class="report-mock-title">📊 Relatório WhatsApp — Dia DD/MM</div>
+
+        <p class="report-mock-resumo"><strong>Resumo:</strong> A análise do dia mostra equipe operando com bom volume, mas com gargalos pontuais em cotações complexas e validação de valores em links de pagamento. Casos de baixa proatividade em situações fora do padrão impactaram a conversão.</p>
+
+        <div class="report-mock-kpi-row">
+          <div class="k"><div class="k-lbl">📥 recebidas</div>—</div>
+          <div class="k"><div class="k-lbl">📤 enviadas</div>—</div>
+          <div class="k"><div class="k-lbl">💬 conversas</div>—</div>
+          <div class="k"><div class="k-lbl">⏱ resp. média</div>—</div>
+          <div class="k"><div class="k-lbl">📈 pico</div>—</div>
+          <div class="k"><div class="k-lbl">😐 sentimento</div>—</div>
+        </div>
+
+        <div class="report-mock-section">
+          <div class="sec-title">🎯 Top assuntos</div>
+          <ul>
+            <li>• <span class="lbl-name">Cotação de toner/cartucho</span> (N) — <span class="lbl-meta">"toner compatível com modelo X"</span></li>
+            <li>• <span class="lbl-name">Problemas de entrega/rastreio</span> (N) — <span class="lbl-meta">"previsão de entrega"</span></li>
+            <li>• <span class="lbl-name">Indisponibilidade de produtos</span> (N) — <span class="lbl-meta">"ainda não trabalhamos com..."</span></li>
+            <li>• <span class="lbl-name">Atendimento órgão público</span> (N) — <span class="lbl-meta">"vocês emitem nota empenho?"</span></li>
+          </ul>
+        </div>
+
+        <div class="report-mock-section">
+          <div class="sec-title">⚠️ Atenção · Sem resposta há +6h</div>
+          <ul>
+            <li>• <span class="lbl-name">Cliente A</span> <span class="lbl-meta">(551XXX) — 12h — _</span></li>
+            <li>• <span class="lbl-name">Cliente B</span> <span class="lbl-meta">(551XXX) — 8h — "Olá"</span></li>
+          </ul>
+        </div>
+
+        <div class="report-mock-section">
+          <div class="sec-title">⚠️ Apontados pela auditoria</div>
+          <ul>
+            <li>• <span class="lbl-name">Cliente C</span> — Erro na cotação final, gerando discrepância entre valor informado e link de pagamento. <span class="lbl-meta">("o valor saiu a mais")</span></li>
+          </ul>
+          <div class="sub-action">Implementar validação automática de valores em links de pagamento antes do envio.</div>
+        </div>
+
+        <div class="report-mock-section">
+          <div class="sec-title">🌱 Oportunidades perdidas</div>
+          <ul>
+            <li>• <span class="lbl-name">Cliente D</span> — Demora de 4h40min na resposta levou o cliente a comprar via Mercado Livre.</li>
+          </ul>
+          <div class="sub-action">Estabelecer SLA máximo de 5 minutos para perguntas sobre frete e opções de envio.</div>
+        </div>
+
+        <div class="report-mock-section">
+          <div class="sec-title">✨ Destaques</div>
+          <ul>
+            <li>• <span class="lbl-name">Atendente X</span> — Proatividade em oferecer produto compatível mesmo após cliente pedir item fora do portfólio.</li>
+            <li>• <span class="lbl-name">Atendente Y</span> — Identificação de toner via imagem, agilidade na finalização da venda.</li>
+          </ul>
+        </div>
+
+        <div class="report-mock-section">
+          <div class="sec-title">🔍 Produtos pedidos que não temos</div>
+          <ul>
+            <li>• Cartucho modelo Z — 1x</li>
+            <li>• Tinta modelo W — 1x</li>
+          </ul>
+        </div>
+
+        <div class="report-mock-section">
+          <div class="sec-title">🛠 Plano de ação</div>
+          <ul>
+            <li><span class="priority-dot red"></span><span class="lbl-name">Longos tempos de resposta em cotações complexas</span> → implementar SLA + respostas padronizadas.</li>
+            <li><span class="priority-dot red"></span><span class="lbl-name">Erros na validação de valores em links de pagamento</span> → desenvolver ferramenta de geração de link com dupla checagem.</li>
+            <li><span class="priority-dot white"></span><span class="lbl-name">Falta de proatividade em alternativas de frete expresso</span> → treinar equipe pra identificar sinais de urgência.</li>
+            <li><span class="priority-dot green"></span><span class="lbl-name">Limitação no histórico de pedidos antigos</span> → investigar melhoria no CRM.</li>
+          </ul>
+        </div>
+
+        <div class="report-mock-note">— estrutura ilustrativa, dados fictícios —</div>
+      </div>
+    </div>
+
+    <p>As bolinhas no Plano de ação são prioridade visual: <span class="priority-dot red"></span> ação urgente, <span class="priority-dot white"></span> ação a programar, <span class="priority-dot green"></span> observação ou item de baixa prioridade. O Gemini classifica baseado na severidade que detecta no padrão.</p>
+    <p>Além do Slack, as 6 abas no Sheets guardam histórico estruturado de cada seção pra análise comparativa entre semanas. O slash command <code>/relatorio</code> permite puxar a análise de qualquer dia sob demanda.</p>
+  </div>
+</section>
+
+<!-- 07 ERROS REAIS -->
+<section class="case-section">
+  <div class="container">
+    <div class="label">07 · Erros e aprendizados</div>
     <h2>O que fui aprendendo no caminho</h2>
     <p>A primeira versão funcionou tecnicamente no primeiro dia. Mas o relatório que ela cuspia era ruim. Demorou semanas pra ficar útil de verdade — porque o problema não era código, era contexto.</p>
 
