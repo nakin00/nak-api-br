@@ -168,7 +168,7 @@ footer a{color:var(--muted)}
         <div class="mock-window">
           <div class="mock-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
           <div class="mock-log info">10:00:00  trigger 10min · pollando 4 empresas</div>
-          <div class="mock-log warn">10:00:02  PRINT LOJA: 2 NFs rejeitadas (situacao=5)</div>
+          <div class="mock-log warn">10:00:02  empresa-1: 2 NFs rejeitadas (situacao=5)</div>
           <div class="mock-log info">10:00:04  NF 198843: PJ sem IE → cnpj.ws → IE real</div>
           <div class="mock-log ok">10:00:06  NF 198843: cadastro corrigido + reemitida</div>
           <div class="mock-log err">10:00:08  NF 089592 (BA): IE recusada SEFAZ → escala Slack</div>
@@ -365,7 +365,7 @@ footer a{color:var(--muted)}
     <div class="erro-block">
       <div class="erro-titulo">Erro 2 · IE da Bahia que cnpj.ws retorna mas SEFAZ recusa</div>
       <h3>Quando o cadastro está certo mas o estado não aceita</h3>
-      <p>NF da filial 18.301.502/0002-07 (BA): <code>cnpj.ws</code> retornou IE válida, bot corrigiu cadastro e tentou reemitir. SEFAZ-BA recusou: <em>"IE incorreta"</em>. <strong>Aprendizado:</strong> BA é peculiar — não aceita PJ marcada como isento nem como não-contribuinte. As 4 estratégias falham legitimamente, é caso manual genuíno. O bot escala Slack após grace period de 25 min, sem tentar mais.</p>
+      <p>NF de uma filial localizada na Bahia: <code>cnpj.ws</code> retornou IE válida, bot corrigiu cadastro e tentou reemitir. SEFAZ-BA recusou: <em>"IE incorreta"</em>. <strong>Aprendizado:</strong> BA é peculiar — não aceita PJ marcada como isento nem como não-contribuinte, e tem regras próprias de validação de IE que cnpj.ws não consegue prever. As 4 estratégias falham legitimamente, é caso manual genuíno. O bot escala Slack após grace period de 25 min, sem tentar mais.</p>
     </div>
 
     <div class="erro-block">
@@ -377,7 +377,7 @@ footer a{color:var(--muted)}
     <div class="erro-block">
       <div class="erro-titulo">Erro 4 · O bot derrubava minha sessão no Tiny</div>
       <h3>Primeira versão fazia login com meu usuário</h3>
-      <p>O scraping precisa de sessão ativa. A 1ª versão usava o meu login → toda vez que o bot rodava, eu era deslogada do Tiny no meio do trabalho. <strong>Fix:</strong> criar usuário bot dedicado pra cada empresa (<code>bot@printloja</code>, <code>bot@printdobrasil</code>) com permissão "gerente". Bot e pessoa não competem mais por sessão.</p>
+      <p>O scraping precisa de sessão ativa. A 1ª versão usava o meu login → toda vez que o bot rodava, eu era deslogada do Tiny no meio do trabalho. <strong>Fix:</strong> criar usuário bot dedicado pra cada empresa, com permissão "gerente" e login separado. Bot e pessoa não competem mais por sessão.</p>
     </div>
 
     <div class="erro-block">
