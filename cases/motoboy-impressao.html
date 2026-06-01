@@ -92,6 +92,25 @@ nav .links a:hover{color:var(--text);text-decoration:none}
 .flow-arrow{font-family:var(--mono);color:var(--muted);font-size:18px;flex-shrink:0}
 .flow-note{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--muted);max-width:760px;text-align:center}
 .dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;max-width:760px}
+/* WEBAPP MOCK — tela de reimpressão (light theme dentro de browser frame) */
+.webapp-mock{max-width:520px;margin:32px 0;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 20px 60px -20px rgba(0,0,0,.6)}
+.webapp-mock-bar{background:#e5e7eb;padding:10px 14px;border-bottom:1px solid #d1d5db;display:flex;align-items:center;gap:12px}
+.webapp-dots{display:flex;gap:6px;flex-shrink:0}
+.webapp-dots span{width:10px;height:10px;border-radius:50%}
+.webapp-dots .d1{background:#ff5f57}.webapp-dots .d2{background:#febc2e}.webapp-dots .d3{background:#28c840}
+.webapp-url{font-family:var(--mono);font-size:11px;color:#6b7280;flex:1;background:#f9fafb;padding:4px 10px;border-radius:4px;text-align:center}
+.webapp-mock-body{background:#f3f4f6;padding:24px;color:#111827}
+.webapp-title{font-size:18px;font-weight:700;margin:0 0 20px;color:#111827;display:flex;align-items:center;gap:8px}
+.webapp-card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:18px;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.webapp-card-title{font-size:15px;font-weight:600;color:#111827;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.webapp-card-desc{font-size:13px;color:#2563eb;margin:0 0 14px}
+.webapp-label{display:block;font-size:13px;font-weight:500;color:#374151;margin:10px 0 6px}
+.webapp-input{display:block;width:100%;padding:9px 12px;font-size:14px;color:#9ca3af;background:#fff;border:1px solid #d1d5db;border-radius:6px;font-family:inherit;box-sizing:border-box}
+.webapp-select{display:block;width:100%;padding:9px 12px;font-size:14px;color:#111827;background:#f3f4f6;border:1px solid #d1d5db;border-radius:6px;font-family:inherit;box-sizing:border-box}
+.webapp-btn{display:block;width:100%;padding:11px 16px;font-size:14px;font-weight:600;color:#fff;border:none;border-radius:6px;margin-top:14px;font-family:inherit;text-align:center}
+.webapp-btn.green{background:#22c55e}
+.webapp-btn.blue{background:#3b82f6}
+.webapp-note{padding:10px;font-family:var(--mono);font-size:11px;color:#9ca3af;text-align:center;font-style:italic;background:#f3f4f6;border-top:1px solid #e5e7eb}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
 .kpi .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
 .kpi .val{font-size:24px;font-weight:600;font-family:var(--mono);color:var(--accent-2);line-height:1}
@@ -283,7 +302,32 @@ footer a{color:var(--muted)}
     <p>O sistema imprime tudo automaticamente, mas vez ou outra precisa <strong>reimprimir</strong> alguma separação — papel travou na térmica, alguém pegou o errado, perdeu no balcão. No começo isso significava rodar <code>reimprimir.bat</code> no terminal e passar o número da NF como argumento. Funcional, mas chato pra equipe que não convive com terminal.</p>
     <p>Construí uma tela web simples que permite buscar pedidos do dia, ver lista de separações já impressas, e clicar pra reimprimir qualquer uma. Sem terminal, sem comando, sem saber qual NF buscar — basta filtrar por cliente ou data.</p>
 
-    <!-- TODO: adicionar mockup da tela de reimpressão -->
+    <div class="webapp-mock">
+      <div class="webapp-mock-bar">
+        <span class="webapp-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></span>
+        <span class="webapp-url">motoboy.local/painel</span>
+      </div>
+      <div class="webapp-mock-body">
+        <div class="webapp-title">🛵 Motoboy — Painel</div>
+
+        <div class="webapp-card">
+          <div class="webapp-card-title">Verificar agora</div>
+          <p class="webapp-card-desc">Força uma varredura imediata nas separações Motoboy aguardando impressão.</p>
+          <div class="webapp-btn green">▶ Executar agora</div>
+        </div>
+
+        <div class="webapp-card">
+          <div class="webapp-card-title">🖨 Reimprimir NF</div>
+          <p class="webapp-card-desc">Reimprime uma separação já processada pelo número da NF.</p>
+          <label class="webapp-label">Número da NF</label>
+          <div class="webapp-input">Ex: XXXXXX</div>
+          <label class="webapp-label">Empresa</label>
+          <div class="webapp-select">Empresa A ▾</div>
+          <div class="webapp-btn blue">🖨 Reimprimir</div>
+        </div>
+      </div>
+      <div class="webapp-note">— estrutura ilustrativa —</div>
+    </div>
 
     <p>Foi automatização <strong>relativamente simples</strong> que melhorou muito a eficiência da operação. O ganho não foi automatizar a impressão em si — foi tirar uma decisão de cabeça da equipe (<em>"tem alguma coisa pra imprimir agora?"</em>) e dar uma ferramenta de auto-serviço pra quando precisar intervir.</p>
     <p>Carga mental zero pra operação, controle total quando precisa.</p>
