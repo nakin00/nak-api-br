@@ -12,7 +12,7 @@
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="nak.api.br">
 <meta property="og:title" content="Correção automática de NF rejeitada (quando a IA diz que não dá)">
-<meta property="og:description" content="600 NFs/mês rejeitadas pelo SEFAZ. Apps Script + 4 estratégias em cascata + scraping da UI quando API não basta. 80% auto, 15h/mês economizadas.">
+<meta property="og:description" content="600 NFs/mês rejeitadas pelo SEFAZ. Apps Script + 4 estratégias em cascata + scraping da UI quando API não basta. 99% auto, 15h/mês economizadas.">
 <meta property="og:url" content="https://nak.api.br/cases/nf-auto-correcao">
 <meta property="og:locale" content="pt_BR">
 <meta property="article:section" content="Operação">
@@ -31,7 +31,7 @@
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": "Correção automática de NF rejeitada (quando a IA diz que não dá)",
-  "description": "Apps Script polla 4 empresas Tiny por NFs rejeitadas, classifica por dados, corrige cadastro e reemite. 80% auto, ~15h/mês de pessoa eliminadas.",
+  "description": "Apps Script polla 4 empresas Tiny por NFs rejeitadas, classifica por dados, corrige cadastro e reemite. 99% auto, ~15h/mês de pessoa eliminadas.",
   "author": { "@type": "Person", "name": "nak" },
   "publisher": { "@type": "Organization", "name": "nak.api.br" },
   "datePublished": "2026-05-31",
@@ -162,7 +162,7 @@ footer a{color:var(--muted)}
           <span class="tag">scraping</span>
           <span class="tag">slack</span>
         </div>
-        <p class="lead">30% das 2000 NFs/mês emitidas em ML e Shopee eram rejeitadas pelo SEFAZ — quase sempre por dados de cadastro em PJ. Apps Script corrige antes que pessoa precise olhar. Custo R$ 0.</p>
+        <p class="lead">30% das 2000 NFs/mês emitidas eram rejeitadas pelo SEFAZ — quase sempre por dados de cadastro em PJ. Apps Script corrige antes que pessoa precise olhar. Custo R$ 0.</p>
       </div>
       <div>
         <div class="mock-window">
@@ -183,7 +183,7 @@ footer a{color:var(--muted)}
   <div class="container">
     <div class="label">01 · Dor operacional</div>
     <h2>30% das NFs rejeitavam — sempre alguém arrumando</h2>
-    <p>4 empresas emitindo cerca de <strong>2000 NFs/mês</strong> em Mercado Livre e Shopee. Desse total, ~<strong>30% rejeitavam no SEFAZ</strong> — quase sempre em pedidos de pessoa jurídica, por IE faltando, IE errada ou bairro vazio no cadastro.</p>
+    <p>4 empresas emitindo cerca de <strong>2000 NFs/mês</strong> pelos canais de venda. Desse total, ~<strong>30% rejeitavam no SEFAZ</strong> — quase sempre em pedidos de pessoa jurídica, por IE faltando, IE errada ou bairro vazio no cadastro.</p>
     <p>A responsável pelo faturamento gastava <strong>1 a 2 minutos corrigindo cada uma</strong>: abrir NF rejeitada no Tiny, apagar CNPJ, colar de novo pra ele rebuscar dados, salvar, emitir. 600 NFs/mês × 1.5min dá cerca de <strong>15 horas por mês só nisso</strong>.</p>
     <div class="callout">
       <p>"Sou insistente. Não aceito 'não dá' como resposta — nem do Tiny, nem da IA que me ajuda a construir."</p>
@@ -318,7 +318,7 @@ footer a{color:var(--muted)}
 <section class="case-section">
   <div class="container">
     <div class="label">06 · Resultado</div>
-    <h2>80% sem clique humano, 20% com 1 clique</h2>
+    <h2>99% sem clique humano, 1% com 1 clique</h2>
     <div class="dash-grid">
       <div class="kpi alt">
         <div class="lbl">NFs/mês corrigidas</div>
@@ -327,8 +327,8 @@ footer a{color:var(--muted)}
       </div>
       <div class="kpi">
         <div class="lbl">Auto sem clique</div>
-        <div class="val">80%</div>
-        <div class="delta">20% com 1 clique Slack</div>
+        <div class="val">99%</div>
+        <div class="delta">1% com 1 clique Slack</div>
       </div>
       <div class="kpi alt">
         <div class="lbl">Tempo eliminado</div>
@@ -343,7 +343,7 @@ footer a{color:var(--muted)}
     </div>
     <ul>
       <li>NFs rejeitadas paradas viraram fluxo automático: trigger 10 min, pessoa só entra nos casos genuinamente impossíveis.</li>
-      <li>Os 20% que sobram tem motivo real (ex: IE inválida em estado peculiar como BA, que rejeita mesmo IE retornada pelo cnpj.ws).</li>
+      <li>O 1% que sobra tem motivo real (ex: IE inválida em estado peculiar como BA, que rejeita mesmo IE retornada pelo cnpj.ws).</li>
       <li>A responsável pelo faturamento foi liberada das 15h/mês — fluxo agora roda 24/7 incluindo finais de semana.</li>
       <li>Pedido não atrasa mais por problema cadastral — o que atrasa é só o que era pra atrasar mesmo.</li>
     </ul>
@@ -354,7 +354,7 @@ footer a{color:var(--muted)}
   <div class="container">
     <div class="label">07 · Erros e aprendizados</div>
     <h2>O caminho real de quem rodou e quebrou</h2>
-    <p>Cada erro abaixo é coisa que aconteceu rodando em produção, não planejando no papel. Foi assim que cheguei nos 80%:</p>
+    <p>Cada erro abaixo é coisa que aconteceu rodando em produção, não planejando no papel. Foi assim que cheguei nos 99%:</p>
 
     <div class="erro-block">
       <div class="erro-titulo">Erro 1 · cnpj.ws rate limit virando "ISENTO" errado</div>
