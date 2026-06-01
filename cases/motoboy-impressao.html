@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Separação Motoboy impressa sozinha · nak.api.br</title>
-<meta name="description" content="Python no PC da impressora térmica ouvindo o Tiny ERP. Pedido Motoboy aparece, papel sai sozinho, status atualiza, Slack avisa. Zero clique humano.">
+<title>Do pagamento à entrega em 10 minutos (Motoboy) · nak.api.br</title>
+<meta name="description" content="Do pagamento aprovado ao motoboy saindo com a mercadoria, em ≤10 minutos. Apps Script fatura e emite NF, Python imprime separação na térmica. Custo: só a impressora.">
 <meta name="keywords" content="tiny erp python automação, impressora térmica python, separação pedido automática, polling tiny api, motoboy ecommerce">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://nak.api.br/cases/motoboy-impressao">
@@ -12,8 +12,8 @@
 <!-- Open Graph -->
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="nak.api.br">
-<meta property="og:title" content="Separação Motoboy impressa sozinha — Tiny ERP + Python">
-<meta property="og:description" content="Python local ouvindo o Tiny. Pedido cai, papel sai, status anda, Slack avisa. Zero clique humano.">
+<meta property="og:title" content="Do pagamento à entrega em 10 minutos (Motoboy)">
+<meta property="og:description" content="Engrenagem completa: pagamento → faturamento (Apps Script) → NF → impressão (Python) → Slack. Pedido na rua em ≤10min, custo só a impressora.">
 <meta property="og:url" content="https://nak.api.br/cases/motoboy-impressao">
 <meta property="og:locale" content="pt_BR">
 <meta property="article:section" content="Operação">
@@ -23,16 +23,16 @@
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Imprimir separação Motoboy do Tiny automaticamente">
-<meta name="twitter:description" content="Python no PC da impressora ouvindo o Tiny. Zero clique humano entre pedido e papel impresso.">
+<meta name="twitter:title" content="Do pagamento à entrega em 10 minutos (Motoboy)">
+<meta name="twitter:description" content="Pagamento aprovado → faturamento → NF → impressão → motoboy. Tudo em ≤10min, sem clique humano.">
 
 <!-- Schema.org Article -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  "headline": "Separação Motoboy impressa sozinha",
-  "description": "Python local ouvindo Tiny ERP, imprimindo separação Motoboy e atualizando status automaticamente.",
+  "headline": "Do pagamento à entrega em 10 minutos (Motoboy)",
+  "description": "Engrenagem completa: pagamento aprovado, Apps Script fatura e emite NF, Python imprime separação na térmica, Slack avisa equipe. Pedido na rua em ≤10min.",
   "author": { "@type": "Person", "name": "nak" },
   "publisher": { "@type": "Organization", "name": "nak.api.br" },
   "datePublished": "2026-05-17",
@@ -123,14 +123,14 @@ footer a{color:var(--muted)}
       <div>
         <div class="breadcrumb"><a href="../">~</a> / cases / motoboy-impressao</div>
         <div class="category">Operação</div>
-        <h1>Separação Motoboy impressa sozinha</h1>
+        <h1>Do pagamento à entrega em 10 minutos, sem clique humano</h1>
         <div class="tags">
           <span class="tag">python</span>
           <span class="tag">tiny-api</span>
           <span class="tag">impressora-térmica</span>
           <span class="tag">slack</span>
         </div>
-        <p class="lead">Python no PC da impressora ouvindo o Tiny. Pedido novo cai, papel sai. Sem ninguém clicar nada.</p>
+        <p class="lead">Quando o canal é Motoboy, urgência é tudo. Pagamento aprovado dispara faturamento, NF, impressão de separação e Slack — em sequência, automático. Custo único: a impressora térmica.</p>
       </div>
       <div>
         <div class="mock-window">
@@ -162,27 +162,36 @@ footer a{color:var(--muted)}
 <section class="case-section">
   <div class="container">
     <div class="label">02 · Impacto do problema</div>
-    <h2>Pedido escapa quando ninguém olha</h2>
+    <h2>Várias etapas humanas entre o pagamento e a separação</h2>
+    <p>Pedido aprovado no Mercado Livre, Shopee ou loja própria não vira mercadoria saindo na hora. Antes de chegar na separação, tem fila de coisas humanas:</p>
     <ul>
-      <li><strong>Motoboy esperando no balcão</strong> — tempo dele pago à toa.</li>
-      <li><strong>Pedido só visto depois</strong> que o motoboy já tinha ido embora.</li>
-      <li><strong>Separação fora de ordem</strong> de chegada quando a equipe lembrava.</li>
-      <li><strong>Cliente sem rastreio rápido</strong> porque o status no Tiny não andava.</li>
-      <li><strong>Decisão manual</strong> de "tem alguma coisa pra imprimir?" o tempo todo na cabeça da equipe.</li>
+      <li><strong>Identificar pagamento</strong> — alguém vê que entrou e marca como aprovado.</li>
+      <li><strong>Faturar</strong> — gerar a venda no Tiny com produtos certos.</li>
+      <li><strong>Emitir nota fiscal</strong> — enviar pra SEFAZ, esperar retorno.</li>
+      <li><strong>Imprimir separação</strong> — alguém percebe que tem pedido novo, abre, imprime.</li>
+      <li><strong>Decidir "tem coisa pra imprimir?"</strong> — a pergunta que ficava o tempo todo na cabeça da equipe.</li>
     </ul>
+    <p>Quando o canal de venda é Motoboy, qualquer minuto a mais nesse fluxo é caro: motoboy esperando no balcão, cliente sem rastreio, separação fora de ordem.</p>
   </div>
 </section>
 
 <section class="case-section">
   <div class="container">
     <div class="label">03 · Solução criada</div>
-    <h2>Python rodando direto no PC da impressora</h2>
-    <p>Um script Python que vive no PC ligado na impressora térmica. Loop simples: a cada X segundos, dentro do horário de trabalho, consulta a API do Tiny por separações novas com forma de envio Motoboy.</p>
-    <p>Achou? Imprime. Atualiza status no Tiny pra "Em separação". Manda Slack avisando que tem coisa nova pra separar.</p>
+    <h2>Engrenagem completa, do pagamento à térmica</h2>
+    <p>Este Python é só a última peça de uma cadeia. O que ele faz, isoladamente, é simples: vive no PC ligado à impressora térmica, faz polling no Tiny por separações <code>Aguardando</code> com forma de envio Motoboy, imprime, atualiza status, manda Slack.</p>
+    <p>Mas funciona porque outras automações cuidam do que vem antes:</p>
     <ul>
-      <li><strong>Python local</strong> — não tem servidor, não tem cloud, não tem custo. Roda no mesmo PC que tem a impressora.</li>
-      <li><strong>Polling no Tiny</strong> — webhook seria mais elegante, mas polling local é a prova de bala: se a internet caí, ele tenta de novo no próximo ciclo.</li>
-      <li><strong>Estado em JSON local</strong> — <code>processed_orders.json</code> e <code>printed_separacoes.json</code>. Sem banco. Sem complicação.</li>
+      <li><strong>Identificação de pagamento</strong> — automática via integração com canal de venda.</li>
+      <li><strong>Faturamento + emissão de NF</strong> — feito por um Apps Script irmão (pasta <code>gas/</code>), que cuida da venda no Tiny e dispara a NF pra SEFAZ assim que o pedido fica aprovado.</li>
+      <li><strong>Impressão de separação</strong> — este Python, polling a cada poucos segundos.</li>
+      <li><strong>Slack de notificação</strong> — pra equipe saber que tem pedido novo pronto pra pegar.</li>
+    </ul>
+    <p>Detalhes técnicos da peça Python:</p>
+    <ul>
+      <li><strong>Sem servidor, sem cloud</strong> — roda no mesmo PC que tem a impressora. Único custo do sistema todo foi a própria impressora térmica (hardware único, sem mensalidade).</li>
+      <li><strong>Polling no Tiny</strong> — webhook seria mais elegante, mas polling local é prova de bala: internet caí, ele tenta de novo no próximo ciclo.</li>
+      <li><strong>Estado em JSON local</strong> — <code>processed_orders.json</code> e <code>printed_separacoes.json</code>. Sem banco, sem complicação, dedup garantida.</li>
       <li><strong>Janela de horário</strong> — começa em <code>HORA_INICIO</code>, para em <code>HORA_FIM</code>. À noite não fica gastando chamada de API.</li>
       <li><strong>Reimpressão por script</strong> — <code>reimprimir.bat</code> reprocessa quando precisa.</li>
     </ul>
@@ -192,18 +201,25 @@ footer a{color:var(--muted)}
 <section class="case-section">
   <div class="container">
     <div class="label">04 · Como funciona</div>
-    <h2>Loop simples, nenhum lugar onde travar</h2>
+    <h2>Do pagamento ao motoboy, sem clique humano</h2>
+    <p>O fluxo completo abaixo. As duas primeiras peças são responsabilidade do Apps Script irmão; as últimas três são deste Python.</p>
     <div class="flow-grid">
       <div class="flow-node">
-        <div class="icon">⏱</div>
-        <div class="name">Loop</div>
-        <div class="sub">polling X seg</div>
+        <div class="icon">💳</div>
+        <div class="name">Pagamento</div>
+        <div class="sub">aprovado</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-node">
         <div class="icon">⊞</div>
-        <div class="name">Tiny API</div>
-        <div class="sub">forma=Motoboy</div>
+        <div class="name">Apps Script</div>
+        <div class="sub">fatura + emite NF</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">🐍</div>
+        <div class="name">Python</div>
+        <div class="sub">polling Tiny</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-node">
@@ -213,52 +229,46 @@ footer a{color:var(--muted)}
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-node">
-        <div class="icon">⊞</div>
-        <div class="name">Tiny</div>
-        <div class="sub">status update</div>
-      </div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-node">
         <div class="icon">#</div>
         <div class="name">Slack</div>
-        <div class="sub">notifica</div>
+        <div class="sub">equipe pega</div>
       </div>
     </div>
-    <p class="flow-note">start.bat liga · processed_orders.json guarda estado · reimprimir.bat reprocessa</p>
+    <p class="flow-note">start.bat liga · processed_orders.json guarda estado · reimprimir.bat reprocessa em caso de falha</p>
   </div>
 </section>
 
 <section class="case-section">
   <div class="container">
     <div class="label">05 · Resultado</div>
-    <h2>A decisão "tem coisa pra imprimir?" saiu da cabeça da equipe</h2>
+    <h2>Pagamento aprovado e pedido saindo em até 10 minutos</h2>
     <div class="dash-grid">
+      <div class="kpi alt">
+        <div class="lbl">Pagamento → entrega</div>
+        <div class="val">≤ 10min</div>
+        <div class="delta">do "aprovado" ao motoboy</div>
+      </div>
       <div class="kpi">
         <div class="lbl">Cliques humanos</div>
         <div class="val">0</div>
-        <div class="delta">do pedido à impressão</div>
+        <div class="delta">do pagamento à separação</div>
       </div>
       <div class="kpi alt">
-        <div class="lbl">Custo do servidor</div>
+        <div class="lbl">Custo mensal</div>
         <div class="val">R$ 0</div>
-        <div class="delta">roda local</div>
+        <div class="delta">só hardware da térmica</div>
       </div>
       <div class="kpi">
-        <div class="lbl">Janela de polling</div>
-        <div class="val">~30s</div>
-        <div class="delta">entre ciclos</div>
-      </div>
-      <div class="kpi alt">
-        <div class="lbl">Pedido escapando</div>
-        <div class="val">0</div>
-        <div class="delta">dentro do horário</div>
+        <div class="lbl">Etapas humanas</div>
+        <div class="val">−4</div>
+        <div class="delta">eliminadas do fluxo</div>
       </div>
     </div>
     <ul>
-      <li>Motoboy chega, pacote já está separado.</li>
-      <li>Equipe parou de checar Tiny "só pra ver se tinha pedido".</li>
-      <li>Status no Tiny anda sozinho — cliente vê o pedido mover.</li>
-      <li>Faturamento (que rola num Apps Script irmão) continua independente — uma engrenagem não trava a outra.</li>
+      <li>Motoboy chega no balcão, pacote já está separado e identificado.</li>
+      <li>Identificação de pagamento, faturamento, emissão de NF e impressão da separação — todas automáticas, em sequência, sem espera entre etapas.</li>
+      <li>Equipe parou de checar Tiny "só pra ver se tinha pedido". Sabe quando tem porque chega no Slack.</li>
+      <li>Custo único foi a impressora térmica. Sem mensalidade de software, sem cloud, sem nada recorrente.</li>
     </ul>
   </div>
 </section>
