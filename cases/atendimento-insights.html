@@ -3,44 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Insights de atendimento com IA · nak.api.br</title>
-<meta name="description" content="Apps Script + Gemini lê emails de atendentes, identifica perda de venda e manda resumo diário no Slack. Stack gratuita, sem servidor próprio.">
-<meta name="keywords" content="apps script gemini atendimento, análise emails ia, slack atendimento ecommerce, perda de venda atendimento, automação atendimento brasil">
+<title>Atendimento WhatsApp com IA (Baileys + Gemini) · nak.api.br</title>
+<meta name="description" content="Captura WhatsApp Business via Baileys no Fly.io, análise diária com Gemini, relatório no Slack + Sheets. Sem API oficial, sem Omnichat. Custo efetivo R$ 0.">
+<meta name="keywords" content="baileys whatsapp, fly.io node, gemini analise atendimento, whatsapp business sem api oficial, automacao atendimento ecommerce, sem omnichat">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://nak.api.br/cases/atendimento-insights">
 
 <!-- Open Graph -->
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="nak.api.br">
-<meta property="og:title" content="Insights diários de atendimento com IA — Apps Script + Gemini + Slack">
-<meta property="og:description" content="3 atendentes, emails do dia inteiro, dono sem tempo de ler. Apps Script + Gemini gera resumo focado em perda de venda e posta no Slack às 8h.">
+<meta property="og:title" content="Atendimento WhatsApp com IA — Baileys + Gemini + Slack">
+<meta property="og:description" content="160 atendimentos/semana no WhatsApp Business analisados diariamente por IA. Sem API oficial, sem serviço pago. Custo efetivo R$ 0.">
 <meta property="og:url" content="https://nak.api.br/cases/atendimento-insights">
 <meta property="og:locale" content="pt_BR">
 <meta property="article:section" content="Atendimento">
-<meta property="article:tag" content="apps-script">
+<meta property="article:tag" content="baileys">
+<meta property="article:tag" content="fly.io">
 <meta property="article:tag" content="gemini">
 <meta property="article:tag" content="slack">
-<meta property="article:tag" content="atendimento">
+<meta property="article:tag" content="whatsapp-business">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Insights diários de atendimento com IA (Gemini + Slack)">
-<meta name="twitter:description" content="Apps Script + Gemini analisando emails da equipe com foco em perda de venda. Resumo no Slack às 8h.">
+<meta name="twitter:title" content="Atendimento WhatsApp com IA (Baileys + Gemini)">
+<meta name="twitter:description" content="160 atendimentos/semana analisados por IA. Sem API oficial, sem Omnichat. Custo efetivo zero.">
 
 <!-- Schema.org Article -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  "headline": "Insights diários de atendimento com IA",
-  "description": "Apps Script + Gemini analisando emails de atendentes com foco em perda de venda, resumo diário no Slack.",
+  "headline": "Atendimento WhatsApp com IA",
+  "description": "Baileys captura WhatsApp Business, Gemini analisa diariamente, Slack + Sheets entregam relatórios. Sem API oficial, sem Omnichat, custo efetivo R$ 0.",
   "author": { "@type": "Person", "name": "nak" },
   "publisher": { "@type": "Organization", "name": "nak.api.br" },
   "datePublished": "2026-05-17",
+  "dateModified": "2026-05-31",
   "inLanguage": "pt-BR",
   "url": "https://nak.api.br/cases/atendimento-insights",
-  "about": ["Atendimento ao cliente", "Automação operacional", "Análise com IA"],
-  "keywords": "apps script, gemini, slack, atendimento, perda de venda, ecommerce, automação"
+  "about": ["WhatsApp Business", "Baileys", "Automação de atendimento", "Análise com IA"],
+  "keywords": "baileys, whatsapp business, gemini, fly.io, slack, atendimento, ecommerce"
 }
 </script>
 
@@ -96,7 +98,14 @@ nav .links a:hover{color:var(--text);text-decoration:none}
 .callout{border-left:3px solid var(--accent);background:var(--card);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin:24px 0;max-width:760px}
 .callout p{margin:0;font-style:italic;color:var(--muted)}
 
-/* CODE SNIPPET (variante 2) */
+/* ERRO BLOCK — específico pra seção de erros */
+.erro-block{max-width:760px;margin:32px 0;padding:24px;background:#0d1117;border:1px solid var(--border);border-radius:var(--radius);border-left:3px solid var(--warn)}
+.erro-block .erro-titulo{font-family:var(--mono);font-size:12px;color:var(--warn);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.erro-block h3{font-size:18px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em;color:var(--text)}
+.erro-block p{font-size:15px;color:var(--muted);margin:0;line-height:1.65}
+.erro-block p strong{color:var(--text);font-weight:500}
+
+/* CODE SNIPPET */
 .code-window{background:#0d1117;border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 20px 60px -20px rgba(0,0,0,.6);margin:32px 0;max-width:760px}
 .code-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);background:#0a0e13}
 .code-head .file{font-family:var(--mono);font-size:12px;color:var(--muted)}
@@ -106,7 +115,7 @@ nav .links a:hover{color:var(--text);text-decoration:none}
 .code-body .src{padding-right:20px;white-space:pre}
 .tk-kw{color:#ff7b72}.tk-fn{color:#d2a8ff}.tk-str{color:#a5d6ff}.tk-cm{color:#8b949e;font-style:italic}.tk-var{color:#79c0ff}
 
-/* FLOWCHART (variante 4) */
+/* FLOWCHART */
 .flow-grid{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:32px 0;max-width:760px}
 .flow-node{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;flex:1;min-width:110px}
 .flow-node .icon{font-family:var(--mono);font-size:22px;color:var(--accent);margin-bottom:6px}
@@ -115,7 +124,7 @@ nav .links a:hover{color:var(--text);text-decoration:none}
 .flow-arrow{font-family:var(--mono);color:var(--muted);font-size:18px;flex-shrink:0}
 .flow-note{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--muted);max-width:760px;text-align:center}
 
-/* DASHBOARD (variante 3) */
+/* DASHBOARD */
 .dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;max-width:760px}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
 .kpi .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
@@ -123,13 +132,6 @@ nav .links a:hover{color:var(--text);text-decoration:none}
 .kpi .delta{font-size:11px;color:var(--accent-2);margin-top:8px;font-family:var(--mono)}
 .kpi.alt .val{color:var(--accent)}
 .kpi.warn .val{color:var(--warn)}
-.kpi-wide{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin:0 0 24px;max-width:760px}
-.kpi-wide .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
-.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-family:var(--mono);font-size:12px;color:var(--muted)}
-.bar-row .name{width:80px}
-.bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
-.bar .fill{height:100%;background:var(--accent)}
-.bar-row .num{width:38px;text-align:right;color:var(--text)}
 
 footer{padding:48px 0;color:var(--muted);font-size:13px}
 footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
@@ -152,32 +154,33 @@ footer a{color:var(--muted)}
   </div>
 </nav>
 
-<!-- HERO COM PAINEL DE LOGS (variante 01) -->
+<!-- HERO COM PAINEL DE LOGS (execução real do cron) -->
 <header class="case-hero">
   <div class="container">
     <div class="case-hero-grid">
       <div>
         <div class="breadcrumb"><a href="../">~</a> / cases / atendimento-insights</div>
         <div class="category">Atendimento</div>
-        <h1>Insights diários de atendimento com IA</h1>
+        <h1>Atendimento WhatsApp com IA, sem API oficial e sem Omnichat</h1>
         <div class="tags">
-          <span class="tag">apps-script</span>
+          <span class="tag">baileys</span>
+          <span class="tag">fly.io</span>
           <span class="tag">gemini-2.5-flash</span>
-          <span class="tag">gmail</span>
-          <span class="tag">sheets</span>
+          <span class="tag">whatsapp-business</span>
           <span class="tag">slack</span>
+          <span class="tag">sheets</span>
         </div>
-        <p class="lead">Como transformei emails de 3 atendentes em um resumo diário no Slack focado em perda de venda — usando só Apps Script, Gemini e um webhook.</p>
+        <p class="lead">160 atendimentos por semana no WhatsApp Business analisados todo dia às 6h. Relatório no Slack + planilha. Custo efetivo R$ 0.</p>
       </div>
       <div>
         <div class="mock-window">
           <div class="mock-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
-          <div class="mock-log info">07:00  coletor-ana: 38 threads</div>
-          <div class="mock-log info">07:00  coletor-rafa: 41 threads</div>
-          <div class="mock-log info">07:00  coletor-bia: 29 threads</div>
-          <div class="mock-log warn">07:02  filtro: 23 emails automáticos ignorados</div>
-          <div class="mock-log ok">08:01  gemini: 5 seções geradas (3.2s)</div>
-          <div class="mock-log ok">08:01  slack: relatório postado</div>
+          <div class="mock-log info">06:00:00  cron disparado · range=yesterday</div>
+          <div class="mock-log info">06:00:02  sqlite: 38 conversas (147 mensagens)</div>
+          <div class="mock-log info">06:00:03  filtro: 6 prestadores ignorados</div>
+          <div class="mock-log ok">06:00:08  gemini: análise concluída (4.7s)</div>
+          <div class="mock-log ok">06:00:09  slack: relatório postado em #whatsapp-relatorios</div>
+          <div class="mock-log ok">06:00:10  sheets: 6 abas atualizadas</div>
         </div>
       </div>
     </div>
@@ -188,11 +191,11 @@ footer a{color:var(--muted)}
 <section class="case-section">
   <div class="container">
     <div class="label">01 · Dor operacional</div>
-    <h2>Dono não lê emails da equipe</h2>
-    <p>Três atendentes respondendo emails de clientes o dia inteiro. Centenas de threads por semana sobre dúvida de produto, prazo, objeção de preço, troca, devolução.</p>
-    <p>O dono do negócio não tem tempo de abrir caixa por caixa. Mas é exatamente nessas conversas que aparecem os sinais mais valiosos da operação: <strong>por que vendas estão escapando</strong>.</p>
+    <h2>O dono não consegue ler tudo</h2>
+    <p>WhatsApp Business no celular é uma caixa preta. Atende, vende, fecha, briga, perde — e tudo isso fica preso no app, sem dashboard, sem relatório, sem busca decente.</p>
+    <p>Com <strong>~160 atendimentos por semana</strong>, abrir conversa por conversa pra entender o que aconteceu no dia anterior é inviável. Quando o dono finalmente percebe um padrão, já passou um mês.</p>
     <div class="callout">
-      <p>"Eu só sabia que perdi uma venda quando o cliente já tinha sumido. Nunca quando ainda dava pra salvar."</p>
+      <p>"Eu sabia que tinha alguma coisa pegando no atendimento. Só não sabia o que. E quando ia ver, já era tarde demais pra agir."</p>
     </div>
   </div>
 </section>
@@ -201,155 +204,148 @@ footer a{color:var(--muted)}
 <section class="case-section">
   <div class="container">
     <div class="label">02 · Impacto do problema</div>
-    <h2>Sinais valiosos morrendo na caixa de entrada</h2>
+    <h2>Operação no escuro, padrões viram histórico</h2>
     <ul>
-      <li><strong>Vendas perdidas invisíveis</strong> — cliente desistiu, ninguém percebeu.</li>
-      <li><strong>Objeções recorrentes não viravam ação</strong> — mesma dúvida aparecia 5 vezes por semana sem virar resposta-padrão.</li>
-      <li><strong>Atendimentos fracos sem revisão</strong> — atendente respondeu mal, cliente sumiu, ninguém notou.</li>
-      <li><strong>Decisões operacionais sem dado</strong> — "tá vendendo menos" sem saber se é preço, prazo ou frete.</li>
-      <li><strong>Aprendizado individual, não coletivo</strong> — quando um atendente descobria algo, ficava só com ele.</li>
+      <li><strong>Decisões sem dado</strong> — "tá vendendo menos" sem saber se é objeção de preço, prazo ou produto faltando.</li>
+      <li><strong>Padrões só visíveis em retrospecto</strong> — a mesma pergunta aparecendo 8 vezes na semana só vira ação semanas depois.</li>
+      <li><strong>Atendimento fraco sem revisão</strong> — resposta lenta, incompleta ou mal-educada passava sem ninguém olhar.</li>
+      <li><strong>Cliente esperando demais</strong> — sem visibilidade de quem está há horas sem resposta.</li>
+      <li><strong>Conhecimento individual</strong> — quem atende sabe; quem não atende, não.</li>
     </ul>
   </div>
 </section>
 
-<!-- 03 SOLUÇÃO COM SNIPPET (variante 02) -->
+<!-- 03 SOLUÇÃO -->
 <section class="case-section">
   <div class="container">
     <div class="label">03 · Solução criada</div>
-    <h2>Pipeline diário Gmail → Sheets → Gemini → Slack</h2>
-    <p>Uma automação que roda sozinha todo dia de manhã, lê os emails das últimas 24h dos três atendentes, manda tudo pra uma IA com um prompt focado em <strong>perda de venda</strong>, e posta o relatório no Slack antes do dia começar.</p>
-    <p>O coração da solução não é o código — é o <strong>foco do prompt</strong>. Ele força o Gemini a procurar exatamente o que importa:</p>
-
-    <div class="code-window">
-      <div class="code-head">
-        <div class="mock-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
-        <div class="file">analisador.gs · trecho do prompt</div>
-      </div>
-      <div class="code-body">
-        <div class="ln"><span class="num">1</span><span class="src"><span class="tk-cm">// foco: PERDA DE VENDA, não qualidade geral</span></span></div>
-        <div class="ln"><span class="num">2</span><span class="src"><span class="tk-kw">const</span> <span class="tk-var">prompt</span> = <span class="tk-str">`Você é analista de</span></span></div>
-        <div class="ln"><span class="num">3</span><span class="src"><span class="tk-str">  atendimento. Identifique POR QUE</span></span></div>
-        <div class="ln"><span class="num">4</span><span class="src"><span class="tk-str">  ESTAMOS PERDENDO VENDAS.</span></span></div>
-        <div class="ln"><span class="num">5</span><span class="src"> </span></div>
-        <div class="ln"><span class="num">6</span><span class="src"><span class="tk-str">  Devolva 5 seções fixas:</span></span></div>
-        <div class="ln"><span class="num">7</span><span class="src"><span class="tk-str">  - Vendas perdidas hoje</span></span></div>
-        <div class="ln"><span class="num">8</span><span class="src"><span class="tk-str">  - Objeções recorrentes</span></span></div>
-        <div class="ln"><span class="num">9</span><span class="src"><span class="tk-str">  - Casos que dava pra salvar</span></span></div>
-        <div class="ln"><span class="num">10</span><span class="src"><span class="tk-str">  - Ações concretas pra amanhã</span></span></div>
-        <div class="ln"><span class="num">11</span><span class="src"><span class="tk-str">  - Resumo numérico`</span>;</span></div>
-      </div>
-    </div>
-
-    <p>Stack escolhida pela combinação custo zero + manutenção mínima:</p>
+    <h2>Stack 100% gratuita, sem API oficial e sem terceiro pago</h2>
+    <p>O mercado tem caminho fácil pra isso: Omnichat, Take Blip, Chatwoot pago, ou WhatsApp Cloud API oficial. Todos custam — alguns muito. E o oficial obriga a tirar o WhatsApp do celular, virando "número de empresa".</p>
+    <p>A solução foi por outro caminho:</p>
     <ul>
-      <li><strong>Coletor</strong> — Apps Script rodando dentro de cada conta Gmail (3 cópias), lê inbox e filtra remetentes automáticos (ML, Shopee, Tiny, Correios, no-reply).</li>
-      <li><strong>Planilha central</strong> — Google Sheets como banco, compartilhada com os 3 atendentes em modo Editor.</li>
-      <li><strong>Analisador</strong> — Apps Script único na conta principal, lê tudo da planilha, manda pro Gemini 2.5 Flash, posta no Slack.</li>
-      <li><strong>Slack</strong> — canal dedicado <code>#atendimento-insights</code> com webhook próprio.</li>
+      <li><strong>Baileys</strong> (<code>@whiskeysockets/baileys</code>) — biblioteca não-oficial do WhatsApp Web. Captura tudo que entra no número sem precisar tirar o app do celular.</li>
+      <li><strong>Fly.io</strong> hospedando o Node 24/7 na região <code>gru</code>. Crédito gratuito do Hobby plan cobre o uso (~U$2/mês), então a fatura é R$ 0.</li>
+      <li><strong>SQLite</strong> em volume persistente — histórico fica salvo, sobrevive a deploy.</li>
+      <li><strong>Gemini 2.5 Flash</strong> (free tier) analisa todo dia às 6h.</li>
+      <li><strong>Slack</strong> entrega o relatório em <code>#whatsapp-relatorios</code>. Slash command <code>/relatorio</code> permite puxar análise sob demanda (hoje, ontem, semana).</li>
+      <li><strong>Google Sheets</strong> via Apps Script Web App — 6 abas com histórico estruturado.</li>
     </ul>
+    <p>Apenas-leitura. Nenhuma mensagem é enviada pelo Baileys (reduz risco de ban do número).</p>
   </div>
 </section>
 
-<!-- 04 COMO FUNCIONA COM FLUXOGRAMA (variante 04) -->
+<!-- 04 COMO FUNCIONA -->
 <section class="case-section">
   <div class="container">
     <div class="label">04 · Como funciona</div>
     <h2>Fluxo end-to-end</h2>
-    <p>Pipeline simples: 3 coletores na ponta, 1 analisador no centro, 1 webhook na saída. Tudo orquestrado por triggers de tempo do próprio Apps Script.</p>
-
     <div class="flow-grid">
       <div class="flow-node">
-        <div class="icon">@</div>
-        <div class="name">Gmail</div>
-        <div class="sub">3 atendentes</div>
+        <div class="icon">📱</div>
+        <div class="name">WhatsApp</div>
+        <div class="sub">no celular</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-node">
         <div class="icon">⊞</div>
-        <div class="name">Sheets</div>
-        <div class="sub">staging</div>
+        <div class="name">Baileys</div>
+        <div class="sub">Fly.io 24/7</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">💾</div>
+        <div class="name">SQLite</div>
+        <div class="sub">persistente</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-node">
         <div class="icon">✨</div>
         <div class="name">Gemini</div>
-        <div class="sub">prompt focado</div>
+        <div class="sub">cron 6h</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-node">
         <div class="icon">#</div>
-        <div class="name">Slack</div>
-        <div class="sub">08:00 diário</div>
+        <div class="name">Slack + Sheets</div>
+        <div class="sub">relatório</div>
       </div>
     </div>
-    <p class="flow-note">trigger diário 07h (coleta) e 08h (análise) · Apps Script · 0 servidor próprio</p>
+    <p class="flow-note">cron diário 06:00 America/Sao_Paulo · slash command <code>/relatorio hoje|ontem|semana</code> sob demanda · grupos ignorados por padrão</p>
   </div>
 </section>
 
-<!-- 05 RESULTADO COM DASHBOARD (variante 03) -->
+<!-- 05 RESULTADO -->
 <section class="case-section">
   <div class="container">
     <div class="label">05 · Resultado</div>
-    <h2>Diário, automático, custo zero</h2>
-
+    <h2>Operação visível, custo R$ 0</h2>
     <div class="dash-grid">
       <div class="kpi">
         <div class="lbl">Custo mensal</div>
         <div class="val">R$ 0</div>
-        <div class="delta">stack gratuita</div>
+        <div class="delta">crédito Hobby cobre</div>
       </div>
       <div class="kpi alt">
-        <div class="lbl">Leitura manual</div>
-        <div class="val">0 min</div>
-        <div class="delta">por dia</div>
+        <div class="lbl">Atendimentos</div>
+        <div class="val">~160</div>
+        <div class="delta">por semana</div>
       </div>
       <div class="kpi">
-        <div class="lbl">Seções fixas</div>
-        <div class="val">5</div>
-        <div class="delta">padronizadas</div>
+        <div class="lbl">Abas no Sheets</div>
+        <div class="val">6</div>
+        <div class="delta">resumo, sugestões, sem resposta...</div>
       </div>
       <div class="kpi alt">
         <div class="lbl">Entregue</div>
-        <div class="val">08:00</div>
+        <div class="val">06:00</div>
         <div class="delta">antes do expediente</div>
       </div>
     </div>
-
-    <div class="kpi-wide">
-      <div class="lbl">Origem das objeções identificadas (últimos 7 dias)</div>
-      <div class="bar-row"><span class="name">preço</span><div class="bar"><div class="fill" style="width:78%"></div></div><span class="num">28</span></div>
-      <div class="bar-row"><span class="name">prazo</span><div class="bar"><div class="fill" style="width:52%;background:var(--accent-2)"></div></div><span class="num">19</span></div>
-      <div class="bar-row"><span class="name">frete</span><div class="bar"><div class="fill" style="width:34%;background:var(--warn)"></div></div><span class="num">12</span></div>
-      <div class="bar-row"><span class="name">dúvida</span><div class="bar"><div class="fill" style="width:22%;background:var(--danger)"></div></div><span class="num">8</span></div>
-    </div>
-
     <ul>
-      <li>Padrões de objeção viraram <strong>respostas-padrão</strong> em vez de descobertas individuais.</li>
-      <li>Atendimentos fracos passaram a ser <strong>revisados no mesmo dia</strong>.</li>
-      <li>Decisões operacionais (preço, prazo, copy) ganharam <strong>fonte de dado real</strong>.</li>
-      <li>Equipe inteira aprende com o que cada um descobre — conhecimento deixou de ser individual.</li>
+      <li>Padrões de objeção, dúvida e perda de venda viraram <strong>dado diário</strong>, não impressão mensal.</li>
+      <li>Atendimentos fracos ou lentos passaram a ser <strong>revisados no dia seguinte</strong>.</li>
+      <li>WhatsApp Business continua no celular, funcionando normal — sem migração pra Cloud API.</li>
+      <li>Dono pode pedir relatório de qualquer dia pelo Slack com <code>/relatorio</code>, sem abrir Sheets.</li>
     </ul>
   </div>
 </section>
 
-<!-- 06 INSIGHTS -->
+<!-- 06 ERROS REAIS -->
 <section class="case-section">
   <div class="container">
-    <div class="label">06 · Insights aprendidos</div>
-    <h2>O que essa automação ensinou</h2>
-    <div class="callout">
-      <p>"O foco do prompt importa mais que o modelo. Gemini Flash analisando 'perda de venda' devolve insight melhor que GPT-4 analisando 'qualidade de atendimento'."</p>
+    <div class="label">06 · Erros e aprendizados</div>
+    <h2>O que fui aprendendo no caminho</h2>
+    <p>A primeira versão funcionou tecnicamente no primeiro dia. Mas o relatório que ela cuspia era ruim. Demorou semanas pra ficar útil de verdade — porque o problema não era código, era contexto.</p>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 1 · prompt genérico demais</div>
+      <h3>A IA sugeria coisas que não fazem sentido no meu negócio</h3>
+      <p>No começo, o Gemini devolvia conselhos do tipo <em>"quando faltar produto, ofereça uma alternativa"</em>. Faz sentido em quase qualquer e-commerce. Mas eu vendo <strong>toner pra impressora</strong> — produto é exato. Toner do modelo X só serve na impressora X. Oferecer outro é vender errado e gerar devolução. Tive que reescrever o prompt deixando claro: <strong>produto exato, sem upsell, sem alternativa</strong>.</p>
     </div>
-    <div class="callout">
-      <p>"A maior dificuldade não foi programar. Foi decidir o que ignorar — sem filtro de remetente, a IA gasta tokens analisando email do Mercado Livre."</p>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 2 · IA passando a mão na cabeça</div>
+      <h3>O feedback era diplomático demais pra ser útil</h3>
+      <p>Pedi "feedback sobre o atendimento" e o Gemini virou consultor educado: <em>"a atendente foi cordial mas poderia ter explorado melhor a oportunidade"</em>. Texto bonito, ação zero. Reescrevi o prompt pra ser direto: se o atendimento foi ruim, fala que foi ruim, cita o trecho específico, diz o que faltou. Sem rodeio.</p>
     </div>
-    <div class="callout">
-      <p>"Coletar em conta separada da que analisa foi a melhor decisão de arquitetura. Permissão Gmail é por conta — se eu tentasse ler tudo da minha, não funcionava."</p>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 3 · sem horário comercial</div>
+      <h3>Cliente que escrevia 23h aparecia como "atrasado 12h"</h3>
+      <p>A primeira versão calculava tempo de resposta de forma ingênua — última mensagem do cliente até resposta da equipe. Resultado: quem mandou mensagem fora do expediente virava "caso urgente, sem resposta há horas". Mas a equipe nem estava lá. Tive que ensinar o sistema o que é <strong>janela comercial</strong> e descontar essas horas.</p>
     </div>
-    <p>Conhecimento disperso em três caixas virou <strong>uma única página por dia</strong>. O resumo não substitui leitura — direciona. No primeiro café da manhã o dono já sabe o que precisa virar conversa com o time hoje.</p>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 4 · ruído nos remetentes</div>
+      <h3>Análises incluíam prestadores e mensagens internas</h3>
+      <p>O número recebe coisa de cliente, mas também de transportadora, motoboy, fornecedor, parente. No começo entrava tudo na análise como se fosse atendimento. Gerou conclusões esquisitas tipo <em>"baixo engajamento em conversas longas"</em> — sim, porque era o motoboy mandando localização. Adicionei filtro por número conhecido pra deixar só cliente real.</p>
+    </div>
+
+    <p>Padrão que aprendi: <strong>automação técnica é a parte fácil</strong>. O difícil é fazer a saída ser útil de verdade pra quem vai ler. Cada um desses ajustes demandou rodar uma semana, ler o resultado, ajustar prompt, repetir.</p>
   </div>
 </section>
 
+<!-- CASES RELACIONADOS -->
 <section class="case-section" style="background:#0a0e13">
   <div class="container">
     <div class="label">Cases relacionados</div>
