@@ -86,6 +86,21 @@ section .section-sub{color:var(--muted);font-size:16px;margin:0 0 40px;max-width
 .philo-inline-quote{margin:24px 0;padding:16px 22px;background:var(--card);border-left:3px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;font-style:italic;color:var(--muted);font-size:17px;max-width:640px;line-height:1.55}
 .philo-inline-quote cite{display:block;margin-top:8px;font-style:normal;font-size:12px;font-family:var(--mono);color:var(--muted);opacity:.7}
 @media(max-width:720px){.philo-big-quote{font-size:24px}}
+/* CHANGELOG — lista de últimas mudanças, estilo git log */
+.changelog{padding:72px 0;border-bottom:1px solid var(--border)}
+.changelog-head{display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap;max-width:780px;margin-bottom:14px}
+.changelog-head h2{font-size:26px;font-weight:600;letter-spacing:-.02em;margin:0}
+.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent-2);margin-right:8px;animation:pulse 2.2s ease-in-out infinite;vertical-align:middle}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.live-label{font-family:var(--mono);font-size:12px;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em}
+.changelog-intro{color:var(--muted);font-size:15px;margin:0 0 28px;max-width:680px;line-height:1.65}
+.changelog-list{list-style:none;padding:0;margin:0;max-width:780px;font-family:var(--mono);font-size:13.5px}
+.changelog-item{display:flex;gap:18px;padding:11px 0;border-bottom:1px dashed var(--border);align-items:baseline}
+.changelog-item:last-child{border-bottom:none}
+.changelog-date{color:var(--accent);flex-shrink:0;width:50px}
+.changelog-msg{color:var(--text);line-height:1.55;flex:1}
+.changelog-msg strong{color:var(--accent-2);font-weight:500}
+@media(max-width:720px){.changelog-item{flex-direction:column;gap:2px}.changelog-date{width:auto}}
 .case-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;display:block;color:var(--text)}
 .case-card:hover{border-color:var(--accent);text-decoration:none}
 .case-card .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
@@ -173,6 +188,46 @@ footer a{color:var(--muted)}
     </div>
   </div>
 </header>
+
+<section class="changelog">
+  <div class="container">
+    <div class="changelog-head">
+      <h2>Não é site institucional</h2>
+      <span><span class="live-dot"></span><span class="live-label">em movimento</span></span>
+    </div>
+    <p class="changelog-intro">Não tem "Sobre nós" parado no tempo. Toda semana algo é publicado, corrigido ou repensado aqui — e cada commit vai pro Git público. As últimas mudanças:</p>
+    <ul class="changelog-list">
+      <li class="changelog-item">
+        <span class="changelog-date">31/05</span>
+        <span class="changelog-msg">case <strong>motoboy</strong> ganhou tela de reimpressão real e novo enfoque — do pagamento à entrega em 10min</span>
+      </li>
+      <li class="changelog-item">
+        <span class="changelog-date">31/05</span>
+        <span class="changelog-msg">case <strong>atendimento-insights</strong> corrigido — não era Gmail, era WhatsApp Business via Baileys + Fly.io</span>
+      </li>
+      <li class="changelog-item">
+        <span class="changelog-date">31/05</span>
+        <span class="changelog-msg"><strong>filosofia</strong> reescrita — 7 blocos com cara de GPT viraram 3 com layout diferente</span>
+      </li>
+      <li class="changelog-item">
+        <span class="changelog-date">31/05</span>
+        <span class="changelog-msg">email <strong>labs@nak.api.br</strong> no ar + "Quer trocar ideia?" no hero</span>
+      </li>
+      <li class="changelog-item">
+        <span class="changelog-date">31/05</span>
+        <span class="changelog-msg">fix crítico de SEO — URLs sem <code>.html</code> (Cloudflare 307 quebrava indexação)</span>
+      </li>
+      <li class="changelog-item">
+        <span class="changelog-date">24/05</span>
+        <span class="changelog-msg">primeira semana medida no Google Search Console — 3 das 5 URLs indexadas</span>
+      </li>
+      <li class="changelog-item">
+        <span class="changelog-date">17/05</span>
+        <span class="changelog-msg"><strong>launch</strong> — site no ar, 4 primeiros cases publicados</span>
+      </li>
+    </ul>
+  </div>
+</section>
 
 <section id="filosofia">
   <div class="container">
