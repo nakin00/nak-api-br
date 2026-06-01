@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Do pagamento à entrega em 10 minutos (Motoboy) · nak.api.br</title>
+<title>Operação Motoboy com agilidade de delivery · nak.api.br</title>
 <meta name="description" content="Do pagamento aprovado ao motoboy saindo com a mercadoria, em ≤10 minutos. Apps Script fatura e emite NF, Python imprime separação na térmica. Custo: só a impressora.">
 <meta name="keywords" content="tiny erp python automação, impressora térmica python, separação pedido automática, polling tiny api, motoboy ecommerce">
 <meta name="robots" content="index, follow">
@@ -123,7 +123,7 @@ footer a{color:var(--muted)}
       <div>
         <div class="breadcrumb"><a href="../">~</a> / cases / motoboy-impressao</div>
         <div class="category">Operação</div>
-        <h1>Do pagamento à entrega em 10 minutos, sem clique humano</h1>
+        <h1>Pedido aprovado, motoboy na rua em 10 minutos</h1>
         <div class="tags">
           <span class="tag">python</span>
           <span class="tag">tiny-api</span>
@@ -275,18 +275,18 @@ footer a{color:var(--muted)}
 
 <section class="case-section">
   <div class="container">
-    <div class="label">06 · Insights aprendidos</div>
-    <h2>O que essa automação ensinou</h2>
-    <div class="callout">
-      <p>"Polling simples bate webhook complicado quando o ambiente é local. Se a internet caí, polling tenta de novo. Webhook perdeu, perdeu."</p>
-    </div>
-    <div class="callout">
-      <p>"Estado em JSON local funciona melhor que banco quando é uma máquina só. Não precisa de Postgres pra guardar lista de IDs já impressos."</p>
-    </div>
-    <div class="callout">
-      <p>"O ganho não foi automatizar a impressão. Foi tirar uma decisão de cabeça da equipe — 'tem alguma coisa pra imprimir agora?'."</p>
-    </div>
-    <p>Esse case prova uma coisa que repete em quase toda automação operacional: o valor real não está na tarefa que foi automatizada. Está na <strong>carga mental</strong> que saiu da cabeça da equipe.</p>
+    <div class="label">06 · Melhorias depois do MVP</div>
+    <h2>Sistema simples desde o começo, refinado com o uso</h2>
+    <p>Diferente de outros cases aqui no nak.api.br, esse não teve um erro grande que me ensinou alguma lição. A automação foi simples e funcionou desde o primeiro dia. O que veio com o tempo foram <strong>melhorias incrementais</strong> — coisas pequenas que economizaram fricção em momentos específicos.</p>
+
+    <h3 style="font-size:20px;font-weight:600;margin:40px 0 16px;letter-spacing:-.01em">Tela de reimpressão de separação</h3>
+    <p>O sistema imprime tudo automaticamente, mas vez ou outra precisa <strong>reimprimir</strong> alguma separação — papel travou na térmica, alguém pegou o errado, perdeu no balcão. No começo isso significava rodar <code>reimprimir.bat</code> no terminal e passar o número da NF como argumento. Funcional, mas chato pra equipe que não convive com terminal.</p>
+    <p>Construí uma tela web simples que permite buscar pedidos do dia, ver lista de separações já impressas, e clicar pra reimprimir qualquer uma. Sem terminal, sem comando, sem saber qual NF buscar — basta filtrar por cliente ou data.</p>
+
+    <!-- TODO: adicionar mockup da tela de reimpressão -->
+
+    <p>Foi automatização <strong>relativamente simples</strong> que melhorou muito a eficiência da operação. O ganho não foi automatizar a impressão em si — foi tirar uma decisão de cabeça da equipe (<em>"tem alguma coisa pra imprimir agora?"</em>) e dar uma ferramenta de auto-serviço pra quando precisar intervir.</p>
+    <p>Carga mental zero pra operação, controle total quando precisa.</p>
   </div>
 </section>
 
