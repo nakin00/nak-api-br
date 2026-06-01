@@ -199,6 +199,10 @@ footer a{color:var(--muted)}
     <ul class="changelog-list">
       <li class="changelog-item">
         <span class="changelog-date">31/05</span>
+        <span class="changelog-msg">novo case <strong>nf-auto-correcao</strong> — 600 NFs/mês corrigidas sem clique humano (com bloco "Insistência" mostrando o caminho real)</span>
+      </li>
+      <li class="changelog-item">
+        <span class="changelog-date">31/05</span>
         <span class="changelog-msg">case <strong>motoboy</strong> ganhou tela de reimpressão real e novo enfoque — do pagamento à entrega em 10min</span>
       </li>
       <li class="changelog-item">
@@ -300,10 +304,24 @@ footer a{color:var(--muted)}
         <span class="arrow">ver documentação →</span>
       </a>
 
+      <a href="cases/nf-auto-correcao" class="case-card">
+        <div class="tags">
+          <span class="tag">apps-script</span>
+          <span class="tag">tiny-erp</span>
+          <span class="tag">cnpj.ws</span>
+          <span class="tag">scraping</span>
+          <span class="tag">fiscal</span>
+        </div>
+        <h3>Correção automática de NF rejeitada (quando o Tiny diz que não dá)</h3>
+        <p class="meta"><span class="meta-label problem">Problema</span>30% de 2000 NFs/mês rejeitadas pelo SEFAZ — pessoa gastava ~15h/mês corrigindo cadastro de PJ na mão.</p>
+        <p class="meta"><span class="meta-label result">Resultado</span>80% das rejeitadas corrigidas sem clique humano. Apps Script + 4 estratégias em cascata + scraping quando API não basta.</p>
+        <span class="arrow">ver documentação →</span>
+      </a>
+
       <div class="case-card" style="opacity: 0.4;">
         <div class="tags"><span class="tag">em breve</span></div>
         <h3>Mais cases sendo documentados</h3>
-        <p class="meta">ML coleta, ML etiquetas, Separação Printloja, Flex notificação, Correios Sheets, WhatsApp Análise. Cada um com mesma estrutura: dor, impacto, solução, resultado, insight.</p>
+        <p class="meta">NF Emissão Automática (irmão deste), ML coleta, ML etiquetas, Separação Printloja, Correios Sheets. Cada um com mesma estrutura: dor, impacto, solução, resultado, insight.</p>
       </div>
 
     </div>

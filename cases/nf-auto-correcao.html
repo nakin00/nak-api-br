@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Correção automática de NF rejeitada · nak.api.br</title>
+<meta name="description" content="30% das 2000 NFs/mês das 4 empresas rejeitavam no SEFAZ. Apps Script polla 4 Tinys, classifica por dados, corrige cadastro via cnpj.ws/ViaCEP e reemite. ~15h/mês de pessoa eliminadas.">
+<meta name="keywords" content="nf rejeitada tiny erp, correcao automatica nota fiscal, apps script tiny scraping, cnpj ws viacep, automacao fiscal ecommerce, sefaz rejeicao ie">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/cases/nf-auto-correcao">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="Correção automática de NF rejeitada (quando o Tiny diz que não dá)">
+<meta property="og:description" content="600 NFs/mês rejeitadas pelo SEFAZ. Apps Script + 4 estratégias em cascata + scraping da UI quando API não basta. 80% auto, 15h/mês economizadas.">
+<meta property="og:url" content="https://nak.api.br/cases/nf-auto-correcao">
+<meta property="og:locale" content="pt_BR">
+<meta property="article:section" content="Operação">
+<meta property="article:tag" content="apps-script">
+<meta property="article:tag" content="tiny-erp">
+<meta property="article:tag" content="cnpj-ws">
+<meta property="article:tag" content="scraping">
+<meta property="article:tag" content="fiscal">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Correção automática de NF rejeitada (Tiny)">
+<meta name="twitter:description" content="600 NFs/mês corrigidas sem clique humano. Apps Script + cascata 4 estratégias + scraping da UI quando API não basta.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Correção automática de NF rejeitada (quando o Tiny diz que não dá)",
+  "description": "Apps Script polla 4 empresas Tiny por NFs rejeitadas, classifica por dados, corrige cadastro e reemite. 80% auto, ~15h/mês de pessoa eliminadas.",
+  "author": { "@type": "Person", "name": "nak" },
+  "publisher": { "@type": "Organization", "name": "nak.api.br" },
+  "datePublished": "2026-05-31",
+  "inLanguage": "pt-BR",
+  "url": "https://nak.api.br/cases/nf-auto-correcao",
+  "about": ["Tiny ERP", "Nota fiscal", "SEFAZ", "Automação fiscal"],
+  "keywords": "nf rejeitada, tiny erp, cnpj.ws, apps script, scraping, fiscal"
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--danger:#EF4444;--warn:#F59E0B;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--radius:10px;--max:1100px}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+
+.case-hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.case-hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+.breadcrumb{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:24px}
+.category{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.case-hero h1{font-size:42px;font-weight:700;line-height:1.1;margin:0 0 20px;letter-spacing:-.02em}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.tag{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--border);color:var(--muted);border-radius:4px;text-transform:lowercase}
+.lead{color:var(--muted);font-size:17px;max-width:600px;margin:0}
+
+.mock-window{background:#0d1117;border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:0 20px 60px -20px rgba(0,0,0,.6)}
+.mock-dots{display:flex;gap:6px;margin-bottom:20px}
+.mock-dots span{width:12px;height:12px;border-radius:50%}
+.mock-dots .d1{background:#ff5f57}.mock-dots .d2{background:#febc2e}.mock-dots .d3{background:#28c840}
+.mock-log{font-family:var(--mono);font-size:13px;background:#0a0e13;border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:10px;line-height:1.5}
+.mock-log.ok{color:var(--accent-2)}.mock-log.warn{color:var(--warn)}.mock-log.err{color:var(--danger)}.mock-log.info{color:var(--muted)}
+
+.case-section{padding:64px 0;border-bottom:1px solid var(--border)}
+.case-section:last-child{border-bottom:none}
+.label{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.case-section h2{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0 0 24px}
+.case-section p{font-size:16px;color:var(--text);margin:0 0 16px;max-width:760px}
+.case-section ul{font-size:16px;color:var(--text);padding-left:20px;max-width:760px}
+.case-section ul li{margin-bottom:10px}
+.case-section ul li::marker{color:var(--muted)}
+
+.callout{border-left:3px solid var(--accent);background:var(--card);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin:24px 0;max-width:760px}
+.callout p{margin:0;font-style:italic;color:var(--muted)}
+
+/* CHAT MOCK — estilo Slack pra mostrar diálogo com Claude */
+.chat-mock{max-width:760px;margin:32px 0;background:#0d1117;border:1px solid var(--border);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 60px -20px rgba(0,0,0,.6)}
+.chat-msg{display:flex;gap:10px;max-width:88%}
+.chat-msg.from-me{align-self:flex-end;flex-direction:row-reverse}
+.chat-msg.from-claude{align-self:flex-start}
+.chat-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--bg)}
+.chat-avatar.j{background:var(--accent)}
+.chat-avatar.c{background:var(--accent-2)}
+.chat-bubble{padding:10px 14px;border-radius:12px;font-size:14.5px;line-height:1.5;color:var(--text)}
+.chat-msg.from-me .chat-bubble{background:#1e293b;border-bottom-right-radius:3px}
+.chat-msg.from-claude .chat-bubble{background:#1a2030;border:1px solid var(--border);border-bottom-left-radius:3px}
+.chat-divider{text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted);padding:6px 0;opacity:.6;letter-spacing:.05em}
+
+/* ERRO BLOCK */
+.erro-block{max-width:760px;margin:32px 0;padding:24px;background:#0d1117;border:1px solid var(--border);border-radius:var(--radius);border-left:3px solid var(--warn)}
+.erro-block .erro-titulo{font-family:var(--mono);font-size:12px;color:var(--warn);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.erro-block h3{font-size:18px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em;color:var(--text)}
+.erro-block p{font-size:15px;color:var(--muted);margin:0;line-height:1.65}
+.erro-block p strong{color:var(--text);font-weight:500}
+
+/* FLOWCHART */
+.flow-grid{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:32px 0;max-width:760px}
+.flow-node{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;flex:1;min-width:110px}
+.flow-node .icon{font-family:var(--mono);font-size:22px;color:var(--accent);margin-bottom:6px}
+.flow-node .name{font-size:13px;font-weight:500}
+.flow-node .sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px}
+.flow-arrow{font-family:var(--mono);color:var(--muted);font-size:18px;flex-shrink:0}
+.flow-note{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--muted);max-width:760px;text-align:center}
+
+/* DASHBOARD */
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;max-width:760px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.kpi .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.kpi .val{font-size:24px;font-weight:600;font-family:var(--mono);color:var(--accent-2);line-height:1}
+.kpi .delta{font-size:11px;color:var(--accent-2);margin-top:8px;font-family:var(--mono)}
+.kpi.alt .val{color:var(--accent)}
+.kpi.warn .val{color:var(--warn)}
+
+footer{padding:48px 0;color:var(--muted);font-size:13px}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--muted)}
+
+@media(max-width:900px){.case-hero-grid{grid-template-columns:1fr;gap:40px}.dash-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.case-hero h1{font-size:32px}.case-section{padding:48px 0}.case-section h2{font-size:24px}.flow-grid{flex-direction:column}.flow-arrow{transform:rotate(90deg)}nav .links{gap:16px}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <a href="../" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <div class="links">
+      <a href="../#cases">Cases</a>
+      <a href="../#filosofia">Filosofia</a>
+      <a href="../#stack">Stack</a>
+    </div>
+  </div>
+</nav>
+
+<header class="case-hero">
+  <div class="container">
+    <div class="case-hero-grid">
+      <div>
+        <div class="breadcrumb"><a href="../">~</a> / cases / nf-auto-correcao</div>
+        <div class="category">Operação · Fiscal</div>
+        <h1>Correção automática de NF rejeitada (quando o Tiny diz que não dá)</h1>
+        <div class="tags">
+          <span class="tag">apps-script</span>
+          <span class="tag">tiny-erp</span>
+          <span class="tag">cnpj.ws</span>
+          <span class="tag">brasilapi</span>
+          <span class="tag">scraping</span>
+          <span class="tag">slack</span>
+        </div>
+        <p class="lead">30% das 2000 NFs/mês emitidas em ML e Shopee eram rejeitadas pelo SEFAZ — quase sempre por dados de cadastro em PJ. Apps Script corrige antes que pessoa precise olhar. Custo R$ 0.</p>
+      </div>
+      <div>
+        <div class="mock-window">
+          <div class="mock-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+          <div class="mock-log info">10:00:00  trigger 10min · pollando 4 empresas</div>
+          <div class="mock-log warn">10:00:02  PRINT LOJA: 2 NFs rejeitadas (situacao=5)</div>
+          <div class="mock-log info">10:00:04  NF 198843: PJ sem IE → cnpj.ws → IE real</div>
+          <div class="mock-log ok">10:00:06  NF 198843: cadastro corrigido + reemitida</div>
+          <div class="mock-log err">10:00:08  NF 089592 (BA): IE recusada SEFAZ → escala Slack</div>
+          <div class="mock-log info">10:00:10  dedup: 3 NFs já tentadas 3x → skip</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">01 · Dor operacional</div>
+    <h2>30% das NFs rejeitavam — sempre alguém arrumando</h2>
+    <p>4 empresas emitindo cerca de <strong>2000 NFs/mês</strong> em Mercado Livre e Shopee. Desse total, ~<strong>30% rejeitavam no SEFAZ</strong> — quase sempre em pedidos de pessoa jurídica, por IE faltando, IE errada ou bairro vazio no cadastro.</p>
+    <p>A responsável pelo faturamento gastava <strong>1 a 2 minutos corrigindo cada uma</strong>: abrir NF rejeitada no Tiny, apagar CNPJ, colar de novo pra ele rebuscar dados, salvar, emitir. 600 NFs/mês × 1.5min dá cerca de <strong>15 horas por mês só nisso</strong>.</p>
+    <div class="callout">
+      <p>"Sou insistente. Não aceito 'não dá' como resposta — nem do Tiny, nem da IA que me ajuda a construir."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">02 · Impacto do problema</div>
+    <h2>Operação fiscal travando entrega</h2>
+    <ul>
+      <li><strong>15 horas/mês de pessoa</strong> em tarefa repetitiva, sempre a mesma sequência de cliques.</li>
+      <li><strong>Atraso direto nas entregas</strong> — NF rejeitada = pedido não pode sair, motoboy esperando ou correios perdendo coleta.</li>
+      <li><strong>Dependência da pessoa que conhece o fluxo</strong> do Tiny pra resolver rejeição. Se ela não estava, NFs acumulavam.</li>
+      <li><strong>Acúmulo silencioso</strong> — NF rejeitada não grita; só descobre quando olha. Em dia movimentado, muita coisa passava batido.</li>
+      <li><strong>Cliente impaciente</strong> sem saber por que o pedido não saiu — sendo que o problema era cadastral, não logístico.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">03 · Solução criada</div>
+    <h2>Apps Script + cascata de 4 estratégias pra IE</h2>
+    <p>Trigger a cada 10 minutos. Polla as 4 empresas no Tiny por NFs com <code>situacao=5</code> (rejeitada). Classifica por dados (não por mensagem de erro — explico no bloco "Erros"). Corrige o cadastro do contato e tenta reemitir.</p>
+    <p>Padrões corrigidos automaticamente:</p>
+    <ul>
+      <li><strong>PJ sem IE preenchida</strong> — consulta <code>cnpj.ws</code> (primário) ou BrasilAPI (fallback) pra pegar IE real. Sem IE ativa → marca como ISENTO.</li>
+      <li><strong>Bairro vazio</strong> — ViaCEP preenche.</li>
+    </ul>
+    <p>Cascata de 4 estratégias quando não acha IE (importante porque cada estado tem regra própria):</p>
+    <ul>
+      <li><code>cnpj.ws</code> retorna IE real → <code>indIEDest=1</code> contribuinte</li>
+      <li>BrasilAPI como fallback → <code>indIEDest=1</code></li>
+      <li>Marca como ISENTO → <code>indIEDest=2</code></li>
+      <li>Deixa vazio → <code>indIEDest=9</code></li>
+    </ul>
+    <p>Só escala pro Slack quando <strong>todas as 4</strong> estratégias falham — e a mensagem mostra qual falhou e por quê. Se algum dia o Tiny aceitar nossa correção, o bot continua de onde parou.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">04 · Como funciona</div>
+    <h2>Pipeline com 3 camadas de tentativa</h2>
+    <div class="flow-grid">
+      <div class="flow-node">
+        <div class="icon">⏱</div>
+        <div class="name">Trigger</div>
+        <div class="sub">10 min</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">⊞</div>
+        <div class="name">4 Tinys</div>
+        <div class="sub">situacao=5</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">⚙</div>
+        <div class="name">Classifica</div>
+        <div class="sub">por dados</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">🔧</div>
+        <div class="name">Corrige</div>
+        <div class="sub">cnpj.ws + ViaCEP</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">📤</div>
+        <div class="name">Reemite</div>
+        <div class="sub">v2 ou scraping</div>
+      </div>
+    </div>
+    <p class="flow-note">quando v2 e v3 não bastam · scraping da UI via OAuth Keycloak + XAJAX · usuário bot dedicado</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">05 · Insistência</div>
+    <h2>O caminho até descobrir o que dá pra automatizar</h2>
+    <p>Quem chega num case fechado raramente vê o caminho. Aqui vê. A automação não foi linear: sondei 14 endpoints da API v2 (todos 404), implementei v3 OAuth (read-only — <em>"método não compatível"</em>), descobri que Tiny <strong>estruturalmente não permite editar NF rejeitada por API</strong>, pivotei pra atacar upstream (NF nasce certa, projeto irmão), e quando isso não bastava pra NFs já rejeitadas, fiz scraping da UI via Keycloak + chamadas XAJAX.</p>
+    <p>Cada etapa veio depois de eu pressionar o Claude a tentar mais. Os trechos abaixo são reais:</p>
+
+    <div class="chat-divider">— pressionando antes de aceitar "não dá" —</div>
+
+    <div class="chat-mock">
+      <div class="chat-msg from-me">
+        <div class="chat-avatar j">J</div>
+        <div class="chat-bubble">clau, quero que reveja e analise se não tem alguma outra forma de corrigir essas nfs sem ação humana... deve ter alguma forma... a nf já tá lá, não tem como quando der erro na emissão, apagar cnpj e colocar de novo pra buscar os dados corretos?</div>
+      </div>
+      <div class="chat-msg from-claude">
+        <div class="chat-avatar c">C</div>
+        <div class="chat-bubble">Tá certa em pressionar. Antes de eu desistir da automação 100%, vou testar endpoints não-documentados da API v2 — várias APIs do Tiny existem mas não estão na doc oficial. Vou criar uma função sonda que tenta vários candidatos e mostra a resposta de cada um.</div>
+      </div>
+    </div>
+
+    <div class="chat-divider">— descobrindo o teto real —</div>
+
+    <div class="chat-mock">
+      <div class="chat-msg from-claude">
+        <div class="chat-avatar c">C</div>
+        <div class="chat-bubble">Sonda foi conclusiva: a API v2 simplesmente não tem como editar/excluir/regenerar NF rejeitada. Todos os 14 endpoints retornaram 404, e os params extras no <code>emitirNF</code> são ignorados. <strong>Não é falta de tentar — é limitação real da API v2.</strong></div>
+      </div>
+      <div class="chat-msg from-me">
+        <div class="chat-avatar j">J</div>
+        <div class="chat-bubble">se o pedido já tem nf vinculada, não tem como alterar o pedido<br><br>se o pedido já tem nf vinculada, não tem como emitir uma nova nf do mesmo pedido</div>
+      </div>
+    </div>
+
+    <div class="chat-divider">— quando o ciclo de remendos cansa —</div>
+
+    <div class="chat-mock">
+      <div class="chat-msg from-me">
+        <div class="chat-avatar j">J</div>
+        <div class="chat-bubble">estou cansada de toda hora ter que ficar arrumando.... PELO AMOR DE DEUS pq ainda tá dando erro?????</div>
+      </div>
+      <div class="chat-msg from-claude">
+        <div class="chat-avatar c">C</div>
+        <div class="chat-bubble">Tem razão de eu estar caçando bug por bug em vez de resolver a raiz. Vou parar de remediar e fazer correção em cascata robusta: se a 1ª estratégia falhar, tenta a 2ª, 3ª, 4ª. Não sai do bot até esgotar TODAS as opções.</div>
+      </div>
+    </div>
+
+    <p style="margin-top:32px"><strong>A IA é boa ferramenta de execução, mas não substitui a teimosia de quem conhece o problema.</strong> Quando aceita o primeiro "não dá", a solução fica na metade. Quando insiste, descobre se o teto é real ou se a IA só não procurou direito.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">06 · Resultado</div>
+    <h2>80% sem clique humano, 20% com 1 clique</h2>
+    <div class="dash-grid">
+      <div class="kpi alt">
+        <div class="lbl">NFs/mês corrigidas</div>
+        <div class="val">~600</div>
+        <div class="delta">de 2000 emitidas</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Auto sem clique</div>
+        <div class="val">80%</div>
+        <div class="delta">20% com 1 clique Slack</div>
+      </div>
+      <div class="kpi alt">
+        <div class="lbl">Tempo eliminado</div>
+        <div class="val">~15h</div>
+        <div class="delta">por mês de pessoa</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Custo mensal</div>
+        <div class="val">R$ 0</div>
+        <div class="delta">Apps Script grátis</div>
+      </div>
+    </div>
+    <ul>
+      <li>NFs rejeitadas paradas viraram fluxo automático: trigger 10 min, pessoa só entra nos casos genuinamente impossíveis.</li>
+      <li>Os 20% que sobram tem motivo real (ex: IE inválida em estado peculiar como BA, que rejeita mesmo IE retornada pelo cnpj.ws).</li>
+      <li>A responsável pelo faturamento foi liberada das 15h/mês — fluxo agora roda 24/7 incluindo finais de semana.</li>
+      <li>Pedido não atrasa mais por problema cadastral — o que atrasa é só o que era pra atrasar mesmo.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">07 · Erros e aprendizados</div>
+    <h2>O caminho real de quem rodou e quebrou</h2>
+    <p>Cada erro abaixo é coisa que aconteceu rodando em produção, não planejando no papel. Foi assim que cheguei nos 80%:</p>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 1 · cnpj.ws rate limit virando "ISENTO" errado</div>
+      <h3>O bot achava que cliente não tinha IE quando na verdade tinha</h3>
+      <p><code>cnpj.ws</code> limita a <strong>3 requisições por minuto</strong>. O bot consultava várias vezes no mesmo ciclo, batia no rate limit, recebia erro e assumia <em>"sem IE"</em> → marcava cliente como ISENTO → SEFAZ recusava porque o cliente era contribuinte. Era um falso ISENTO virando rejeição. <strong>Fix:</strong> cache de 24h por CNPJ + retry com espera de 21s no erro 429 + aborta cascata se rate limited (não chuta ISENTO, deixa pra próxima execução).</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 2 · IE da Bahia que cnpj.ws retorna mas SEFAZ recusa</div>
+      <h3>Quando o cadastro está certo mas o estado não aceita</h3>
+      <p>NF da filial 18.301.502/0002-07 (BA): <code>cnpj.ws</code> retornou IE válida, bot corrigiu cadastro e tentou reemitir. SEFAZ-BA recusou: <em>"IE incorreta"</em>. <strong>Aprendizado:</strong> BA é peculiar — não aceita PJ marcada como isento nem como não-contribuinte. As 4 estratégias falham legitimamente, é caso manual genuíno. O bot escala Slack após grace period de 25 min, sem tentar mais.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 3 · Tiny atualizou versão e quebrou o login do scraping</div>
+      <h3>Update do front quebrou o login Keycloak</h3>
+      <p>Em 29/05 o Tiny passou de versão <code>3.87.58</code> pra <code>3.88.01</code>. O <code>efetuarLogin</code> começou a retornar <em>"A página está usando versão antiga do sistema"</em>. <strong>Fix:</strong> detecção dinâmica de versão via regex no HTML da home (<code>xajax_core.js?v=3.88.01</code>), adapta a updates futuros sem precisar mexer no código. <strong>Lição:</strong> esperar mais quebras a cada update grande do Tiny. É a natureza do scraping — você não controla o que muda lá.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 4 · O bot derrubava minha sessão no Tiny</div>
+      <h3>Primeira versão fazia login com meu usuário</h3>
+      <p>O scraping precisa de sessão ativa. A 1ª versão usava o meu login → toda vez que o bot rodava, eu era deslogada do Tiny no meio do trabalho. <strong>Fix:</strong> criar usuário bot dedicado pra cada empresa (<code>bot@printloja</code>, <code>bot@printdobrasil</code>) com permissão "gerente". Bot e pessoa não competem mais por sessão.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 5 · contato.alterar.php silenciosamente recusava</div>
+      <h3>Endpoint pede campos obrigatórios que parecem opcionais</h3>
+      <p>O <code>contato.alterar.php</code> da v2 do Tiny precisa de <strong>sequência + nome + situação + id</strong> obrigatórios. Se você manda só o campo que quer mudar (que era o intuitivo), dá erro silencioso — endpoint retorna 200 mas não altera nada. <strong>Fix:</strong> chamar <code>obterContato</code> antes e mesclar campos novos com o cadastro existente. Sem essa mescla, hora nenhuma o cadastro era de fato atualizado.</p>
+    </div>
+
+    <p>Cada um desses tropeços foi descoberto rodando, não planejando. Por isso ciclo curto vale: <strong>testo rápido, erro rápido, corrijo rápido</strong>. Tentar prever tudo antes de subir só atrasa o aprendizado real.</p>
+  </div>
+</section>
+
+<section class="case-section" style="background:#0a0e13">
+  <div class="container">
+    <div class="label">Cases relacionados</div>
+    <h2>Outras automações operacionais</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <a href="motoboy-impressao" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Tiny + Python</div>
+        <div style="font-size:16px;font-weight:500">Do pagamento à entrega em 10 minutos (Motoboy) →</div>
+      </a>
+      <a href="ml-cancelamentos" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Mercado Livre</div>
+        <div style="font-size:16px;font-weight:500">Cancelamento pago no ML em 5 min →</div>
+      </a>
+      <a href="fretes-consolidado" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Financeiro · Tiny + Frenet</div>
+        <div style="font-size:16px;font-weight:500">Custo real de frete por NF →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container row">
+    <div><strong style="color:var(--text);">nak.api.br</strong> · <a href="../">voltar pro laboratório</a></div>
+    <div><a href="mailto:labs@nak.api.br">labs@nak.api.br</a> · Caso documentado em 2026</div>
+  </div>
+</footer>
+
+</body>
+</html>
