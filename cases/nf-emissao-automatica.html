@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emissão automática de NF · nak.api.br</title>
+<meta name="description" content="O bot virou a atividade principal da pessoa dedicada ao faturamento. 2000 NFs/mês emitidas automaticamente em 4 empresas Tiny. Validação preventiva via cnpj.ws + ViaCEP.">
+<meta name="keywords" content="emissao automatica nf tiny, apps script faturamento, cnpj ws validacao cadastro, naturezas operacao tiny, automacao fiscal ecommerce">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/cases/nf-emissao-automatica">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="Emissão automática de NF — bot fazendo a atividade principal de uma pessoa">
+<meta property="og:description" content="4 horas por dia de pessoa dedicada viraram trigger no Apps Script. 2000 NFs/mês emitidas automaticamente. Combinado com bot de correção: 99% sem clique humano.">
+<meta property="og:url" content="https://nak.api.br/cases/nf-emissao-automatica">
+<meta property="og:locale" content="pt_BR">
+<meta property="article:section" content="Operação">
+<meta property="article:tag" content="apps-script">
+<meta property="article:tag" content="tiny-erp">
+<meta property="article:tag" content="cnpj-ws">
+<meta property="article:tag" content="fiscal">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Emissão automática de NF (Tiny + Apps Script)">
+<meta name="twitter:description" content="4h/dia de pessoa dedicada ao faturamento → Apps Script. 2000 NFs/mês emitidas auto. Custo R$ 0.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Emissão automática de NF — bot fazendo a atividade principal de uma pessoa",
+  "description": "Apps Script polla pedidos aprovados em 4 Tinys, valida cadastro via cnpj.ws/ViaCEP, emite NF. 4 horas/dia de pessoa dedicada eliminadas.",
+  "author": { "@type": "Person", "name": "nak" },
+  "publisher": { "@type": "Organization", "name": "nak.api.br" },
+  "datePublished": "2026-05-31",
+  "inLanguage": "pt-BR",
+  "url": "https://nak.api.br/cases/nf-emissao-automatica",
+  "about": ["Tiny ERP", "Nota fiscal", "SEFAZ", "Automação fiscal"],
+  "keywords": "emissao nf, tiny erp, cnpj.ws, apps script, faturamento, fiscal"
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--danger:#EF4444;--warn:#F59E0B;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--radius:10px;--max:1100px}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+
+.case-hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.case-hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+.breadcrumb{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:24px}
+.category{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.case-hero h1{font-size:42px;font-weight:700;line-height:1.1;margin:0 0 20px;letter-spacing:-.02em}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.tag{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--border);color:var(--muted);border-radius:4px;text-transform:lowercase}
+.lead{color:var(--muted);font-size:17px;max-width:600px;margin:0}
+
+.mock-window{background:#0d1117;border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:0 20px 60px -20px rgba(0,0,0,.6)}
+.mock-dots{display:flex;gap:6px;margin-bottom:20px}
+.mock-dots span{width:12px;height:12px;border-radius:50%}
+.mock-dots .d1{background:#ff5f57}.mock-dots .d2{background:#febc2e}.mock-dots .d3{background:#28c840}
+.mock-log{font-family:var(--mono);font-size:13px;background:#0a0e13;border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:10px;line-height:1.5}
+.mock-log.ok{color:var(--accent-2)}.mock-log.warn{color:var(--warn)}.mock-log.err{color:var(--danger)}.mock-log.info{color:var(--muted)}
+
+.case-section{padding:64px 0;border-bottom:1px solid var(--border)}
+.case-section:last-child{border-bottom:none}
+.label{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.case-section h2{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0 0 24px}
+.case-section p{font-size:16px;color:var(--text);margin:0 0 16px;max-width:760px}
+.case-section ul{font-size:16px;color:var(--text);padding-left:20px;max-width:760px}
+.case-section ul li{margin-bottom:10px}
+.case-section ul li::marker{color:var(--muted)}
+
+.callout{border-left:3px solid var(--accent);background:var(--card);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin:24px 0;max-width:760px}
+.callout p{margin:0;font-style:italic;color:var(--muted)}
+
+.timeline{max-width:760px;margin:32px 0}
+.timeline-step{display:flex;gap:20px;padding:18px 0;border-bottom:1px dashed var(--border);align-items:baseline}
+.timeline-step:last-child{border-bottom:none}
+.timeline-date{font-family:var(--mono);font-size:12px;color:var(--accent);flex-shrink:0;width:60px;text-transform:uppercase;letter-spacing:.05em;padding-top:2px}
+.timeline-content{flex:1}
+.timeline-content h4{margin:0 0 6px;font-size:16px;font-weight:600;color:var(--text)}
+.timeline-content p{margin:0;font-size:14px;color:var(--muted);line-height:1.6}
+
+.erro-block{max-width:760px;margin:32px 0;padding:24px;background:#0d1117;border:1px solid var(--border);border-radius:var(--radius);border-left:3px solid var(--warn)}
+.erro-block .erro-titulo{font-family:var(--mono);font-size:12px;color:var(--warn);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.erro-block h3{font-size:18px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em;color:var(--text)}
+.erro-block p{font-size:15px;color:var(--muted);margin:0;line-height:1.65}
+.erro-block p strong{color:var(--text);font-weight:500}
+
+.flow-grid{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:32px 0;max-width:760px}
+.flow-node{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;flex:1;min-width:110px}
+.flow-node .icon{font-family:var(--mono);font-size:22px;color:var(--accent);margin-bottom:6px}
+.flow-node .name{font-size:13px;font-weight:500}
+.flow-node .sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px}
+.flow-arrow{font-family:var(--mono);color:var(--muted);font-size:18px;flex-shrink:0}
+.flow-note{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--muted);max-width:760px;text-align:center}
+
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;max-width:760px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.kpi .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.kpi .val{font-size:24px;font-weight:600;font-family:var(--mono);color:var(--accent-2);line-height:1}
+.kpi .delta{font-size:11px;color:var(--accent-2);margin-top:8px;font-family:var(--mono)}
+.kpi.alt .val{color:var(--accent)}
+.kpi.warn .val{color:var(--warn)}
+
+footer{padding:48px 0;color:var(--muted);font-size:13px}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--muted)}
+
+@media(max-width:900px){.case-hero-grid{grid-template-columns:1fr;gap:40px}.dash-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.case-hero h1{font-size:32px}.case-section{padding:48px 0}.case-section h2{font-size:24px}.flow-grid{flex-direction:column}.flow-arrow{transform:rotate(90deg)}nav .links{gap:16px}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <a href="../" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <div class="links">
+      <a href="../#cases">Cases</a>
+      <a href="../#filosofia">Filosofia</a>
+      <a href="../#stack">Stack</a>
+    </div>
+  </div>
+</nav>
+
+<header class="case-hero">
+  <div class="container">
+    <div class="case-hero-grid">
+      <div>
+        <div class="breadcrumb"><a href="../">~</a> / cases / nf-emissao-automatica</div>
+        <div class="category">Operação · Fiscal</div>
+        <h1>Bot fazendo a atividade principal de uma pessoa</h1>
+        <div class="tags">
+          <span class="tag">apps-script</span>
+          <span class="tag">tiny-erp</span>
+          <span class="tag">cnpj.ws</span>
+          <span class="tag">viacep</span>
+          <span class="tag">fiscal</span>
+        </div>
+        <p class="lead">4 horas por dia da pessoa dedicada ao faturamento viraram trigger automático no Apps Script. 2000 NFs/mês emitidas, validadas e corrigidas antes de nascer. Custo R$ 0.</p>
+      </div>
+      <div>
+        <div class="mock-window">
+          <div class="mock-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+          <div class="mock-log info">09:15:02  trigger · pedidos aprovados nas 4 empresas</div>
+          <div class="mock-log info">09:15:03  pedido 8472: validar cadastro (PJ)</div>
+          <div class="mock-log warn">09:15:04  PJ sem IE → cnpj.ws → IE encontrada</div>
+          <div class="mock-log ok">09:15:05  contato corrigido + NF emitida</div>
+          <div class="mock-log ok">09:15:08  etiqueta impressa (canal de venda)</div>
+          <div class="mock-log info">09:15:09  log: planilha atualizada</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">01 · Dor operacional</div>
+    <h2>A atividade principal de uma pessoa era emitir NF</h2>
+    <p>4 empresas vendendo em canais de venda online. ~2000 pedidos por mês entrando todos os dias. Cada pedido aprovado precisa de uma NF emitida pra poder sair da loja.</p>
+    <p>Pessoa dedicada ao faturamento gastava <strong>~4 horas por dia</strong> nessa tarefa: abrir pedido aprovado, conferir, faturar, emitir NF, repetir. Centenas de vezes por dia, todo dia, igual.</p>
+    <div class="callout">
+      <p>"Praticamente coloquei um bot pra fazer a atividade principal da pessoa."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">02 · Impacto do problema</div>
+    <h2>Operação amarrada à pessoa que entendia o fluxo</h2>
+    <ul>
+      <li><strong>4h/dia × pessoa específica</strong> — se ela faltava, faturamento parava.</li>
+      <li><strong>Pedido não saía sem NF</strong> — atraso no envio sempre que o backlog crescia.</li>
+      <li><strong>Erro humano repetido</strong> — em 2000 emissões/mês, esquecer detalhe acontecia.</li>
+      <li><strong>Escalar volume = contratar</strong> — crescer 50% nas vendas significaria pessoa nova só pra faturar.</li>
+      <li><strong>Sem visibilidade do que parou e por quê</strong> — quando NF rejeitava, ficava na caixa de problema da pessoa.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">03 · Solução criada</div>
+    <h2>Apps Script faturando o que era manual</h2>
+    <p>Trigger de tempo no Apps Script. Polla as 4 empresas no Tiny por pedidos aprovados. Pra cada um:</p>
+    <ul>
+      <li><strong>Filtra</strong> pelo canal de venda que se aplica (ignora os outros).</li>
+      <li><strong>Valida cadastro do cliente</strong> — PJ sem IE? Consulta <code>cnpj.ws</code>. Bairro vazio? ViaCEP.</li>
+      <li><strong>Corrige contato</strong> no Tiny via <code>contato.alterar.php</code> (com merge obrigatório de sequência/nome/situação).</li>
+      <li><strong>Gera + emite NF</strong> via API v2 do Tiny.</li>
+      <li><strong>Imprime etiqueta</strong> quando o canal exige (espera 30s pelo Tiny processar antes).</li>
+      <li><strong>Registra resultado</strong> em planilha — uma linha por NF: data, empresa, pedido, status, número da NF, mensagem.</li>
+      <li><strong>Notifica Slack</strong> quando algo dá errado, com link pro pedido.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">04 · A história não foi linear</div>
+    <h2>Do "gera e torce" ao ciclo completo</h2>
+    <p>A versão final que rodando hoje não saiu de uma vez. Foi uma sequência de descobertas:</p>
+
+    <div class="timeline">
+      <div class="timeline-step">
+        <div class="timeline-date">abr/26</div>
+        <div class="timeline-content">
+          <h4>V1 — "gera e torce"</h4>
+          <p>Primeira versão do bot. Pollava pedidos aprovados e emitia NF direto via Tiny v2. Funcionou pra eliminar a emissão manual — mas <strong>40% das NFs rejeitavam no SEFAZ</strong> por dados de cadastro errados em PJ (IE faltando, bairro vazio). Pessoa não emitia mais, mas tava corrigindo as rejeitadas.</p>
+        </div>
+      </div>
+
+      <div class="timeline-step">
+        <div class="timeline-date">mai/26</div>
+        <div class="timeline-content">
+          <h4>V2 — validação preventiva</h4>
+          <p>Em vez de gerar e descobrir que rejeitou, o bot passou a <strong>consultar o cadastro antes</strong>. Se PJ sem IE → cnpj.ws preenche. Se bairro vazio → ViaCEP. Cadastro corrigido, depois a NF é gerada.</p>
+        </div>
+      </div>
+
+      <div class="timeline-step">
+        <div class="timeline-date">mai/26</div>
+        <div class="timeline-content">
+          <h4>Fix estrutural no Tiny UI</h4>
+          <p>Descoberto que o <code>gerar.nota.fiscal.pedido.php</code> da v2 copia campos do PEDIDO (snapshot congelado), não do contato atualizado. Mesmo corrigindo o contato, a NF nascia com dados velhos. Como <code>pedido.alterar.php</code> não aceita as chamadas, a saída foi configurar no Tiny UI <strong>Naturezas de Operação → "Consumidor final = Sim"</strong> nas naturezas dos canais. Assim toda NF futura nasce com <code>consumidor_final=S</code> por default.</p>
+        </div>
+      </div>
+
+      <div class="timeline-step">
+        <div class="timeline-date">mai/26</div>
+        <div class="timeline-content">
+          <h4>O ciclo só fecha com o irmão</h4>
+          <p>Mesmo com validação preventiva, alguns casos ainda rejeitam (IE retornada pelo cnpj.ws que o estado recusa, casos pontuais, etc). Pra cobrir isso, criei o bot irmão <a href="nf-auto-correcao">nf-auto-correcao</a> — que monitora as rejeitadas e remedia via scraping da UI quando v2 não basta. <strong>Sozinho este bot não chega aos 99% — precisa do par.</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">05 · Como funciona</div>
+    <h2>Pipeline preventivo, do pedido aprovado à etiqueta</h2>
+    <div class="flow-grid">
+      <div class="flow-node">
+        <div class="icon">⏱</div>
+        <div class="name">Trigger</div>
+        <div class="sub">tempo</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">⊞</div>
+        <div class="name">4 Tinys</div>
+        <div class="sub">aprovados</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">🔍</div>
+        <div class="name">Validar</div>
+        <div class="sub">cnpj.ws + cep</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">📤</div>
+        <div class="name">Emitir NF</div>
+        <div class="sub">Tiny v2</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">🏷</div>
+        <div class="name">Etiqueta</div>
+        <div class="sub">+ Slack</div>
+      </div>
+    </div>
+    <p class="flow-note">log em planilha por NF · @responsável no Slack quando falha · espera 30s pra etiqueta após NF emitida</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">06 · Resultado</div>
+    <h2>4 horas por dia eliminadas, 2000 NFs/mês automáticas</h2>
+    <div class="dash-grid">
+      <div class="kpi alt">
+        <div class="lbl">Tempo eliminado</div>
+        <div class="val">~4h/dia</div>
+        <div class="delta">de pessoa dedicada</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">NFs/mês emitidas</div>
+        <div class="val">~2000</div>
+        <div class="delta">automáticas</div>
+      </div>
+      <div class="kpi alt">
+        <div class="lbl">Com irmão de correção</div>
+        <div class="val">99%</div>
+        <div class="delta">sem clique humano</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Custo mensal</div>
+        <div class="val">R$ 0</div>
+        <div class="delta">Apps Script grátis</div>
+      </div>
+    </div>
+    <ul>
+      <li>A pessoa que gastava 4h/dia faturando foi liberada pra trabalhos que exigem cabeça humana — não repetição.</li>
+      <li>Faturamento roda <strong>24/7</strong>: pedido aprovado às 23h sai com NF emitida automática, pronto pra expedição no dia seguinte.</li>
+      <li>Pedido não trava mais por falta de pessoa pra emitir.</li>
+      <li>Crescer 50% nas vendas não exige contratar pessoa nova pra faturar — bot escala sozinho.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">07 · Erros e aprendizados</div>
+    <h2>O que descobri rodando em produção</h2>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 1 · cnpj.ws rate limit virando ISENTO errado</div>
+      <h3>Bot consultava várias vezes no ciclo e batia em rate limit</h3>
+      <p><code>cnpj.ws</code> limita a 3 req/min. O bot pesquisava várias vezes seguidas → rate limit → assumia "sem IE" → marcava ISENTO → SEFAZ recusava porque era contribuinte. <strong>Fix:</strong> cache 24h por CNPJ + retry 429 (espera 21s) + aborta a cascata se rate limited (não chuta ISENTO errado, deixa pra próxima execução).</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 2 · gerar.nota.fiscal.pedido.php usa snapshot do pedido</div>
+      <h3>Corrigir contato não bastava — pedido tinha cópia antiga</h3>
+      <p>O endpoint da v2 que emite NF copia campos do PEDIDO (snapshot congelado quando o pedido foi criado), não do contato atualizado. Mesmo corrigindo o cadastro, a NF nascia com dados velhos. <strong>Fix:</strong> Configurar no Tiny UI <strong>Naturezas de Operação → "Consumidor final = Sim"</strong> nas naturezas dos canais. Assim o snapshot já nasce certo. <code>pedido.alterar.php</code> não aceita as chamadas (sondamos 8+ formatos) — esse foi o jeito de resolver upstream.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 3 · Token ML expira em 6 horas</div>
+      <h3>Bot parava de imprimir etiqueta sem aviso</h3>
+      <p>O canal que precisa de etiqueta automática exige token OAuth. Access token dura 6 horas, refresh token 6 meses. <strong>Fix:</strong> implementado <code>obterTokenML</code> que renova automaticamente via refresh token quando access expira. Bot mantém autenticação sozinho.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 4 · Rate limit em lote grande de correções</div>
+      <h3>Processar 4+ NFs rejeitadas de uma vez estourava cnpj.ws</h3>
+      <p>Quando o irmão de correção (nf-auto-correcao) rodava em lote grande, a última NF do batch quase sempre estourava o limite de cnpj.ws e marcava ISENTO. <strong>Decisão:</strong> não corrigir. Em fluxo normal (1 NF por vez no trigger de emissão preventiva), nunca dá problema. Em lote, deixa pra próximo ciclo. Cache 24h ajuda a maioria dos casos repetidos.</p>
+    </div>
+
+    <p>Cada decisão dessa veio de problema real rodando, não planejamento no papel. <strong>Automatizar uma parte do problema não basta — tem que mapear o ciclo todo.</strong> Por isso este bot e o <a href="nf-auto-correcao">nf-auto-correcao</a> existem juntos.</p>
+  </div>
+</section>
+
+<section class="case-section" style="background:#0a0e13">
+  <div class="container">
+    <div class="label">Cases relacionados</div>
+    <h2>Pares e parentes deste case</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <a href="nf-auto-correcao" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Fiscal · Irmão</div>
+        <div style="font-size:16px;font-weight:500">Correção automática de NF rejeitada →</div>
+      </a>
+      <a href="motoboy-impressao" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Tiny + Python</div>
+        <div style="font-size:16px;font-weight:500">Do pagamento à entrega em 10 minutos →</div>
+      </a>
+      <a href="ml-cancelamentos" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Mercado Livre</div>
+        <div style="font-size:16px;font-weight:500">Cancelamento pago no ML em 5 min →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container row">
+    <div><strong style="color:var(--text);">nak.api.br</strong> · <a href="../">voltar pro laboratório</a></div>
+    <div><a href="mailto:labs@nak.api.br">labs@nak.api.br</a> · Caso documentado em 2026</div>
+  </div>
+</footer>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c48dfb70ce8140ffa8ad30637454ad88"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
