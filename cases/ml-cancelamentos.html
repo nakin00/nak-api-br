@@ -69,6 +69,9 @@ nav .links a:hover{color:var(--text);text-decoration:none}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
 .tag{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--border);color:var(--muted);border-radius:4px;text-transform:lowercase}
 .lead{color:var(--muted);font-size:17px;max-width:600px;margin:0}
+.running-since{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px;padding:5px 10px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:4px}
+.live-dot-mini{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent-2);animation:pulse-mini 2.2s ease-in-out infinite}
+@keyframes pulse-mini{0%,100%{opacity:1}50%{opacity:.35}}
 .mock-window{background:#0d1117;border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:0 20px 60px -20px rgba(0,0,0,.6)}
 .mock-dots{display:flex;gap:6px;margin-bottom:20px}
 .mock-dots span{width:12px;height:12px;border-radius:50%}
@@ -131,6 +134,7 @@ footer a{color:var(--muted)}
           <span class="tag">oauth</span>
           <span class="tag">slack</span>
         </div>
+        <div class="running-since"><span class="live-dot-mini"></span>em produção desde abr/2026</div>
         <p class="lead">Apps Script consulta a API do ML a cada 5 minutos, filtra cancelamentos de pedidos que já estavam pagos, e avisa no Slack. Evita que a mercadoria saia depois do cancelamento.</p>
       </div>
       <div>
