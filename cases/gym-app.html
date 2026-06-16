@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gym App PWA — configurando treino com 1 foto · nak.api.br</title>
-<meta name="description" content="Desisti dos apps pagos de academia porque configurar era trabalhoso demais. Fiz PWA próprio que aceita foto do treino, Gemini parseia, workout configurado em 2 minutos. Custo R$ 0.">
+<title>Tracker de academia no navegador (PWA) configurado por foto · nak.api.br</title>
+<meta name="description" content="Desisti dos apps de academia porque configurar era trabalhoso demais. PWA próprio que abre no navegador: foto do treino → Gemini → workout em 2 minutos. Sem App Store, sem mensalidade, R$ 0.">
 <meta name="keywords" content="pwa academia, app treino offline, configurar treino com foto, gemini ocr workout, cloudflare pages d1, fitness app pwa">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://nak.api.br/cases/gym-app">
 
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="nak.api.br">
-<meta property="og:title" content="Gym App PWA — configurando treino com 1 foto">
-<meta property="og:description" content="Desisti dos apps pagos porque configurar era trabalhoso demais. PWA + Gemini: foto do treino → workout em 2 minutos. R$ 0/mês.">
+<meta property="og:title" content="Tracker de academia no navegador, configurado por foto">
+<meta property="og:description" content="Desisti dos apps de academia. PWA próprio que abre no navegador: foto do treino → Gemini → workout em 2 minutos. Sem App Store, sem mensalidade.">
 <meta property="og:url" content="https://nak.api.br/cases/gym-app">
 <meta property="og:locale" content="pt_BR">
 <meta property="article:section" content="Pessoal">
@@ -23,15 +23,15 @@
 <meta property="article:tag" content="oauth">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Gym App PWA — configurando treino com 1 foto">
-<meta name="twitter:description" content="Desisti dos apps pagos. Foto do treino → Gemini → workout em 2 min. Offline-first, R$ 0.">
+<meta name="twitter:title" content="Tracker de academia no navegador (PWA)">
+<meta name="twitter:description" content="PWA que abre no navegador. Foto do treino → Gemini → workout em 2 min. Sem App Store, com relatório de progressão. R$ 0.">
 
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  "headline": "Gym App PWA — configurando treino com 1 foto",
-  "description": "PWA pessoal com Cloudflare Pages + D1 + Gemini pra parsear foto do treino. Offline-first, multi-usuário, custo R$ 0.",
+  "headline": "Tracker de academia no navegador (PWA) configurado por foto",
+  "description": "PWA pessoal que abre no navegador (sem App Store) — Cloudflare Pages + D1 + Gemini pra parsear foto do treino. Offline-first, com relatório de progressão de carga.",
   "author": { "@type": "Person", "name": "nak" },
   "publisher": { "@type": "Organization", "name": "nak.api.br" },
   "datePublished": "2026-06-15",
@@ -166,7 +166,7 @@ footer a{color:var(--muted)}
       <div>
         <div class="breadcrumb"><a href="../">~</a> / cases / gym-app</div>
         <div class="category">Pessoal · PWA</div>
-        <h1>App de academia que configura sozinho — você só manda foto do treino</h1>
+        <h1>Tracker de academia no navegador, configurado por uma foto</h1>
         <div class="tags">
           <span class="tag">pwa</span>
           <span class="tag">cloudflare-pages</span>
@@ -176,7 +176,7 @@ footer a{color:var(--muted)}
           <span class="tag">offline-first</span>
         </div>
         <div class="running-since"><span class="live-dot-mini"></span>em produção desde mai/2026 · uso pessoal</div>
-        <p class="lead">Desisti do Strong e do Hevy porque configurar treino era trabalho demais. Fiz meu próprio: foto do treino → Gemini parseia → workout pronto em 2 minutos. PWA, offline-first, custo R$ 0.</p>
+        <p class="lead">Desisti do Strong e do Hevy porque configurar treino era trabalho demais. Fiz meu próprio: PWA que abre no navegador, foto do treino → Gemini parseia → workout pronto em 2 minutos. Com relatório de progressão de carga. Sem App Store, sem mensalidade, R$ 0.</p>
       </div>
       <div>
         <div class="phone-mock">
@@ -264,6 +264,7 @@ footer a{color:var(--muted)}
       </div>
     </div>
 
+    <p>Decisão consciente: <strong>PWA, não app nativo de loja</strong>. Publicar app nativo exige pagar Apple Developer (US$ 99/ano), Google Play Console (US$ 25 único) e passar por aprovação. Pra um projeto pessoal, custo não justificava. PWA roda no navegador e dá pra adicionar à tela inicial do celular como atalho — visualmente parece app, mas sem taxa de loja, sem aprovação, sem dependência de terceiro pra atualizar.</p>
     <p>Stack escolhida pelo trio custo + offline + multi-dispositivo:</p>
     <ul>
       <li><strong>PWA single-page</strong> — instala como app no celular, funciona offline.</li>
@@ -350,6 +351,11 @@ footer a{color:var(--muted)}
         <h4>Funciona offline</h4>
         <p>Academia com wifi ruim não é problema. Salva local + sincroniza depois.</p>
       </div>
+      <div class="feature-card">
+        <div class="feat-icon">📈</div>
+        <h4>Relatório de progressão</h4>
+        <p>Carga de cada exercício ao longo do tempo. Vê se está evoluindo, estagnado ou regredindo — sem precisar lembrar.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -382,10 +388,11 @@ footer a{color:var(--muted)}
     </div>
     <ul>
       <li>Parei de chutar peso. Cada série tem dado da anterior visível.</li>
-      <li>Progressão de carga virou consciente, não casualidade.</li>
-      <li>Cronômetro embutido eliminou trocar de app no meio do treino.</li>
-      <li>PWA instala como app — abre direto na tela inicial do celular.</li>
+      <li>Progressão de carga virou <strong>relatório visual</strong>, não chute baseado em memória.</li>
+      <li>Cronômetro embutido eliminou trocar pra outro app no meio do treino.</li>
+      <li>Abre no navegador. Quem quiser, adiciona à tela inicial do celular e usa como atalho — visualmente parece app, sem precisar baixar de loja.</li>
       <li>Multi-usuário pronto pra compartilhar quando quiser (Google OAuth já configurado).</li>
+      <li><strong>Zero dependência de App Store/Play Store</strong> — sem aprovação, sem taxa, sem versão "bloqueada" enquanto loja revisa.</li>
     </ul>
   </div>
 </section>
