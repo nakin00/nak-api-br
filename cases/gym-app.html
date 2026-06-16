@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gym App PWA — configurando treino com 1 foto · nak.api.br</title>
+<meta name="description" content="Desisti dos apps pagos de academia porque configurar era trabalhoso demais. Fiz PWA próprio que aceita foto do treino, Gemini parseia, workout configurado em 2 minutos. Custo R$ 0.">
+<meta name="keywords" content="pwa academia, app treino offline, configurar treino com foto, gemini ocr workout, cloudflare pages d1, fitness app pwa">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/cases/gym-app">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="Gym App PWA — configurando treino com 1 foto">
+<meta property="og:description" content="Desisti dos apps pagos porque configurar era trabalhoso demais. PWA + Gemini: foto do treino → workout em 2 minutos. R$ 0/mês.">
+<meta property="og:url" content="https://nak.api.br/cases/gym-app">
+<meta property="og:locale" content="pt_BR">
+<meta property="article:section" content="Pessoal">
+<meta property="article:tag" content="pwa">
+<meta property="article:tag" content="cloudflare-pages">
+<meta property="article:tag" content="d1">
+<meta property="article:tag" content="gemini">
+<meta property="article:tag" content="oauth">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Gym App PWA — configurando treino com 1 foto">
+<meta name="twitter:description" content="Desisti dos apps pagos. Foto do treino → Gemini → workout em 2 min. Offline-first, R$ 0.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Gym App PWA — configurando treino com 1 foto",
+  "description": "PWA pessoal com Cloudflare Pages + D1 + Gemini pra parsear foto do treino. Offline-first, multi-usuário, custo R$ 0.",
+  "author": { "@type": "Person", "name": "nak" },
+  "publisher": { "@type": "Organization", "name": "nak.api.br" },
+  "datePublished": "2026-06-15",
+  "inLanguage": "pt-BR",
+  "url": "https://nak.api.br/cases/gym-app",
+  "about": ["PWA", "Cloudflare Pages", "Gemini", "Fitness app"],
+  "keywords": "pwa, academia, fitness, cloudflare, d1, gemini, offline"
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--danger:#EF4444;--warn:#F59E0B;--purple:#a78bfa;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--radius:10px;--max:1100px}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+
+.case-hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.case-hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+.breadcrumb{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:24px}
+.category{font-family:var(--mono);font-size:12px;color:var(--purple);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.case-hero h1{font-size:42px;font-weight:700;line-height:1.1;margin:0 0 20px;letter-spacing:-.02em}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.tag{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--border);color:var(--muted);border-radius:4px;text-transform:lowercase}
+.lead{color:var(--muted);font-size:17px;max-width:600px;margin:0}
+.running-since{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px;padding:5px 10px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:4px}
+.live-dot-mini{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent-2);animation:pulse-mini 2.2s ease-in-out infinite}
+@keyframes pulse-mini{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* PHONE MOCKUP */
+.phone-mock{max-width:300px;margin:0 auto;background:#0d1117;border:8px solid #1a1d24;border-radius:32px;padding:16px;box-shadow:0 30px 80px -20px rgba(0,0,0,.7);position:relative}
+.phone-mock::before{content:"";position:absolute;top:8px;left:50%;transform:translateX(-50%);width:80px;height:4px;background:#1a1d24;border-radius:0 0 8px 8px}
+.phone-header{padding:14px 4px 12px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.phone-header .top-row{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:8px}
+.phone-header h2{font-size:16px;margin:0;color:var(--text);font-weight:600}
+.phone-header .day{font-family:var(--mono);font-size:11px;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.exercise{padding:10px 4px;border-bottom:1px solid var(--border)}
+.exercise:last-child{border-bottom:none}
+.exercise .ex-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px;display:flex;justify-content:space-between;align-items:baseline}
+.exercise .ex-name .ex-prev{font-family:var(--mono);font-size:10px;color:var(--muted);font-weight:400}
+.exercise .sets{display:flex;gap:6px;flex-wrap:wrap}
+.set-pill{font-family:var(--mono);font-size:10px;padding:3px 7px;border-radius:4px;background:var(--border);color:var(--muted)}
+.set-pill.done{background:rgba(34,197,94,.15);color:var(--accent-2);border:1px solid rgba(34,197,94,.3)}
+.set-pill.current{background:rgba(167,139,250,.15);color:var(--purple);border:1px solid rgba(167,139,250,.3)}
+.timer-bar{margin-top:10px;padding:8px;background:#1a2030;border:1px solid var(--border);border-radius:6px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--purple);display:flex;justify-content:space-between;align-items:center}
+.timer-bar .label{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.05em}
+
+.case-section{padding:64px 0;border-bottom:1px solid var(--border)}
+.case-section:last-child{border-bottom:none}
+.label{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.case-section h2{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0 0 24px}
+.case-section p{font-size:16px;color:var(--text);margin:0 0 16px;max-width:760px}
+.case-section ul{font-size:16px;color:var(--text);padding-left:20px;max-width:760px}
+.case-section ul li{margin-bottom:10px}
+.case-section ul li::marker{color:var(--muted)}
+
+.callout{border-left:3px solid var(--purple);background:var(--card);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin:24px 0;max-width:760px}
+.callout p{margin:0;font-style:italic;color:var(--muted)}
+
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:760px;margin:24px 0}
+.compare-card{padding:20px;border-radius:var(--radius);border:1px solid var(--border)}
+.compare-card.bad{background:rgba(239,68,68,.04);border-color:rgba(239,68,68,.25)}
+.compare-card.good{background:rgba(167,139,250,.04);border-color:rgba(167,139,250,.25)}
+.compare-card .compare-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.compare-card.bad .compare-label{color:var(--danger)}
+.compare-card.good .compare-label{color:var(--purple)}
+.compare-card h3{font-size:16px;font-weight:600;margin:0 0 8px;color:var(--text)}
+.compare-card p{margin:0;font-size:14px;color:var(--muted);line-height:1.55}
+
+.flow-grid{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:32px 0;max-width:760px}
+.flow-node{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;flex:1;min-width:110px}
+.flow-node .icon{font-family:var(--mono);font-size:22px;color:var(--purple);margin-bottom:6px}
+.flow-node .name{font-size:13px;font-weight:500}
+.flow-node .sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px}
+.flow-arrow{font-family:var(--mono);color:var(--muted);font-size:18px;flex-shrink:0}
+.flow-note{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--muted);max-width:760px;text-align:center}
+
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;max-width:760px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.kpi .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.kpi .val{font-size:24px;font-weight:600;font-family:var(--mono);color:var(--purple);line-height:1}
+.kpi .delta{font-size:11px;color:var(--purple);margin-top:8px;font-family:var(--mono)}
+.kpi.alt .val{color:var(--accent-2)}
+
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;max-width:760px;margin:24px 0}
+.feature-card{padding:18px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius)}
+.feature-card .feat-icon{font-size:20px;margin-bottom:8px;color:var(--purple)}
+.feature-card h4{font-size:14px;font-weight:600;margin:0 0 6px;color:var(--text)}
+.feature-card p{font-size:13px;color:var(--muted);margin:0;line-height:1.5}
+
+.erro-block{max-width:760px;margin:32px 0;padding:24px;background:#0d1117;border:1px solid var(--border);border-radius:var(--radius);border-left:3px solid var(--warn)}
+.erro-block .erro-titulo{font-family:var(--mono);font-size:12px;color:var(--warn);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.erro-block h3{font-size:18px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em;color:var(--text)}
+.erro-block p{font-size:15px;color:var(--muted);margin:0;line-height:1.65}
+.erro-block p strong{color:var(--text);font-weight:500}
+
+footer{padding:48px 0;color:var(--muted);font-size:13px}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--muted)}
+
+@media(max-width:900px){.case-hero-grid{grid-template-columns:1fr;gap:40px}.dash-grid{grid-template-columns:repeat(2,1fr)}.compare-grid{grid-template-columns:1fr}}
+@media(max-width:720px){.case-hero h1{font-size:32px}.case-section{padding:48px 0}.case-section h2{font-size:24px}.flow-grid{flex-direction:column}.flow-arrow{transform:rotate(90deg)}nav .links{gap:16px}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <a href="../" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <div class="links">
+      <a href="../#cases">Cases</a>
+      <a href="../#filosofia">Filosofia</a>
+      <a href="../#stack">Stack</a>
+    </div>
+  </div>
+</nav>
+
+<header class="case-hero">
+  <div class="container">
+    <div class="case-hero-grid">
+      <div>
+        <div class="breadcrumb"><a href="../">~</a> / cases / gym-app</div>
+        <div class="category">Pessoal · PWA</div>
+        <h1>App de academia que configura sozinho — você só manda foto do treino</h1>
+        <div class="tags">
+          <span class="tag">pwa</span>
+          <span class="tag">cloudflare-pages</span>
+          <span class="tag">d1</span>
+          <span class="tag">gemini-2.5-flash</span>
+          <span class="tag">oauth</span>
+          <span class="tag">offline-first</span>
+        </div>
+        <div class="running-since"><span class="live-dot-mini"></span>em produção desde mai/2026 · uso pessoal</div>
+        <p class="lead">Desisti do Strong e do Hevy porque configurar treino era trabalho demais. Fiz meu próprio: foto do treino → Gemini parseia → workout pronto em 2 minutos. PWA, offline-first, custo R$ 0.</p>
+      </div>
+      <div>
+        <div class="phone-mock">
+          <div class="phone-header">
+            <div class="top-row"><span>9:41</span><span>●●●</span></div>
+            <h2>Treino de hoje</h2>
+            <div class="day">SEGUNDA · COSTAS</div>
+          </div>
+          <div class="exercise">
+            <div class="ex-name">Puxada frontal <span class="ex-prev">última: 50kg</span></div>
+            <div class="sets">
+              <span class="set-pill done">50×10</span>
+              <span class="set-pill done">50×10</span>
+              <span class="set-pill current">50×?</span>
+              <span class="set-pill">—</span>
+            </div>
+          </div>
+          <div class="exercise">
+            <div class="ex-name">Remada baixa <span class="ex-prev">última: 45kg</span></div>
+            <div class="sets">
+              <span class="set-pill">—</span>
+              <span class="set-pill">—</span>
+              <span class="set-pill">—</span>
+              <span class="set-pill">—</span>
+            </div>
+          </div>
+          <div class="timer-bar">
+            <span class="label">descanso</span>
+            <span>01:23</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">01 · Dor pessoal</div>
+    <h2>Desisti dos apps pagos antes de terminar de configurar</h2>
+    <p>Treinava na academia, mas chutava peso por sensação. Não lembrava qual carga tinha feito na semana passada. Sem histórico, sem progressão visível, sem dado nenhum.</p>
+    <p>Decidi testar os apps pagos do mercado (Strong, Hevy, similares). Em todos a mesma história:</p>
+    <ul>
+      <li><strong>Configurar treino é trabalhoso</strong> — dezenas de exercícios pra cadastrar manualmente, série a série, descanso a descanso.</li>
+      <li><strong>Export/import quase impossível</strong> — exporta pra formato proprietário do app, importa em outro app não funciona. Tentei achar o arquivo de configuração e nem consegui localizar.</li>
+      <li><strong>Treino do personal vem em foto/papel</strong> — nenhum app aceita. Cabe digitar tudo manualmente.</li>
+    </ul>
+    <p>Resultado: começava a cadastrar, cansava, parava. Nunca usei nenhum app além de uns 3 exercícios mal cadastrados.</p>
+    <div class="callout">
+      <p>"Desisti. Era complexo demais. Mais fácil voltar a chutar peso."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">02 · Impacto do problema</div>
+    <h2>Sem tracking, treino vira chute</h2>
+    <ul>
+      <li><strong>Não lembrava carga da semana anterior</strong> — começava cada treino na dúvida entre "era 40 ou 45kg?".</li>
+      <li><strong>Sem progressão visível</strong> — não tinha como saber se estava evoluindo, estagnado ou regredindo.</li>
+      <li><strong>Esquecia quantas séries já tinha feito</strong> — perdia conta no meio do exercício.</li>
+      <li><strong>Usava cronômetro do celular separado</strong> — abrir o relógio, configurar 90s, esquecer de iniciar.</li>
+      <li><strong>Cansaço não rastreado</strong> — se a série final foi muito difícil, isso não virava dado pra ajustar a próxima.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">03 · Solução criada</div>
+    <h2>Foto do treino → 2 minutos pra estar configurado</h2>
+    <p>O insight foi: o problema não é o app, é a <strong>fricção pra configurar</strong>. Se eu eliminar isso, eu uso. Daí montei o fluxo que faltava nos apps pagos:</p>
+
+    <div class="compare-grid">
+      <div class="compare-card bad">
+        <div class="compare-label">Apps pagos</div>
+        <h3>Cadastro manual exercício a exercício</h3>
+        <p>Cada série, cada peso, cada tempo de descanso. Horas digitando. Desisti antes de terminar.</p>
+      </div>
+      <div class="compare-card good">
+        <div class="compare-label">O que eu fiz</div>
+        <h3>Tira foto do treino e manda</h3>
+        <p>Foto da prancheta do personal, do papel, de outro app. Gemini parseia. Tela de revisão. Salva. 2 minutos.</p>
+      </div>
+    </div>
+
+    <p>Stack escolhida pelo trio custo + offline + multi-dispositivo:</p>
+    <ul>
+      <li><strong>PWA single-page</strong> — instala como app no celular, funciona offline.</li>
+      <li><strong>Cloudflare Pages</strong> hospedando frontend + functions (free tier sobra).</li>
+      <li><strong>Cloudflare D1</strong> — banco SQL serverless pra workout, histórico, sessões.</li>
+      <li><strong>Gemini 2.5 Flash</strong> processa a foto e devolve JSON estruturado do treino.</li>
+      <li><strong>Google OAuth</strong> pra login (sem senha caseira, sem cadastro).</li>
+      <li><strong>localStorage</strong> com fila de sync — funciona em wifi ruim de academia.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">04 · Como funciona</div>
+    <h2>Pipeline do "foto → workout salvo"</h2>
+    <div class="flow-grid">
+      <div class="flow-node">
+        <div class="icon">📸</div>
+        <div class="name">Foto</div>
+        <div class="sub">prancheta/papel</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">✨</div>
+        <div class="name">Gemini</div>
+        <div class="sub">parsing</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">📝</div>
+        <div class="name">Revisão</div>
+        <div class="sub">JSON visual</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">💾</div>
+        <div class="name">D1</div>
+        <div class="sub">workout salvo</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">📱</div>
+        <div class="name">App</div>
+        <div class="sub">offline-first</div>
+      </div>
+    </div>
+    <p class="flow-note">localStorage cacheia · sync queue automático · Web Audio agenda timer (iOS+Android)</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">05 · Features que apps prontos não tinham (ou tinham mal feito)</div>
+    <h2>Pequenas coisas que mudam o uso real</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feat-icon">⏱</div>
+        <h4>Cronômetro embutido</h4>
+        <p>Inicia automático no fim da série. Sem abrir outro app, sem esquecer de iniciar.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">🔢</div>
+        <h4>Contador de série visível</h4>
+        <p>Quantas séries já fez do exercício atual. Sem precisar contar de cabeça.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">💪</div>
+        <h4>Medição de cansaço</h4>
+        <p>Marca o quanto cada série custou. Vira dado pra ajustar carga na próxima.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">📊</div>
+        <h4>Histórico do treino anterior</h4>
+        <p>"Última vez fiz 50kg×10" aparece visível em cada exercício. Sem precisar caçar.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">🔁</div>
+        <h4>"Repetir última carga"</h4>
+        <p>Botão de 1 toque que preenche peso/reps da última sessão. Ajusta se quiser, ou começa direto.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">📡</div>
+        <h4>Funciona offline</h4>
+        <p>Academia com wifi ruim não é problema. Salva local + sincroniza depois.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">06 · Resultado</div>
+    <h2>40 dias de uso pessoal contínuo</h2>
+    <div class="dash-grid">
+      <div class="kpi">
+        <div class="lbl">Setup treino novo</div>
+        <div class="val">2min</div>
+        <div class="delta">vs desistir nos pagos</div>
+      </div>
+      <div class="kpi alt">
+        <div class="lbl">Custo mensal</div>
+        <div class="val">R$ 0</div>
+        <div class="delta">Cloudflare free tier</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Em uso há</div>
+        <div class="val">40 dias</div>
+        <div class="delta">e contando</div>
+      </div>
+      <div class="kpi alt">
+        <div class="lbl">Multi-usuário</div>
+        <div class="val">✓</div>
+        <div class="delta">preparado, hoje só eu</div>
+      </div>
+    </div>
+    <ul>
+      <li>Parei de chutar peso. Cada série tem dado da anterior visível.</li>
+      <li>Progressão de carga virou consciente, não casualidade.</li>
+      <li>Cronômetro embutido eliminou trocar de app no meio do treino.</li>
+      <li>PWA instala como app — abre direto na tela inicial do celular.</li>
+      <li>Multi-usuário pronto pra compartilhar quando quiser (Google OAuth já configurado).</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">07 · Erros e aprendizados</div>
+    <h2>O que descobri construindo</h2>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 1 · D1 binding via wrangler.toml não funciona em Pages</div>
+      <h3>Pages projects ignoram a config padrão de Workers</h3>
+      <p>Tentei configurar o D1 binding no <code>wrangler.toml</code> seguindo a documentação de Workers. Não funcionou em Pages projects — bindings têm que ser configurados via API direta no <code>deployment_configs.production.d1_databases</code>. Curl PATCH no endpoint <code>/accounts/.../pages/projects/gym</code>. Funcionou. <strong>Aprendi:</strong> Cloudflare Pages e Workers parecem iguais mas têm caminhos de configuração diferentes pra coisas básicas como binding de banco.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 2 · Web Audio timer travando em iOS</div>
+      <h3>setTimeout não dá pra confiar com tela apagada</h3>
+      <p>Primeira versão do cronômetro usava <code>setTimeout</code>. iOS pausa o JavaScript quando a tela apaga ou app vai pra background. Timer atrasava ou nunca disparava. <strong>Fix:</strong> usar Web Audio com agendamento (<code>AudioContext.currentTime + delay</code>) — funciona porque o sistema mantém o audio context vivo mesmo com tela apagada. Testei em iOS e Android, funciona nos dois.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 3 · Histórico duplicava em sync após sair offline</div>
+      <h3>Replay de fila sem dedup causava entries em dobro</h3>
+      <p>Treino offline → entra na fila local → conecta → sincroniza → tudo bem. Mas se o app crashasse no meio do sync, na próxima abertura tentava de novo e gravava o mesmo treino 2x. <strong>Fix:</strong> dedup via UNIQUE constraint no D1 em <code>(user_id, exercise_id, local_ts)</code>. Replay seguro — duplicatas batem na constraint e são ignoradas.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 4 · OAuth "external" exige test users</div>
+      <h3>Google bloqueia login até verificar a app</h3>
+      <p>Configurei Google OAuth como "external" pra qualquer um poder logar. Funcionou pro meu email. Mas qualquer outro Google rejeitava com "app não verificada". <strong>Aprendi:</strong> "external" sem verificação aceita até 100 emails como test users, e precisam ser adicionados manualmente. Pra liberar pra qualquer Google, precisa solicitar verificação formal — burocrática. Decisão: vou ficar no modo test users até precisar escalar.</p>
+    </div>
+
+    <p>Padrão recorrente: <strong>cada um desses erros virou aprendizado que vou reusar em outros projetos</strong>. O custo de descobrir agora é baixo. O custo de descobrir num projeto operacional, com gente esperando, seria alto.</p>
+  </div>
+</section>
+
+<section class="case-section" style="background:#0a0e13">
+  <div class="container">
+    <div class="label">Cases relacionados</div>
+    <h2>Outros experimentos</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <a href="atendimento-insights" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Atendimento · Gemini</div>
+        <div style="font-size:16px;font-weight:500">Análise diária do WhatsApp com IA →</div>
+      </a>
+      <a href="nf-emissao-automatica" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Apps Script</div>
+        <div style="font-size:16px;font-weight:500">Bot fazendo a atividade principal de uma pessoa →</div>
+      </a>
+      <a href="motoboy-impressao" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Tiny + Python</div>
+        <div style="font-size:16px;font-weight:500">Do pagamento à entrega em 10 minutos →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container row">
+    <div><strong style="color:var(--text);">nak.api.br</strong> · <a href="../">voltar pro laboratório</a></div>
+    <div><a href="mailto:labs@nak.api.br">labs@nak.api.br</a> · Caso documentado em 2026</div>
+  </div>
+</footer>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c48dfb70ce8140ffa8ad30637454ad88"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

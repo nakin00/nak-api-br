@@ -110,6 +110,7 @@ section .section-sub{color:var(--muted);font-size:16px;margin:0 0 40px;max-width
 .case-card .meta-label{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;font-weight:500}
 .case-card .meta-label.problem{color:var(--accent)}
 .case-card .meta-label.result{color:var(--accent-2)}
+.case-card .pessoal-badge{display:inline-block;font-family:var(--mono);font-size:10px;color:#a78bfa;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.25);padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
 .case-card .arrow{font-family:var(--mono);font-size:13px;color:var(--accent);margin-top:16px;display:inline-block}
 .flow{font-family:var(--mono);font-size:13px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;white-space:pre;overflow-x:auto;line-height:1.7}
 .stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
@@ -197,6 +198,10 @@ footer a{color:var(--muted)}
     </div>
     <p class="changelog-intro">Não tem "Sobre nós" parado no tempo. Cada case novo ou revisão de case existente aparece aqui — com data. As últimas mudanças no conteúdo:</p>
     <ul class="changelog-list">
+      <li class="changelog-item">
+        <span class="changelog-date">15/06</span>
+        <span class="changelog-msg">novo case <strong>gym-app</strong> — primeiro projeto pessoal publicado, foto do treino vira workout via Gemini</span>
+      </li>
       <li class="changelog-item">
         <span class="changelog-date">31/05</span>
         <span class="changelog-msg">novo case <strong>nf-emissao-automatica</strong> — bot fazendo a atividade principal de uma pessoa</span>
@@ -325,6 +330,21 @@ footer a{color:var(--muted)}
         <h3>Bot fazendo a atividade principal de uma pessoa</h3>
         <p class="meta"><span class="meta-label problem">Problema</span>Pessoa dedicada gastava ~4h/dia emitindo 2000 NFs/mês manualmente. Operação travava quando ela faltava.</p>
         <p class="meta"><span class="meta-label result">Resultado</span>Emissão automática + validação preventiva de cadastro. Combinado com bot de correção: 99% sem clique humano.</p>
+        <span class="arrow">ver documentação →</span>
+      </a>
+
+      <a href="cases/gym-app" class="case-card">
+        <span class="pessoal-badge">● pessoal</span>
+        <div class="tags">
+          <span class="tag">pwa</span>
+          <span class="tag">cloudflare-pages</span>
+          <span class="tag">d1</span>
+          <span class="tag">gemini</span>
+          <span class="tag">offline-first</span>
+        </div>
+        <h3>App de academia que configura sozinho — você só manda foto do treino</h3>
+        <p class="meta"><span class="meta-label problem">Problema</span>Desisti do Strong e Hevy porque cadastrar treino manualmente era trabalho demais. Voltei a chutar peso por sensação.</p>
+        <p class="meta"><span class="meta-label result">Resultado</span>PWA próprio: foto do treino → Gemini parseia → workout pronto em 2 min. Offline-first, R$ 0.</p>
         <span class="arrow">ver documentação →</span>
       </a>
 
