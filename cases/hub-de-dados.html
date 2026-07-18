@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R$ 16.800/ano a menos no ERP com banco próprio de R$ 30/mês · nak.api.br</title>
+<meta name="description" content="O ERP cobrava R$ 24.800/ano em extensões de banco só pra guardar histórico. Arquivei tudo num hub próprio (Cloudflare Worker + D1 + R2) por R$ 30/mês e cortei R$ 16.847/ano — medido, não projetado.">
+<meta name="keywords" content="tiny erp armazenamento caro, extensao banco de dados tiny, arquivar notas fiscais fora do erp, cloudflare d1 r2 hub, reduzir custo erp, expurgo erp seguro">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/cases/hub-de-dados">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="R$ 16.800/ano a menos no ERP com banco próprio de R$ 30/mês">
+<meta property="og:description" content="ERP cobrava R$ 24.800/ano só pra guardar histórico. Hub próprio no Cloudflare arquivou tudo, expurgo seguro liberou as extensões. Economia medida: R$ 16.847/ano.">
+<meta property="og:url" content="https://nak.api.br/cases/hub-de-dados">
+<meta property="og:locale" content="pt_BR">
+<meta property="article:section" content="Infra">
+<meta property="article:tag" content="cloudflare-workers">
+<meta property="article:tag" content="d1">
+<meta property="article:tag" content="r2">
+<meta property="article:tag" content="tiny-erp">
+<meta property="article:tag" content="dados">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="R$ 16.800/ano a menos no ERP com banco próprio de R$ 30/mês">
+<meta name="twitter:description" content="Histórico arquivado em Worker + D1 + R2, expurgo seguro no ERP, extensões canceladas. Economia medida, não projetada.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "R$ 16.800/ano a menos no ERP com banco próprio de R$ 30/mês",
+  "description": "Hub de dados próprio (Cloudflare Worker + D1 + R2) arquivando histórico do ERP, com expurgo seguro e economia medida de R$ 16.847/ano em extensões de banco.",
+  "author": { "@type": "Person", "name": "nak" },
+  "publisher": { "@type": "Organization", "name": "nak.api.br" },
+  "datePublished": "2026-07-18",
+  "inLanguage": "pt-BR",
+  "url": "https://nak.api.br/cases/hub-de-dados",
+  "about": ["Cloudflare Workers", "D1", "R2", "ERP", "Arquivamento de dados"],
+  "keywords": "cloudflare, d1, r2, tiny erp, armazenamento, economia, expurgo"
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--danger:#EF4444;--warn:#F59E0B;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--radius:10px;--max:1100px}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+
+.case-hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.case-hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+.breadcrumb{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:24px}
+.category{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.case-hero h1{font-size:42px;font-weight:700;line-height:1.1;margin:0 0 20px;letter-spacing:-.02em}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.tag{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--border);color:var(--muted);border-radius:4px;text-transform:lowercase}
+.lead{color:var(--muted);font-size:17px;max-width:600px;margin:0}
+.running-since{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px;padding:5px 10px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:4px}
+.live-dot-mini{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent-2);animation:pulse-mini 2.2s ease-in-out infinite}
+@keyframes pulse-mini{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* HERO COUNTER — economia em destaque */
+.eco-hero{background:#0d1117;border:1px solid var(--border);border-radius:14px;padding:32px 28px;box-shadow:0 20px 60px -20px rgba(0,0,0,.6);text-align:center}
+.eco-hero .eco-label{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+.eco-hero .eco-value{font-family:var(--mono);font-size:44px;font-weight:700;color:var(--accent-2);line-height:1;letter-spacing:-.02em}
+.eco-hero .eco-sub{font-size:13px;color:var(--muted);margin-top:10px}
+.eco-hero .eco-divider{height:1px;background:var(--border);margin:22px 0}
+.eco-hero .eco-row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0}
+.eco-hero .eco-row .k{color:var(--muted)}
+.eco-hero .eco-row .v{font-family:var(--mono);color:var(--text)}
+.eco-hero .eco-row .v.red{color:var(--danger)}
+.eco-hero .eco-row .v.green{color:var(--accent-2)}
+
+.case-section{padding:64px 0;border-bottom:1px solid var(--border)}
+.case-section:last-child{border-bottom:none}
+.label{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.case-section h2{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0 0 24px}
+.case-section p{font-size:16px;color:var(--text);margin:0 0 16px;max-width:760px}
+.case-section ul{font-size:16px;color:var(--text);padding-left:20px;max-width:760px}
+.case-section ul li{margin-bottom:10px}
+.case-section ul li::marker{color:var(--muted)}
+
+.callout{border-left:3px solid var(--accent);background:var(--card);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin:24px 0;max-width:760px}
+.callout p{margin:0;font-style:italic;color:var(--muted)}
+
+/* COMPARATIVO — o coração do case */
+.compare-table{max-width:760px;margin:32px 0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.compare-table table{width:100%;border-collapse:collapse;font-size:14px}
+.compare-table th{background:#0d1117;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+.compare-table td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text)}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table .mono{font-family:var(--mono)}
+.compare-table .red{color:var(--danger)}
+.compare-table .green{color:var(--accent-2)}
+.compare-table .total-row td{background:#0d1117;font-weight:600}
+
+.flow-grid{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:32px 0;max-width:760px}
+.flow-node{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;flex:1;min-width:110px}
+.flow-node .icon{font-family:var(--mono);font-size:22px;color:var(--accent);margin-bottom:6px}
+.flow-node .name{font-size:13px;font-weight:500}
+.flow-node .sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px}
+.flow-arrow{font-family:var(--mono);color:var(--muted);font-size:18px;flex-shrink:0}
+.flow-note{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--muted);max-width:760px;text-align:center}
+
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;max-width:760px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.kpi .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.kpi .val{font-size:24px;font-weight:600;font-family:var(--mono);color:var(--accent-2);line-height:1}
+.kpi .delta{font-size:11px;color:var(--accent-2);margin-top:8px;font-family:var(--mono)}
+.kpi.alt .val{color:var(--accent)}
+.kpi.warn .val{color:var(--warn)}
+
+.erro-block{max-width:760px;margin:32px 0;padding:24px;background:#0d1117;border:1px solid var(--border);border-radius:var(--radius);border-left:3px solid var(--warn)}
+.erro-block .erro-titulo{font-family:var(--mono);font-size:12px;color:var(--warn);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.erro-block h3{font-size:18px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em;color:var(--text)}
+.erro-block p{font-size:15px;color:var(--muted);margin:0;line-height:1.65}
+.erro-block p strong{color:var(--text);font-weight:500}
+.erro-block.critico{border-left-color:var(--danger)}
+.erro-block.critico .erro-titulo{color:var(--danger)}
+
+footer{padding:48px 0;color:var(--muted);font-size:13px}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--muted)}
+
+@media(max-width:900px){.case-hero-grid{grid-template-columns:1fr;gap:40px}.dash-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.case-hero h1{font-size:32px}.case-section{padding:48px 0}.case-section h2{font-size:24px}.flow-grid{flex-direction:column}.flow-arrow{transform:rotate(90deg)}nav .links{gap:16px}.eco-hero .eco-value{font-size:34px}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <a href="../" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <div class="links">
+      <a href="../#cases">Cases</a>
+      <a href="../#filosofia">Filosofia</a>
+      <a href="../#stack">Stack</a>
+    </div>
+  </div>
+</nav>
+
+<header class="case-hero">
+  <div class="container">
+    <div class="case-hero-grid">
+      <div>
+        <div class="breadcrumb"><a href="../">~</a> / cases / hub-de-dados</div>
+        <div class="category">Infra · Dados · Financeiro</div>
+        <h1>R$ 16.800 por ano a menos no ERP, com um banco próprio de R$ 30/mês</h1>
+        <div class="tags">
+          <span class="tag">cloudflare-workers</span>
+          <span class="tag">d1</span>
+          <span class="tag">r2</span>
+          <span class="tag">tiny-erp</span>
+          <span class="tag">python</span>
+          <span class="tag">webhook</span>
+        </div>
+        <div class="running-since"><span class="live-dot-mini"></span>em produção desde jun/2026</div>
+        <p class="lead">O ERP cobrava caro pra guardar histórico que ninguém abria. Arquivei tudo num hub próprio (Worker + D1 + R2), fiz expurgo seguro mês a mês e fui cancelando extensão de armazenamento. Economia medida no boleto, não projetada.</p>
+      </div>
+      <div>
+        <div class="eco-hero">
+          <div class="eco-label">economia já realizada</div>
+          <div class="eco-value">R$ 16.847</div>
+          <div class="eco-sub">por ano · medida em 30 dias de expurgo</div>
+          <div class="eco-divider"></div>
+          <div class="eco-row"><span class="k">Extensões de banco antes</span><span class="v red">R$ 24.806/ano</span></div>
+          <div class="eco-row"><span class="k">Extensões de banco agora</span><span class="v">R$ 7.959/ano</span></div>
+          <div class="eco-row"><span class="k">Custo do hub próprio</span><span class="v green">~R$ 360/ano</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">01 · Dor operacional</div>
+    <h2>Pagando aluguel caro pra guardar o passado</h2>
+    <p>O Tiny cobra o banco de dados por blocos: o plano vem com 300 MB, e cada bloco extra custa caro — <strong>+500 MB por R$ 266,26/mês</strong>, +100 MB por R$ 72,62/mês. Anos de notas fiscais, pedidos e contatos foram empilhando extensões: a fatura de armazenamento chegou a <strong>R$ 2.067 por mês</strong> somando as contas do grupo.</p>
+    <p>O detalhe que incomodava: <strong>a maior parte desse espaço era histórico</strong>. Nota de 2022 que ninguém abre, pedido antigo que só serve pra consulta eventual. Dados que precisam existir — mas não precisam morar no lugar mais caro da operação.</p>
+    <div class="callout">
+      <p>"Eu estava pagando mais de R$ 2 mil por mês pra guardar nota antiga que quase ninguém abria. Isso é aluguel de cofre pra guardar caixa de papelão."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">02 · Impacto do problema</div>
+    <h2>R$ 24.800/ano — e crescendo a cada ano de operação</h2>
+    <ul>
+      <li><strong>R$ 24.806/ano só em extensões de banco</strong> — sem contar o plano em si.</li>
+      <li><strong>Custo que só cresce</strong> — cada ano de operação empilha mais notas, mais pedidos, mais uma extensão.</li>
+      <li><strong>Apagar sem backup não era opção</strong> — nota fiscal tem obrigação legal de guarda, e histórico de cliente tem valor comercial.</li>
+      <li><strong>Exportar manualmente era inviável</strong> — dezenas de milhares de registros por conta, XML por XML.</li>
+      <li><strong>Sem visão consolidada</strong> — cada conta do ERP é uma ilha; consultar histórico de um cliente entre contas exigia entrar em cada uma.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">03 · Solução criada</div>
+    <h2>Hub próprio: tudo arquivado, pesquisável, com backup triplo</h2>
+    <p>Um banco central fora do ERP, que recebe tudo e permite excluir do Tiny com segurança:</p>
+    <ul>
+      <li><strong>Cloudflare Worker + D1</strong> — banco SQL serverless. O plano pago de US$ 5/mês dá 5 GB — no Tiny, o mesmo espaço custaria mais de R$ 2.600/mês em extensões.</li>
+      <li><strong>R2 pra XMLs</strong> — cada nota fiscal tem o XML original arquivado (obrigação legal coberta).</li>
+      <li><strong>Webhook do Tiny</strong> — dados novos entram no hub em tempo real, sozinhos.</li>
+      <li><strong>Importador de backup</strong> — Python que processa os ZIPs de backup do Tiny (CSV + XML) e sobe tudo pro hub. Roda como tarefa agendada: é só salvar o ZIP numa pasta.</li>
+      <li><strong>Enriquecimento noturno</strong> — o backup do Tiny não traz tudo (canal de venda e vínculo pedido→nota ficam de fora). Um cron no Worker completa esses dados de madrugada, sem competir com as automações da operação durante o dia.</li>
+      <li><strong>Tela de busca própria</strong> — busca por CNPJ, nome, número de pedido ou nota, cruzando todas as contas numa consulta só. Coisa que o próprio ERP não faz.</li>
+      <li><strong>Backup 3-2-1</strong> — dado vive no Cloudflare (D1+R2), nos ZIPs locais e no Google Drive. Três cópias, duas mídias, uma fora.</li>
+    </ul>
+    <p>Com o histórico seguro em três lugares, aí sim: <strong>expurgo no ERP, mês a mês, com verificação automática antes de cada exclusão</strong>. Espaço liberado → extensão cancelada → economia no boleto.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">04 · Como funciona</div>
+    <h2>Do ERP pro arquivo, do arquivo pro boleto menor</h2>
+    <div class="flow-grid">
+      <div class="flow-node">
+        <div class="icon">⊞</div>
+        <div class="name">Tiny</div>
+        <div class="sub">webhook + backup</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">🗄</div>
+        <div class="name">Hub D1</div>
+        <div class="sub">+ XMLs no R2</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">🌙</div>
+        <div class="name">Enriquece</div>
+        <div class="sub">cron madrugada</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">✅</div>
+        <div class="name">Verifica</div>
+        <div class="sub">gate de exclusão</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">💰</div>
+        <div class="name">Expurga</div>
+        <div class="sub">cancela extensão</div>
+      </div>
+    </div>
+    <p class="flow-note">verificação automática antes de excluir: dados no hub + enriquecidos + XML no R2 + ZIP no Drive — só aí libera</p>
+    <p>O painel do hub mostra, por mês, o que já está pronto pra excluir do ERP e quanto cada exclusão libera. Uma página de economia calcula em tempo real quais extensões já podem ser canceladas com margem de segurança — pra conta nunca ficar apertada.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">05 · A conta que importa</div>
+    <h2>Comparativo: guardar 500 MB de histórico</h2>
+    <div class="compare-table">
+      <table>
+        <thead>
+          <tr><th>Onde</th><th>Espaço</th><th>Custo/mês</th><th>Custo/ano</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Extensão de banco no Tiny</td>
+            <td class="mono">+500 MB</td>
+            <td class="mono red">R$ 266,26</td>
+            <td class="mono red">R$ 3.195</td>
+          </tr>
+          <tr>
+            <td>Cloudflare Workers Paid (D1)</td>
+            <td class="mono">5.000 MB</td>
+            <td class="mono green">~R$ 30</td>
+            <td class="mono green">~R$ 360</td>
+          </tr>
+          <tr class="total-row">
+            <td>Diferença por MB</td>
+            <td class="mono" colspan="3">o ERP cobra ~90× mais caro pelo mesmo espaço</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Não é crítica ao Tiny — banco de ERP é feito pra operação do dia, não pra arquivo morto. O erro era meu: <strong>usar espaço operacional caro pra guardar histórico frio</strong>. Cada dado no lugar certo, com o custo certo.</p>
+    <p>Resultado em 30 dias de expurgo: extensões caíram de <strong>R$ 2.067/mês para R$ 663/mês</strong>. Duas contas já rodam no plano base puro, sem nenhuma extensão de banco. E o processo continua — a projeção honesta é cortar mais, mas só publico aqui o que já saiu do boleto.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">06 · Resultado</div>
+    <h2>Economia medida, histórico mais acessível que antes</h2>
+    <div class="dash-grid">
+      <div class="kpi">
+        <div class="lbl">Economia realizada</div>
+        <div class="val">R$ 16.847</div>
+        <div class="delta">por ano · já no boleto</div>
+      </div>
+      <div class="kpi alt">
+        <div class="lbl">Custo do hub</div>
+        <div class="val">~R$ 30</div>
+        <div class="delta">por mês (US$ 5)</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Contas sem extensão</div>
+        <div class="val">2</div>
+        <div class="delta">voltaram ao plano base</div>
+      </div>
+      <div class="kpi alt">
+        <div class="lbl">Tempo até aqui</div>
+        <div class="val">30 dias</div>
+        <div class="delta">do piloto à economia</div>
+      </div>
+    </div>
+    <ul>
+      <li>Centenas de milhares de registros arquivados — pedidos, notas com XML, contatos, financeiro.</li>
+      <li>Busca cross-contas que o próprio ERP não oferece: histórico completo de um cliente numa consulta.</li>
+      <li>Backup novo entra sozinho: salva o ZIP na pasta, a automação importa, enriquece e arquiva.</li>
+      <li>Expurgo virou rotina segura com gate automático — não depende de coragem, depende de checklist verde.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">07 · Erros e aprendizados</div>
+    <h2>O que quase deu errado (e teria sido caro)</h2>
+
+    <div class="erro-block critico">
+      <div class="erro-titulo">Quase-acidente · o botão de excluir não faz o que diz</div>
+      <h3>"Anterior a 12/2022" apagava mais do que parecia</h3>
+      <p>A exclusão agendada no Tiny com critério "anterior a 12/2022" na verdade pegava <strong>qualquer registro antes de 31/12/2022</strong> — incluindo anos que nunca tinham sido arquivados no hub. Uma das contas tinha exclusão agendada que apagaria notas de 2021 que só existiam lá. <strong>Fix:</strong> verificador automático que consulta o Tiny por registros anteriores ao período coberto pelo hub antes de liberar qualquer exclusão. A verificação automática pegou 289 pedidos de 2021 que meu check manual tinha deixado passar. Aprendizado: <strong>nunca confie no rótulo do botão de exclusão em massa — meça o que ele vai apagar de verdade.</strong></p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 2 · rate limit virando dado falso</div>
+      <h3>Resposta de bloqueio da API marcada como "processado"</h3>
+      <p>No enriquecimento noturno, quando a API do Tiny bloqueava por excesso de chamadas, o código tratava a resposta como "pedido não localizado" e marcava como processado. Resultado: pedidos com dados incompletos que nunca mais seriam revisitados. <strong>Fix:</strong> só o código de erro específico de "não localizado" marca como processado; qualquer outro erro deixa pendente pra retry. Mesma lição do case de NF: <strong>erro de infraestrutura não pode virar decisão de negócio.</strong></p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 3 · vírgula vs ponto multiplicando valores por 100</div>
+      <h3>CSV usa vírgula decimal, XML usa ponto</h3>
+      <p>O backup do Tiny entrega CSV com decimal brasileiro (1.234,56) e XML com decimal americano (1234.56). O parser tratava os dois igual — e notas importadas do XML ficaram com valor 100× maior. A validação do piloto (conferência de contagens e somas contra o backup) pegou antes de virar dado de produção. <strong>Aprendizado: validar totais contra a fonte antes de confiar em qualquer importação.</strong></p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 4 · enriquecimento de dia derrubava a operação</div>
+      <h3>O hub competia com as automações da equipe pela mesma API</h3>
+      <p>O enriquecimento rodava no PC durante o dia e consumia o rate limit da API do Tiny — as automações da operação (impressão, faturamento) começaram a falhar. <strong>Fix:</strong> mover o enriquecimento pra nuvem (cron no Worker) rodando só de madrugada, quando nenhuma automação de operação precisa da API. O PC pode ficar desligado; a nuvem trabalha enquanto a operação dorme.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 5 · limite invisível do plano gratuito</div>
+      <h3>Scan sem índice estourou o teto de leitura do D1</h3>
+      <p>O D1 gratuito tem teto de 5 milhões de linhas lidas por dia. Uma query sem índice varria a tabela inteira de pedidos a cada execução do cron — e estourou o limite silenciosamente durante a madrugada. <strong>Fix:</strong> criar o índice certo pra consulta. Aprendizado: <strong>em serverless, query mal indexada não fica só lenta — ela consome cota e para o sistema.</strong></p>
+    </div>
+
+    <p>O padrão que amarra tudo: <strong>excluir dado é a operação mais irreversível que existe</strong>. Todo o desenho do hub — backup triplo, gate de verificação, validação de totais — existe pra tornar o expurgo chato e burocrático de propósito. Economia boa é a que não custa uma nota fiscal perdida.</p>
+  </div>
+</section>
+
+<section class="case-section" style="background:#0a0e13">
+  <div class="container">
+    <div class="label">Cases relacionados</div>
+    <h2>Outras automações com dados e custo</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <a href="fretes-consolidado" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Financeiro · Sheets</div>
+        <div style="font-size:16px;font-weight:500">Custo real de frete por NF →</div>
+      </a>
+      <a href="nf-emissao-automatica" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Fiscal</div>
+        <div style="font-size:16px;font-weight:500">Bot fazendo a atividade principal de uma pessoa →</div>
+      </a>
+      <a href="nf-auto-correcao" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Fiscal</div>
+        <div style="font-size:16px;font-weight:500">Correção automática de NF rejeitada →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container row">
+    <div><strong style="color:var(--text);">nak.api.br</strong> · <a href="../">voltar pro laboratório</a></div>
+    <div><a href="mailto:labs@nak.api.br">labs@nak.api.br</a> · Caso documentado em 2026</div>
+  </div>
+</footer>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c48dfb70ce8140ffa8ad30637454ad88"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
