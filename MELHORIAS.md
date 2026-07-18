@@ -25,13 +25,8 @@ Regra: item só sai daqui quando FEITO e VALIDADO, ou quando decidirmos conscien
 
 ## 🟠 P2 — Impacto médio, quando der
 
-### 3. Imagem Open Graph real (1200×630 por case)
-**Problema:** compartilhar no LinkedIn/WhatsApp mostra caixa de texto sem preview visual. Primeira impressão fraca justamente no canal que vai gerar os backlinks do P1.
-**Opções:**
-- a) Gerar estático uma vez por case (template escuro com título + categoria) — mais simples
-- b) Worker que gera dinâmico via SVG→PNG — mais elegante, mais trabalho
-**Recomendação:** (a) primeiro. São 7 imagens. Se a cadência aumentar, automatiza depois.
-**Esforço:** médio · **Impacto:** médio-alto (multiplica o P1)
+### 3. ~~Imagem Open Graph real (1200×630 por case)~~ ✅ FEITO 18/07
+9 imagens geradas via PowerShell System.Drawing (template dark com categoria + título + logo), servidas em `/og/{slug}.png`. Meta og:image + twitter:image em todas as páginas. Gym em roxo, hub em verde, resto azul. Script em scratchpad (regenerar quando publicar case novo — lembrar de adicionar a linha no script).
 
 ### 4. Cache-Control decente
 **Problema:** `max-age=0, must-revalidate` — toda request revalida na edge. Latência já é boa (~90ms) mas seria melhor com cache.
