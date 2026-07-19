@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emissão automática de NF · nak.api.br</title>
-<meta name="description" content="O bot virou a atividade principal da pessoa dedicada ao faturamento. 2000 NFs/mês emitidas automaticamente em 4 empresas Tiny. Validação preventiva via cnpj.ws + ViaCEP.">
+<meta name="description" content="O bot virou a atividade principal da pessoa dedicada ao faturamento. 2000 NFs/mês emitidas automaticamente em múltiplas contas Tiny. Validação preventiva via cnpj.ws + ViaCEP.">
 <meta name="keywords" content="emissao automatica nf tiny, apps script faturamento, cnpj ws validacao cadastro, naturezas operacao tiny, automacao fiscal ecommerce">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://nak.api.br/cases/nf-emissao-automatica">
@@ -34,7 +34,7 @@
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": "Emissão automática de NF — bot fazendo a atividade principal de uma pessoa",
-  "description": "Apps Script polla pedidos aprovados em 4 Tinys, valida cadastro via cnpj.ws/ViaCEP, emite NF. 4 horas/dia de pessoa dedicada eliminadas.",
+  "description": "Apps Script polla pedidos aprovados nas contas Tiny, valida cadastro via cnpj.ws/ViaCEP, emite NF. 4 horas/dia de pessoa dedicada eliminadas.",
   "author": { "@type": "Person", "name": "nak" },
   "publisher": { "@type": "Organization", "name": "nak.api.br" },
   "datePublished": "2026-05-31",
@@ -165,7 +165,7 @@ footer a{color:var(--muted)}
       <div>
         <div class="mock-window">
           <div class="mock-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
-          <div class="mock-log info">09:15:02  trigger · pedidos aprovados nas 4 empresas</div>
+          <div class="mock-log info">09:15:02  trigger · pedidos aprovados em todas as contas</div>
           <div class="mock-log info">09:15:03  pedido 8472: validar cadastro (PJ)</div>
           <div class="mock-log warn">09:15:04  PJ sem IE → cnpj.ws → IE encontrada</div>
           <div class="mock-log ok">09:15:05  contato corrigido + NF emitida</div>
@@ -181,7 +181,7 @@ footer a{color:var(--muted)}
   <div class="container">
     <div class="label">01 · Dor operacional</div>
     <h2>A atividade principal de uma pessoa era emitir NF</h2>
-    <p>4 empresas vendendo em canais de venda online. ~2000 pedidos por mês entrando todos os dias. Cada pedido aprovado precisa de uma NF emitida pra poder sair da loja.</p>
+    <p>Canais de venda online somando ~2000 pedidos por mês, entrando todos os dias. Cada pedido aprovado precisa de uma NF emitida pra poder sair da loja.</p>
     <p>Pessoa dedicada ao faturamento gastava <strong>~4 horas por dia</strong> nessa tarefa: abrir pedido aprovado, conferir, faturar, emitir NF, repetir. Centenas de vezes por dia, todo dia, igual.</p>
     <div class="callout">
       <p>"Praticamente coloquei um bot pra fazer a atividade principal da pessoa."</p>
@@ -207,7 +207,7 @@ footer a{color:var(--muted)}
   <div class="container">
     <div class="label">03 · Solução criada</div>
     <h2>Apps Script faturando o que era manual</h2>
-    <p>Trigger de tempo no Apps Script. Polla as 4 empresas no Tiny por pedidos aprovados. Pra cada um:</p>
+    <p>Trigger de tempo no Apps Script. Polla as contas Tiny por pedidos aprovados. Pra cada um:</p>
     <ul>
       <li><strong>Filtra</strong> pelo canal de venda que se aplica (ignora os outros).</li>
       <li><strong>Valida cadastro do cliente</strong> — PJ sem IE? Consulta <code>cnpj.ws</code>. Bairro vazio? ViaCEP.</li>
@@ -275,7 +275,7 @@ footer a{color:var(--muted)}
       <div class="flow-arrow">→</div>
       <div class="flow-node">
         <div class="icon">⊞</div>
-        <div class="name">4 Tinys</div>
+        <div class="name">Contas Tiny</div>
         <div class="sub">aprovados</div>
       </div>
       <div class="flow-arrow">→</div>

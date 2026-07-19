@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Custo real de frete por NF (Tiny + Frenet) · nak.api.br</title>
-<meta name="description" content="Custo real de frete por NF em 3 contas Tiny + Frenet (Jadlog, J&T, Loggi). Apps Script + Sheets calculando margem verdadeira por pedido.">
+<meta name="description" content="Custo real de frete por NF em múltiplas contas Tiny + Frenet (Jadlog, J&T, Loggi). Apps Script + Sheets calculando margem verdadeira por pedido.">
 <meta name="keywords" content="custo real frete nf, tiny erp frenet integração, apps script sheets frete, margem pedido ecommerce, jadlog jt loggi consolidado">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://nak.api.br/cases/fretes-consolidado">
@@ -13,7 +13,7 @@
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="nak.api.br">
 <meta property="og:title" content="Custo real de frete por NF — Tiny + Frenet + Apps Script">
-<meta property="og:description" content="3 empresas, várias transportadoras, frete embutido. Apps Script casa NF do Tiny com fatura real Frenet pra calcular margem por pedido.">
+<meta property="og:description" content="Várias contas Tiny, várias transportadoras, frete embutido. Apps Script casa NF do Tiny com fatura real Frenet pra calcular margem por pedido.">
 <meta property="og:url" content="https://nak.api.br/cases/fretes-consolidado">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:image" content="https://nak.api.br/og/fretes-consolidado.png">
@@ -28,7 +28,7 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Custo real de frete por NF (Tiny + Frenet)">
-<meta name="twitter:description" content="Frete embutido sem custo real é prejuízo invisível. Como consolidar 3 Tinys + Frenet num Sheets.">
+<meta name="twitter:description" content="Frete embutido sem custo real é prejuízo invisível. Como consolidar as contas Tiny + Frenet num Sheets.">
 <meta name="twitter:image" content="https://nak.api.br/og/fretes-consolidado.png">
 
 <!-- Schema.org Article -->
@@ -37,7 +37,7 @@
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": "Custo real de frete por NF",
-  "description": "Apps Script + Sheets consolidando NFs de 3 contas Tiny com lançamentos Frenet pra calcular margem real por pedido.",
+  "description": "Apps Script + Sheets consolidando NFs de múltiplas contas Tiny com lançamentos Frenet pra calcular margem real por pedido.",
   "author": { "@type": "Person", "name": "nak" },
   "publisher": { "@type": "Organization", "name": "nak.api.br" },
   "datePublished": "2026-05-17",
@@ -143,7 +143,7 @@ footer a{color:var(--muted)}
           <span class="tag">financeiro</span>
         </div>
         <div class="running-since"><span class="live-dot-mini"></span>em produção desde mai/2026</div>
-        <p class="lead">3 empresas, várias transportadoras, frete embutido no preço do produto. Apps Script + Sheets juntando NF do Tiny com lançamento real da transportadora pra calcular margem verdadeira por pedido.</p>
+        <p class="lead">Mais de uma empresa, várias transportadoras, frete embutido no preço do produto. Apps Script + Sheets juntando NF do Tiny com lançamento real da transportadora pra calcular margem verdadeira por pedido.</p>
       </div>
       <div>
         <div class="hero-visual-dash">
@@ -180,7 +180,7 @@ footer a{color:var(--muted)}
       <li><strong>Margem distorcida</strong> — média escondia prejuízo de pedidos específicos.</li>
       <li><strong>Sem comparativo entre transportadoras</strong> — decisão era "achismo" sobre qual era mais barata pra cada região.</li>
       <li><strong>Multas e diferenças passando batidas</strong> — cobrança extra de excedente de peso, taxa de devolução, sem visibilidade.</li>
-      <li><strong>3 empresas, 3 painéis</strong> — três contas Tiny separadas, cada uma com seu próprio acesso, fechamentos e tokens.</li>
+      <li><strong>Cada empresa, um painel</strong> — contas Tiny separadas, cada uma com seu próprio acesso, fechamentos e tokens.</li>
       <li><strong>Renegociação cega</strong> — sentar com transportadora pra renegociar tabela sem número na mão.</li>
     </ul>
   </div>
@@ -190,9 +190,9 @@ footer a{color:var(--muted)}
   <div class="container">
     <div class="label">03 · Solução criada</div>
     <h2>Sheets central + Apps Script casando NF com fatura</h2>
-    <p>Uma planilha funciona como banco. Apps Script puxa os dois lados: NFs dos 3 Tinys e lançamentos da Frenet (que centraliza Jadlog, J&T, Loggi). Manualmente entram as faturas de transportadoras fora da Frenet.</p>
+    <p>Uma planilha funciona como banco. Apps Script puxa os dois lados: NFs de todas as contas Tiny e lançamentos da Frenet (que centraliza Jadlog, J&T, Loggi). Manualmente entram as faturas de transportadoras fora da Frenet.</p>
     <ul>
-      <li><strong>Aba <code>notas_fiscais</code></strong> — 1 linha por NF emitida nos 3 Tinys. Append diário.</li>
+      <li><strong>Aba <code>notas_fiscais</code></strong> — 1 linha por NF emitida em todas as contas. Append diário.</li>
       <li><strong>Aba <code>fretes_brutos</code></strong> — 1 linha por lançamento de transportadora. Append-only, fonte da verdade do custo.</li>
       <li><strong>Aba <code>config</code></strong> — tokens, mapeamento de-para (CNPJ → empresa), formas de envio a ignorar.</li>
       <li><strong>Aba <code>log</code></strong> — histórico de execução pra rastrear o que rodou quando.</li>
@@ -209,7 +209,7 @@ footer a{color:var(--muted)}
     <div class="flow-grid">
       <div class="flow-node">
         <div class="icon">⊞</div>
-        <div class="name">3 Tinys</div>
+        <div class="name">Contas Tiny</div>
         <div class="sub">notas_fiscais</div>
       </div>
       <div class="flow-arrow">→</div>
@@ -241,9 +241,9 @@ footer a{color:var(--muted)}
     <h2>Decisão de preço com dado, renegociação com número</h2>
     <div class="dash-grid">
       <div class="kpi alt">
-        <div class="lbl">Empresas integradas</div>
-        <div class="val">3</div>
-        <div class="delta">visão consolidada</div>
+        <div class="lbl">Planilha central</div>
+        <div class="val">1</div>
+        <div class="delta">todas as contas juntas</div>
       </div>
       <div class="kpi">
         <div class="lbl">Transportadoras</div>

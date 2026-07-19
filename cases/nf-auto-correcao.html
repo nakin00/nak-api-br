@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Correção automática de NF rejeitada · nak.api.br</title>
-<meta name="description" content="30% das 2000 NFs/mês das 4 empresas rejeitavam no SEFAZ. Apps Script polla 4 Tinys, classifica por dados, corrige cadastro via cnpj.ws/ViaCEP e reemite. ~15h/mês de pessoa eliminadas.">
+<meta name="description" content="30% das 2000 NFs/mês rejeitavam no SEFAZ. Apps Script polla as contas Tiny, classifica por dados, corrige cadastro via cnpj.ws/ViaCEP e reemite. ~15h/mês de pessoa eliminadas.">
 <meta name="keywords" content="nf rejeitada tiny erp, correcao automatica nota fiscal, apps script tiny scraping, cnpj ws viacep, automacao fiscal ecommerce, sefaz rejeicao ie">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://nak.api.br/cases/nf-auto-correcao">
@@ -35,7 +35,7 @@
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": "Correção automática de NF rejeitada (quando a IA diz que não dá)",
-  "description": "Apps Script polla 4 empresas Tiny por NFs rejeitadas, classifica por dados, corrige cadastro e reemite. 99% auto, ~15h/mês de pessoa eliminadas.",
+  "description": "Apps Script polla as contas Tiny por NFs rejeitadas, classifica por dados, corrige cadastro e reemite. 99% auto, ~15h/mês de pessoa eliminadas.",
   "author": { "@type": "Person", "name": "nak" },
   "publisher": { "@type": "Organization", "name": "nak.api.br" },
   "datePublished": "2026-05-31",
@@ -175,7 +175,7 @@ footer a{color:var(--muted)}
       <div>
         <div class="mock-window">
           <div class="mock-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
-          <div class="mock-log info">10:00:00  trigger 10min · pollando 4 empresas</div>
+          <div class="mock-log info">10:00:00  trigger 10min · pollando todas as contas</div>
           <div class="mock-log warn">10:00:02  empresa-1: 2 NFs rejeitadas (situacao=5)</div>
           <div class="mock-log info">10:00:04  NF 198843: PJ sem IE → cnpj.ws → IE real</div>
           <div class="mock-log ok">10:00:06  NF 198843: cadastro corrigido + reemitida</div>
@@ -191,7 +191,7 @@ footer a{color:var(--muted)}
   <div class="container">
     <div class="label">01 · Dor operacional</div>
     <h2>30% das NFs rejeitavam — sempre alguém arrumando</h2>
-    <p>4 empresas emitindo cerca de <strong>2000 NFs/mês</strong> pelos canais de venda. Desse total, ~<strong>30% rejeitavam no SEFAZ</strong> — quase sempre em pedidos de pessoa jurídica, por IE faltando, IE errada ou bairro vazio no cadastro.</p>
+    <p>São cerca de <strong>2000 NFs/mês</strong> emitidas pelos canais de venda. Desse total, ~<strong>30% rejeitavam no SEFAZ</strong> — quase sempre em pedidos de pessoa jurídica, por IE faltando, IE errada ou bairro vazio no cadastro.</p>
     <p>A responsável pelo faturamento gastava <strong>1 a 2 minutos corrigindo cada uma</strong>: abrir NF rejeitada no Tiny, apagar CNPJ, colar de novo pra ele rebuscar dados, salvar, emitir. 600 NFs/mês × 1.5min dá cerca de <strong>15 horas por mês só nisso</strong>.</p>
     <div class="callout">
       <p>"Sou insistente. Não aceito 'não dá' como resposta — nem do Tiny, nem da IA que me ajuda a construir."</p>
@@ -217,7 +217,7 @@ footer a{color:var(--muted)}
   <div class="container">
     <div class="label">03 · Solução criada</div>
     <h2>Apps Script + cascata de 4 estratégias pra IE</h2>
-    <p>Trigger a cada 10 minutos. Polla as 4 empresas no Tiny por NFs com <code>situacao=5</code> (rejeitada). Classifica por dados (não por mensagem de erro — explico no bloco "Erros"). Corrige o cadastro do contato e tenta reemitir.</p>
+    <p>Trigger a cada 10 minutos. Polla as contas Tiny por NFs com <code>situacao=5</code> (rejeitada). Classifica por dados (não por mensagem de erro — explico no bloco "Erros"). Corrige o cadastro do contato e tenta reemitir.</p>
     <p>Padrões corrigidos automaticamente:</p>
     <ul>
       <li><strong>PJ sem IE preenchida</strong> — consulta <code>cnpj.ws</code> (primário) ou BrasilAPI (fallback) pra pegar IE real. Sem IE ativa → marca como ISENTO.</li>
@@ -247,7 +247,7 @@ footer a{color:var(--muted)}
       <div class="flow-arrow">→</div>
       <div class="flow-node">
         <div class="icon">⊞</div>
-        <div class="name">4 Tinys</div>
+        <div class="name">Contas Tiny</div>
         <div class="sub">situacao=5</div>
       </div>
       <div class="flow-arrow">→</div>
