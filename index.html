@@ -203,6 +203,10 @@ footer a{color:var(--muted)}
     <p class="changelog-intro">Não tem "Sobre nós" parado no tempo. Cada case novo ou revisão de case existente aparece aqui — com data. As últimas mudanças no conteúdo:</p>
     <ul class="changelog-list">
       <li class="changelog-item">
+        <span class="changelog-date">25/07</span>
+        <span class="changelog-msg">novo case <strong>crm-reativacao</strong> — o arquivo de dados virou lista de clientes sumidos e depois CRM próprio</span>
+      </li>
+      <li class="changelog-item">
         <span class="changelog-date">18/07</span>
         <span class="changelog-msg">novo case <strong>hub-de-dados</strong> — R$ 16.847/ano cortados do ERP com banco próprio de R$ 30/mês</span>
       </li>
@@ -338,6 +342,20 @@ footer a{color:var(--muted)}
         <h3>Bot fazendo a atividade principal de uma pessoa</h3>
         <p class="meta"><span class="meta-label problem">Problema</span>Pessoa dedicada gastava ~4h/dia emitindo 2000 NFs/mês manualmente. Operação travava quando ela faltava.</p>
         <p class="meta"><span class="meta-label result">Resultado</span>Emissão automática + validação preventiva de cadastro. Combinado com bot de correção: 99% sem clique humano.</p>
+        <span class="arrow">ver documentação →</span>
+      </a>
+
+      <a href="cases/crm-reativacao" class="case-card">
+        <div class="tags">
+          <span class="tag">cloudflare-workers</span>
+          <span class="tag">d1</span>
+          <span class="tag">crm</span>
+          <span class="tag">sql</span>
+          <span class="tag">vendas</span>
+        </div>
+        <h3>Uma carteira inteira de clientes recorrentes tinha sumido</h3>
+        <p class="meta"><span class="meta-label problem">Problema</span>Clientes que compravam repetidamente em 2025 pararam em 2026 — e nenhum relatório mostrava isso.</p>
+        <p class="meta"><span class="meta-label result">Resultado</span>Query no hub virou CRM próprio: funil, carteira com dono e conversão medida sem inflar. Custo zero de software.</p>
         <span class="arrow">ver documentação →</span>
       </a>
 

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Bloco Resultado reflete 18 dias de uso (jul/2026). Reatualizar quando houver meses de dado. -->
+<title>CRM de reativação em cima do arquivo próprio · nak.api.br</title>
+<meta name="description" content="Uma carteira inteira de clientes recorrentes comprou em 2025 e sumiu em 2026 — ninguém tinha percebido. Um SELECT no hub de dados virou CRM de reativação com funil, carteiras e medição de conversão.">
+<meta name="keywords" content="crm reativacao clientes, clientes inativos recompra, cloudflare d1 crm, funil reativacao pj, medir conversao vendas, hub de dados crm">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/cases/crm-reativacao">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="Uma carteira inteira de clientes recorrentes tinha sumido.">
+<meta property="og:description" content="O arquivo de dados que cortou R$ 17 mil/ano do ERP virou a base de um CRM de reativação. Funil, carteiras, medição de esforço vs resultado.">
+<meta property="og:url" content="https://nak.api.br/cases/crm-reativacao">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:image" content="https://nak.api.br/og/crm-reativacao.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="article:section" content="Vendas">
+<meta property="article:tag" content="cloudflare-workers">
+<meta property="article:tag" content="d1">
+<meta property="article:tag" content="crm">
+<meta property="article:tag" content="vendas">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Uma carteira inteira de clientes recorrentes tinha sumido.">
+<meta name="twitter:description" content="O hub de dados virou CRM de reativação: funil, carteiras, conversão medida. Sem mensalidade de CRM de mercado.">
+<meta name="twitter:image" content="https://nak.api.br/og/crm-reativacao.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "CRM de reativação em cima do arquivo próprio",
+  "description": "Clientes recorrentes sumidos identificados por query no hub de dados. CRM próprio com funil, carteiras e medição de conversão — sem mensalidade.",
+  "author": { "@type": "Person", "name": "nak" },
+  "publisher": { "@type": "Organization", "name": "nak.api.br" },
+  "datePublished": "2026-07-25",
+  "inLanguage": "pt-BR",
+  "url": "https://nak.api.br/cases/crm-reativacao",
+  "about": ["CRM", "Reativação de clientes", "Cloudflare Workers", "D1"],
+  "keywords": "crm, reativação, clientes inativos, cloudflare, d1, vendas"
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--danger:#EF4444;--warn:#F59E0B;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--radius:10px;--max:1100px}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+
+.case-hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.case-hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+.breadcrumb{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:24px}
+.category{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.case-hero h1{font-size:42px;font-weight:700;line-height:1.1;margin:0 0 20px;letter-spacing:-.02em}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.tag{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--border);color:var(--muted);border-radius:4px;text-transform:lowercase}
+.lead{color:var(--muted);font-size:17px;max-width:600px;margin:0}
+.running-since{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px;padding:5px 10px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:4px}
+.live-dot-mini{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent-2);animation:pulse-mini 2.2s ease-in-out infinite}
+@keyframes pulse-mini{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* FUNIL MOCK — visual do hero */
+.funil-mock{background:#0d1117;border:1px solid var(--border);border-radius:14px;padding:24px;box-shadow:0 20px 60px -20px rgba(0,0,0,.6)}
+.funil-mock .fm-title{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.funil-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.funil-row .fr-label{font-size:13px;color:var(--text);width:120px;flex-shrink:0}
+.funil-row .fr-bar{flex:1;height:22px;background:var(--border);border-radius:4px;overflow:hidden}
+.funil-row .fr-fill{height:100%;border-radius:4px}
+.funil-row .fr-num{font-family:var(--mono);font-size:12px;color:var(--muted);width:44px;text-align:right;flex-shrink:0}
+.funil-note{margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--muted);font-style:italic;text-align:center}
+
+.case-section{padding:64px 0;border-bottom:1px solid var(--border)}
+.case-section:last-child{border-bottom:none}
+.label{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.case-section h2{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0 0 24px}
+.case-section p{font-size:16px;color:var(--text);margin:0 0 16px;max-width:760px}
+.case-section ul{font-size:16px;color:var(--text);padding-left:20px;max-width:760px}
+.case-section ul li{margin-bottom:10px}
+.case-section ul li::marker{color:var(--muted)}
+
+.callout{border-left:3px solid var(--accent);background:var(--card);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin:24px 0;max-width:760px}
+.callout p{margin:0;font-style:italic;color:var(--muted)}
+
+/* BLOCO FUNDAÇÃO — link pro case do hub */
+.fundacao{max-width:760px;margin:32px 0;padding:24px;background:linear-gradient(135deg,rgba(34,197,94,.06),rgba(59,130,246,.06));border:1px solid var(--border);border-radius:var(--radius)}
+.fundacao .f-label{font-family:var(--mono);font-size:11px;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.fundacao h3{font-size:18px;font-weight:600;margin:0 0 10px;color:var(--text)}
+.fundacao p{font-size:15px;color:var(--muted);margin:0 0 12px;line-height:1.65}
+.fundacao a.f-link{font-family:var(--mono);font-size:13px}
+
+.flow-grid{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:32px 0;max-width:760px}
+.flow-node{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;flex:1;min-width:110px}
+.flow-node .icon{font-family:var(--mono);font-size:22px;color:var(--accent);margin-bottom:6px}
+.flow-node .name{font-size:13px;font-weight:500}
+.flow-node .sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px}
+.flow-arrow{font-family:var(--mono);color:var(--muted);font-size:18px;flex-shrink:0}
+.flow-note{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--muted);max-width:760px;text-align:center}
+
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;max-width:760px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.kpi .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.kpi .val{font-size:24px;font-weight:600;font-family:var(--mono);color:var(--accent-2);line-height:1}
+.kpi .delta{font-size:11px;color:var(--accent-2);margin-top:8px;font-family:var(--mono)}
+.kpi.alt .val{color:var(--accent)}
+
+.erro-block{max-width:760px;margin:32px 0;padding:24px;background:#0d1117;border:1px solid var(--border);border-radius:var(--radius);border-left:3px solid var(--warn)}
+.erro-block .erro-titulo{font-family:var(--mono);font-size:12px;color:var(--warn);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.erro-block h3{font-size:18px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em;color:var(--text)}
+.erro-block p{font-size:15px;color:var(--muted);margin:0;line-height:1.65}
+.erro-block p strong{color:var(--text);font-weight:500}
+
+footer{padding:48px 0;color:var(--muted);font-size:13px}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--muted)}
+
+@media(max-width:900px){.case-hero-grid{grid-template-columns:1fr;gap:40px}.dash-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.case-hero h1{font-size:32px}.case-section{padding:48px 0}.case-section h2{font-size:24px}.flow-grid{flex-direction:column}.flow-arrow{transform:rotate(90deg)}nav .links{gap:16px}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <a href="../" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <div class="links">
+      <a href="../#cases">Cases</a>
+      <a href="../#filosofia">Filosofia</a>
+      <a href="../#stack">Stack</a>
+    </div>
+  </div>
+</nav>
+
+<header class="case-hero">
+  <div class="container">
+    <div class="case-hero-grid">
+      <div>
+        <div class="breadcrumb"><a href="../">~</a> / cases / crm-reativacao</div>
+        <div class="category">Vendas · Dados</div>
+        <h1>Uma carteira inteira de clientes recorrentes tinha sumido. Ninguém tinha percebido.</h1>
+        <div class="tags">
+          <span class="tag">cloudflare-workers</span>
+          <span class="tag">d1</span>
+          <span class="tag">crm</span>
+          <span class="tag">sql</span>
+          <span class="tag">slack</span>
+          <span class="tag">oauth</span>
+        </div>
+        <div class="running-since"><span class="live-dot-mini"></span>em produção desde jul/2026</div>
+        <p class="lead">Uma query no hub de dados revelou uma carteira inteira de clientes que compravam repetidamente em 2025 e não voltaram em 2026. Em vez de assinar um CRM de mercado, montei um em cima do banco que já existia — com funil, carteiras por vendedora e conversão medida.</p>
+      </div>
+      <div>
+        <div class="funil-mock">
+          <div class="fm-title">funil de reativação · 18 dias de uso</div>
+          <div class="funil-row"><span class="fr-label">A contatar</span><div class="fr-bar"><div class="fr-fill" style="width:100%;background:#374151"></div></div><span class="fr-num">52%</span></div>
+          <div class="funil-row"><span class="fr-label">Contato feito</span><div class="fr-bar"><div class="fr-fill" style="width:47%;background:#3B82F6"></div></div><span class="fr-num">25%</span></div>
+          <div class="funil-row"><span class="fr-label">Sem contato</span><div class="fr-bar"><div class="fr-fill" style="width:43%;background:#F59E0B"></div></div><span class="fr-num">23%</span></div>
+          <div class="funil-row"><span class="fr-label">Reativado</span><div class="fr-bar"><div class="fr-fill" style="width:4%;background:#22C55E"></div></div><span class="fr-num">&lt;1%</span></div>
+          <div class="funil-note">proporções reais · trabalho em andamento</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">01 · Dor operacional</div>
+    <h2>Cliente recorrente não avisa quando vai embora</h2>
+    <p>Cliente que compra uma vez e some é estatística. Cliente que comprava <strong>repetidamente</strong> e some é sintoma — de preço, de concorrente, de atendimento que falhou, de esquecimento puro. E é o tipo de perda que não aparece em nenhum relatório: o faturamento do mês até cresce com clientes novos, enquanto a base antiga escorre em silêncio.</p>
+    <p>A pergunta que ninguém conseguia responder com dado: <strong>quem comprava de nós em 2025 e não voltou em 2026?</strong></p>
+    <div class="callout">
+      <p>"O cliente que some não manda aviso prévio. Ele só para de aparecer — e a gente só percebe quando já virou cliente do concorrente."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">02 · Impacto do problema</div>
+    <h2>Uma carteira inteira dormindo</h2>
+    <p>Rodei a query no hub: clientes com <strong>2 ou mais compras em 2025</strong>, ticket médio acima de um piso que exclui compra simbólica, e <strong>zero compras em 2026</strong>. O resultado foi uma lista longa o suficiente pra virar projeto — <strong>pouco mais da metade empresas</strong>, o resto pessoa física.</p>
+    <ul>
+      <li><strong>Não eram curiosos de uma compra só</strong> — o filtro pegou só recorrentes, gente que já tinha o hábito de comprar.</li>
+      <li><strong>Receita previsível que evaporou</strong> — cada um tinha histórico, cadência e ticket conhecidos.</li>
+      <li><strong>Ninguém era responsável por eles</strong> — sem dono, cliente sumido é problema de todo mundo e de ninguém.</li>
+      <li><strong>Contato espalhado</strong> — telefone e e-mail existiam no cadastro, mas ninguém cruzava "sumiu" com "tem contato".</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">03 · A fundação</div>
+    <h2>Sem o arquivo, essa lista não existiria</h2>
+    <div class="fundacao">
+      <div class="f-label">construído em cima do case anterior</div>
+      <h3>O hub de dados que cortou R$ 17 mil/ano virou a base do CRM</h3>
+      <p>A pergunta "quem comprava e sumiu" precisa de histórico de anos — exatamente o que estava sendo <strong>expurgado do ERP</strong> pra cortar custo de armazenamento. Se o histórico tivesse sido só apagado, essa análise seria impossível. Como foi <strong>arquivado num banco próprio consultável</strong>, virou um SELECT.</p>
+      <p>O mesmo banco que economiza dinheiro passou a gerar receita. Arquivo morto não é morto quando você consegue fazer pergunta pra ele.</p>
+      <a class="f-link" href="hub-de-dados">→ ler o case do hub de dados</a>
+    </div>
+    <p>O CRM roda como um Worker separado <strong>apontando pro mesmo banco D1 do hub</strong> — lê pedidos, itens e contatos de lá, e grava a gestão (funil, interações, responsáveis) em tabelas próprias. Zero duplicação de dado, zero sincronização pra manter.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">04 · Solução criada</div>
+    <h2>CRM enxuto, do jeito que a operação usa</h2>
+    <p>Nada de CRM de mercado com 200 funcionalidades e mensalidade por usuário. O que a equipe precisava:</p>
+    <ul>
+      <li><strong>Funil simples</strong> — a contatar → tentativa → em negociação → reativado (ou sem interesse / sem contato).</li>
+      <li><strong>Carteiras com dono</strong> — a lista dividida igualmente entre as vendedoras, ordenada por valor e alternada pra divisão ficar justa em valor e prioridade. Cada uma edita só os seus; vê o resto em somente-leitura.</li>
+      <li><strong>Ficha completa do cliente</strong> — valor comprado em 2025, ticket, cadência de compra, dias parado, histórico de pedidos com itens e <strong>top produtos</strong> — a vendedora liga sabendo o que o cliente comprava.</li>
+      <li><strong>Contato em 1 toque</strong> — WhatsApp, telefone e e-mail clicáveis na ficha.</li>
+      <li><strong>Esforço separado de resultado</strong> — registrar contato é uma coisa; marcar "pedido fechado" é outra. E na recompra, uma pergunta obrigatória: <em>"foi resultado do seu contato?"</em> — separa conversão real de recompra espontânea.</li>
+      <li><strong>Relatório diário no Slack</strong> — todo fim de tarde, em dia útil: contatos por vendedora, clientes que voltaram a comprar e R$ reativado.</li>
+      <li><strong>Login com Google</strong> — sem senha pra equipe decorar; só e-mail cadastrado entra.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">05 · Como funciona</div>
+    <h2>Do histórico parado à recompra medida</h2>
+    <div class="flow-grid">
+      <div class="flow-node">
+        <div class="icon">🗄</div>
+        <div class="name">Hub D1</div>
+        <div class="sub">histórico</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">🔍</div>
+        <div class="name">Query</div>
+        <div class="sub">recorrentes sumidos</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">👥</div>
+        <div class="name">Carteiras</div>
+        <div class="sub">divisão justa</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">📞</div>
+        <div class="name">Contato</div>
+        <div class="sub">funil + ficha</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">📊</div>
+        <div class="name">Medição</div>
+        <div class="sub">conversão + Slack</div>
+      </div>
+    </div>
+    <p class="flow-note">mesmo D1 do hub · gestão em tabelas próprias · relatório diário automático em dia útil</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">06 · Resultado</div>
+    <h2>18 dias: um quarto da carteira contatada</h2>
+    <div class="dash-grid">
+      <div class="kpi alt">
+        <div class="lbl">Carteira contatada</div>
+        <div class="val">1 em 4</div>
+        <div class="delta">em 13 dias úteis</div>
+      </div>
+      <div class="kpi alt">
+        <div class="lbl">Tempo de uso</div>
+        <div class="val">18 dias</div>
+        <div class="delta">desde o primeiro contato</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Recompra espontânea</div>
+        <div class="val">+ da metade</div>
+        <div class="delta">voltaram sem ninguém ligar</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Custo do software</div>
+        <div class="val">R$ 0</div>
+        <div class="delta">além do hub que já existia</div>
+      </div>
+    </div>
+    <p>Números de <strong>18 dias de uso real</strong> — é cedo pra falar em taxa de conversão consolidada, e não vou inflar. O que já dá pra afirmar com dado:</p>
+    <ul>
+      <li><strong>O esforço virou visível.</strong> Um quarto da carteira contatada e centenas de interações registradas em 13 dias úteis. Antes, esse trabalho existia em listas soltas — sem histórico, sem dono, sem contagem.</li>
+      <li><strong>Cliente sumido ganhou dono.</strong> Cada cliente da lista tem responsável, status no funil e data de próximo contato.</li>
+      <li><strong>Mais da metade das recompras foi espontânea</strong> — clientes que voltaram sem ninguém ter ligado. Se a métrica não separasse isso, o case aqui contaria todas como vitória da reativação e estaria mentindo.</li>
+      <li><strong>Custo de software zero</strong> além do que o hub já custava. CRM de mercado cobraria por usuária, por mês, pra fazer menos do que a operação precisa.</li>
+    </ul>
+    <p>O que ainda não existe é taxa de conversão madura. Das recompras de clientes que já tinham sido contatados, as próprias vendedoras marcaram <strong>só uma como resultado direto do contato</strong> — nas outras, responderam honestamente que o cliente teria voltado de qualquer jeito. Prefiro publicar essa uma do que somar todas e inflar. <strong>Volto a atualizar este bloco quando houver meses de dado, não semanas.</strong></p>
+    <p style="font-size:14px;color:var(--muted)">Volumes absolutos e valores de faturamento ficam fora desta publicação — são dados internos da operação. O que interessa aqui é o método, não o extrato.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">07 · Erros e aprendizados</div>
+    <h2>O que descobri construindo e rodando</h2>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 1 · esforço já estava sendo desperdiçado</div>
+      <h3>Parte dos clientes contatados já tinha voltado a comprar</h3>
+      <p>Antes do CRM, a equipe já tentava reativar clientes por listas manuais. Ao importar esses contatos pro sistema, o cruzamento com o histórico mostrou que <strong>uma fatia deles já estava ativa em 2026</strong> — a equipe gastou tempo "reativando" quem nunca tinha ido embora. Sem dado, esforço de venda vira loteria. <strong>Aprendizado: a lista de quem contatar vale tanto quanto o contato em si.</strong></p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 2 · e-mail no login quebrou a sessão</div>
+      <h3>O ponto do e-mail conflitava com o separador do token</h3>
+      <p>O token de sessão usava ponto como separador (<code>login.expiracao.assinatura</code>). Quando o login passou a ser e-mail — que tem pontos — o parser quebrava: login funcionava, mas a sessão era rejeitada em seguida. Só admin (login sem ponto) conseguia usar. <strong>Fix:</strong> separar pelos dois últimos pontos, não pelos primeiros. <strong>Aprendizado: todo formato de token que usa separador precisa da pergunta "e se o dado do usuário contiver o separador?"</strong></p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 3 · medir só contato inflaria o sucesso</div>
+      <h3>Recompra espontânea não é conversão</h3>
+      <p>Cliente sumido às vezes volta sozinho — sem ninguém ter ligado. Se toda recompra contasse como sucesso da reativação, o número mentiria. Por isso a marcação de pedido fechado pergunta: <em>"foi resultado do seu contato?"</em>. Recompra espontânea conta no faturamento, mas não na taxa de conversão da vendedora. <strong>Os primeiros 18 dias provaram a necessidade:</strong> mais da metade das recompras veio de clientes que ninguém tinha contatado ainda. Sem a separação, o relatório teria contado todas como reativação — e a maior parte seria mérito de ninguém. <strong>Métrica que mistura mérito com sorte vira meta que ninguém respeita.</strong></p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 4 · dado do CRM não pode vazar no seed</div>
+      <h3>Arquivo de carga tinha PII de cliente no repositório</h3>
+      <p>O SQL de carga inicial continha nome, telefone e e-mail de toda a carteira. Ia junto pro repositório Git. <strong>Fix:</strong> gitignore no arquivo + regeneração via script a partir do hub quando precisar. <strong>Aprendizado: dado de cliente só mora no banco — repositório é lugar de código.</strong></p>
+    </div>
+
+    <p>O padrão que amarra: <strong>o CRM não criou dado nenhum — só deu uso ao que já existia</strong>. A parte difícil (anos de histórico limpo e consultável) já estava pronta por causa do hub. O CRM foi a pergunta certa feita ao banco certo.</p>
+  </div>
+</section>
+
+<section class="case-section" style="background:#0a0e13">
+  <div class="container">
+    <div class="label">Cases relacionados</div>
+    <h2>A sequência que levou até aqui</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <a href="hub-de-dados" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Infra · Dados · A fundação</div>
+        <div style="font-size:16px;font-weight:500">R$ 17 mil por ano a menos no ERP →</div>
+      </a>
+      <a href="atendimento-insights" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Atendimento · IA</div>
+        <div style="font-size:16px;font-weight:500">Análise diária do WhatsApp Business →</div>
+      </a>
+      <a href="fretes-consolidado" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Financeiro · Sheets</div>
+        <div style="font-size:16px;font-weight:500">Custo real de frete por NF →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container row">
+    <div><strong style="color:var(--text);">nak.api.br</strong> · <a href="../">voltar pro laboratório</a></div>
+    <div><a href="mailto:labs@nak.api.br">labs@nak.api.br</a> · Caso documentado em 2026</div>
+  </div>
+</footer>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c48dfb70ce8140ffa8ad30637454ad88"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
