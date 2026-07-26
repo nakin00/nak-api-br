@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Companion do case crm-reativacao: aqui é o tour de tela. Resultado medido fica lá. -->
+<title>O CRM inteiro tem quatro telas · nak.api.br</title>
+<meta name="description" content="Tour pelas telas do CRM de reativação que construí: carteira com filtros, ficha do cliente com histórico de compras, registro de contato, painel de esforço x conversão. Cada tela e a decisão por trás dela.">
+<meta name="keywords" content="crm proprio interface, tela crm reativacao, crm cloudflare workers, painel vendas d1, crm sem mensalidade, funil reativacao">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/cases/crm-por-dentro">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="O CRM inteiro tem quatro telas">
+<meta property="og:description" content="Tour pelas telas do CRM de reativação: carteira, ficha do cliente, registro de contato e painel de esforço x conversão. Cada tela com a decisão por trás.">
+<meta property="og:url" content="https://nak.api.br/cases/crm-por-dentro">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:image" content="https://nak.api.br/og/crm-por-dentro.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="article:section" content="Vendas">
+<meta property="article:tag" content="cloudflare-workers">
+<meta property="article:tag" content="d1">
+<meta property="article:tag" content="crm">
+<meta property="article:tag" content="interface">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="O CRM inteiro tem quatro telas">
+<meta name="twitter:description" content="As telas do CRM de reativação, uma por uma — e por que cada uma ficou assim.">
+<meta name="twitter:image" content="https://nak.api.br/og/crm-por-dentro.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "O CRM inteiro tem quatro telas",
+  "description": "Tour pelas telas do CRM de reativação construído sobre o hub de dados: carteira, ficha do cliente, registro de contato e painel de esforço x conversão.",
+  "author": { "@type": "Person", "name": "nak" },
+  "publisher": { "@type": "Organization", "name": "nak.api.br" },
+  "datePublished": "2026-07-26",
+  "inLanguage": "pt-BR",
+  "url": "https://nak.api.br/cases/crm-por-dentro",
+  "about": ["CRM", "Interface", "Cloudflare Workers", "D1"],
+  "keywords": "crm, interface, telas, cloudflare, d1, vendas, reativação"
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--danger:#EF4444;--warn:#F59E0B;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--radius:10px;--max:1100px}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+
+.case-hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.breadcrumb{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:24px}
+.category{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.case-hero h1{font-size:42px;font-weight:700;line-height:1.1;margin:0 0 20px;letter-spacing:-.02em;max-width:820px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.tag{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--border);color:var(--muted);border-radius:4px;text-transform:lowercase}
+.lead{color:var(--muted);font-size:17px;max-width:700px;margin:0}
+.running-since{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px;padding:5px 10px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:4px}
+.live-dot-mini{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent-2);animation:pulse-mini 2.2s ease-in-out infinite}
+@keyframes pulse-mini{0%,100%{opacity:1}50%{opacity:.35}}
+
+.case-section{padding:60px 0;border-bottom:1px solid var(--border)}
+.case-section:last-child{border-bottom:none}
+.label{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.case-section h2{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0 0 24px}
+.case-section p{font-size:16px;color:var(--text);margin:0 0 16px;max-width:760px}
+.case-section ul{font-size:16px;color:var(--text);padding-left:20px;max-width:760px}
+.case-section ul li{margin-bottom:10px}
+.case-section ul li::marker{color:var(--muted)}
+.case-section h3.sub{font-size:19px;font-weight:600;margin:34px 0 12px;letter-spacing:-.01em}
+
+.callout{border-left:3px solid var(--accent);background:var(--card);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin:24px 0;max-width:760px}
+.callout p{margin:0;font-style:italic;color:var(--muted)}
+
+.fundacao{max-width:760px;margin:32px 0;padding:24px;background:linear-gradient(135deg,rgba(34,197,94,.06),rgba(59,130,246,.06));border:1px solid var(--border);border-radius:var(--radius)}
+.fundacao .f-label{font-family:var(--mono);font-size:11px;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.fundacao h3{font-size:18px;font-weight:600;margin:0 0 10px;color:var(--text)}
+.fundacao p{font-size:15px;color:var(--muted);margin:0 0 12px;line-height:1.65}
+.fundacao a.f-link{font-family:var(--mono);font-size:13px}
+
+.erro-block{max-width:760px;margin:28px 0;padding:24px;background:#0d1117;border:1px solid var(--border);border-radius:var(--radius);border-left:3px solid var(--warn)}
+.erro-block .erro-titulo{font-family:var(--mono);font-size:12px;color:var(--warn);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.erro-block h3{font-size:18px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em;color:var(--text)}
+.erro-block p{font-size:15px;color:var(--muted);margin:0;line-height:1.65}
+.erro-block p strong{color:var(--text);font-weight:500}
+
+.aviso{max-width:900px;margin:0 0 26px;padding:14px 18px;border:1px dashed var(--border);border-radius:var(--radius);font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.6}
+
+/* ---------- moldura de navegador ---------- */
+.screen{max-width:940px;margin:26px 0 10px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#0d1117;box-shadow:0 24px 60px -28px rgba(0,0,0,.8)}
+.screen .chrome{display:flex;align-items:center;gap:8px;padding:9px 12px;background:#0f151c;border-bottom:1px solid var(--border)}
+.screen .dot3{display:flex;gap:5px}
+.screen .dot3 i{width:9px;height:9px;border-radius:50%;background:#2b3542;display:block}
+.screen .url{flex:1;text-align:center;font-family:var(--mono);font-size:11px;color:#5c6a7a;background:#0b1016;border:1px solid #1b2430;border-radius:5px;padding:3px 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.screen .body{padding:0;overflow-x:auto}
+.cap{max-width:940px;font-family:var(--mono);font-size:12px;color:var(--muted);margin:0 0 30px;padding-left:2px}
+
+/* ---------- app mockup (tema real do CRM) ---------- */
+.ui{--v:#1F7A4D;--vbg:#f5f6f8;--vcard:#fff;--vline:#e4e7ec;--vtx:#1a2230;--vmut:#6b7684;background:var(--vbg);color:var(--vtx);font:13px/1.45 system-ui,'Segoe UI',Roboto,sans-serif;min-width:720px}
+.ui *{box-sizing:border-box}
+.ui-hd{background:var(--v);color:#fff;padding:9px 16px;display:flex;align-items:center;gap:12px}
+.ui-hd b{font-size:15px}
+.ui-hd .u{opacity:.92;font-size:12px}
+.ui-hd .sp{flex:1}
+.ui-hd span.bt{background:rgba(255,255,255,.15);color:#fff;padding:5px 10px;border-radius:8px;font-size:12px}
+.ui-wrap{padding:16px}
+.ui-cards{display:grid;grid-template-columns:repeat(7,1fr);gap:9px;margin-bottom:14px}
+.ui-card{background:var(--vcard);border:1px solid var(--vline);border-radius:12px;padding:11px}
+.ui-card .k{font-size:11px;color:var(--vmut);white-space:nowrap}
+.ui-card .v{font-size:21px;font-weight:700;color:var(--v);line-height:1.2}
+.ui-card.on{border-color:var(--v)}
+.ui-filtros{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:11px}
+.ui-inp{background:#fff;border:1px solid var(--vline);border-radius:8px;padding:6px 9px;color:var(--vmut);font-size:12px}
+.ui-inp.sel:after{content:" ▾"}
+.ui-inp.w{min-width:210px}
+.ui-chk{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--vtx)}
+.ui-chk i{width:13px;height:13px;border:1px solid #b9c0c9;border-radius:3px;background:#fff;display:inline-block}
+.ui-chk i.on{background:var(--v);border-color:var(--v);position:relative}
+.ui-chk i.on:after{content:"✓";position:absolute;left:1px;top:-4px;color:#fff;font-size:11px}
+.ui-sp{flex:1}
+.ui-mut{color:var(--vmut)}
+.ui table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--vline);border-radius:12px;overflow:hidden}
+.ui th,.ui td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--vline);font-size:12px;vertical-align:middle}
+.ui th{background:#fafbfc;color:var(--vmut);font-weight:600;font-size:11px}
+.ui tr:last-child td{border-bottom:0}
+.ui .pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap}
+.seg-Alta{background:#fde2e1;color:#b42318}
+.seg-MediaAlta{background:#fdefd9;color:#b54708}
+.seg-Media{background:#fff8e1;color:#8a6d00}
+.st-a_contatar{background:#eef2f6;color:#475467}
+.st-tentativa{background:#e7f0ff;color:#175cd3}
+.st-em_negociacao{background:#fdefd9;color:#b54708}
+.st-reativado{background:#e3f6ea;color:#08794a}
+.st-sem_interesse{background:#f4e6e6;color:#912018}
+.st-sem_contato{background:#f2f2f2;color:#8a8f98}
+.ui .lk{color:var(--v);font-weight:600;white-space:nowrap}
+.ui th{white-space:nowrap}
+.ui-pag{display:flex;gap:8px;align-items:center;justify-content:center;margin:12px;font-size:12px;color:var(--vmut)}
+.ui-pag span.b{background:#fff;border:1px solid var(--vline);padding:5px 10px;border-radius:8px}
+.ui-box{background:#fff;border:1px solid var(--vline);border-radius:12px;padding:14px;margin-bottom:14px}
+.ui-box h4{margin:0 0 10px;font-size:13px;color:var(--v);font-weight:600}
+.ui-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin-top:12px}
+.ui-kpi{background:#f8fbf9;border-radius:10px;padding:9px}
+.ui-kpi .k{font-size:10px;color:var(--vmut)}
+.ui-kpi .v{font-size:16px;font-weight:700}
+.ui-contato a{color:var(--v);font-weight:600;margin-right:14px;font-size:12px;text-decoration:none}
+.ui-grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:14px}
+.ui-lab{font-size:11px;color:var(--vmut);display:block;margin-bottom:3px}
+.ui-linha{display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-bottom:9px}
+.ui-btn{background:var(--v);color:#fff;padding:7px 14px;font-weight:600;border-radius:8px;font-size:12px;display:inline-block}
+.ui-btn.sec{background:#eef2f6;color:var(--vtx)}
+.ui-ta{background:#fff;border:1px solid var(--vline);border-radius:8px;padding:8px 10px;color:#98a1ac;font-size:12px;min-height:46px}
+.ui-tl{border-left:2px solid var(--vline);margin-left:6px;padding-left:14px}
+.ui-tl .it{margin-bottom:12px;position:relative}
+.ui-tl .it:before{content:"";position:absolute;left:-21px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--v)}
+.ui-tl .meta{font-size:11px;color:var(--vmut)}
+.ui-ped{border:1px solid var(--vline);border-radius:10px;margin-bottom:7px;overflow:hidden}
+.ui-ped .h{display:flex;gap:9px;align-items:center;padding:8px 11px;background:#fafbfc;font-size:12px}
+.ui-ped .h .sp{flex:1}
+.ui-radio{display:flex;gap:6px;align-items:center;font-size:12px}
+.ui-radio i{width:13px;height:13px;border:1px solid #b9c0c9;border-radius:50%;background:#fff;display:inline-block;flex-shrink:0}
+.ui-radio i.on{border:4px solid var(--v)}
+.ui-login{max-width:330px;margin:22px auto;background:#fff;border:1px solid var(--vline);border-radius:14px;padding:22px}
+.ui-login h4{font-size:18px;margin:0 0 3px;color:var(--v)}
+.ui-login p{margin:0 0 16px;color:var(--vmut);font-size:12px}
+.ui-goog{display:flex;align-items:center;justify-content:center;gap:9px;background:#fff;border:1px solid #dadce0;color:#3c4043;padding:10px;border-radius:8px;font-weight:600;font-size:13px}
+.ui-or{text-align:center;margin:11px 0;color:#9aa2ad;font-size:12px}
+.ui-login .ui-inp{display:block;width:100%;margin-bottom:8px}
+.ui.narrow{min-width:0}
+.money{font-variant-numeric:tabular-nums}
+
+/* ---------- slack ---------- */
+.slack{max-width:640px;background:#1a1d21;border:1px solid #2b2f36;border-radius:10px;padding:16px 18px;margin:22px 0 8px;font-size:14px;line-height:1.65}
+.slack .sh{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.slack .av{width:22px;height:22px;border-radius:5px;background:#1F7A4D;display:grid;place-items:center;font-family:var(--mono);font-size:11px;color:#fff;font-weight:700}
+.slack .who{font-weight:600;font-size:13px}
+.slack .ts{font-size:11px;color:#8b949e;font-family:var(--mono)}
+.slack .msg{color:#d6dae0;white-space:pre-wrap;font-size:13.5px}
+.slack .msg b{color:#fff}
+
+.grid-dec{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;max-width:900px;margin-top:22px}
+.dec{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
+.dec .d-t{font-size:15px;font-weight:600;margin-bottom:8px}
+.dec .d-p{font-size:14px;color:var(--muted);margin:0;line-height:1.6}
+
+footer{padding:48px 0;color:var(--muted);font-size:13px}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--muted)}
+
+@media(max-width:900px){.ui-grid2{grid-template-columns:1fr}}
+@media(max-width:720px){.case-hero h1{font-size:30px}.case-section{padding:44px 0}.case-section h2{font-size:23px}nav .links{gap:16px}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <a href="../" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <div class="links">
+      <a href="../#cases">Cases</a>
+      <a href="../#filosofia">Filosofia</a>
+      <a href="../#stack">Stack</a>
+    </div>
+  </div>
+</nav>
+
+<header class="case-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="../">~</a> / cases / crm-por-dentro</div>
+    <div class="category">Vendas · Interface</div>
+    <h1>O CRM inteiro tem quatro telas</h1>
+    <div class="tags">
+      <span class="tag">cloudflare-workers</span>
+      <span class="tag">d1</span>
+      <span class="tag">crm</span>
+      <span class="tag">interface</span>
+      <span class="tag">gmail-api</span>
+      <span class="tag">slack</span>
+    </div>
+    <div class="running-since"><span class="live-dot-mini"></span>em uso diário desde jul/2026</div>
+    <p class="lead">Carteira, ficha do cliente, desempenho e usuários. Não tem dashboard de abertura, não tem gráfico de pizza, não tem aba que ninguém clica. Este texto é o tour: cada tela do CRM de reativação, o que ela mostra e a decisão que fez ela ficar assim.</p>
+  </div>
+</header>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">01 · De onde isso vem</div>
+    <h2>A parte do problema já foi contada</h2>
+    <p>Já existe um case aqui sobre <em>por que</em> esse CRM existe: uma query no hub de dados achou uma carteira inteira de clientes que compravam repetidamente em 2025 e não voltaram em 2026 — gente que estava esfriando sem aparecer em relatório nenhum.</p>
+    <div class="fundacao">
+      <div class="f-label">o case irmão</div>
+      <h3>Nenhum relatório mostra o cliente que está esfriando</h3>
+      <p>Lá estão a dor, o método da query, a divisão das carteiras e os números dos primeiros dias de uso — inclusive o que ainda não dá pra afirmar. Aqui não repito resultado: <strong>este texto é só sobre como ficou a ferramenta.</strong></p>
+      <a class="f-link" href="crm-reativacao">→ ler o case do problema e do resultado</a>
+    </div>
+    <p>O que interessa nesta página: um CRM de mercado chega com centenas de campos e a promessa de que você vai usar todos. Eu tinha o banco, tinha a pergunta e tinha três pessoas que precisavam ligar pra cliente hoje. Então a régua foi outra — <strong>só entra na tela o que muda a próxima ligação.</strong></p>
+    <div class="aviso">
+      Todas as telas abaixo são a interface real, reconstruída em HTML pra caber na página. <strong>Nomes de cliente, CNPJ, valores, nomes de vendedora e contagens foram trocados</strong> — dado de cliente e desempenho individual de equipe não vão pra vitrine. Estrutura, rótulos, cores e comportamento são os do sistema em produção.
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">02 · A porta de entrada</div>
+    <h2>Login com Google, com senha de reserva</h2>
+    <p>A equipe já vive logada na conta Google do trabalho. Pedir mais uma senha pra decorar seria a primeira fricção antes de qualquer venda — e senha esquecida vira mensagem no WhatsApp da gestora às 8h05.</p>
+
+    <div class="screen">
+      <div class="chrome"><div class="dot3"><i></i><i></i><i></i></div><div class="url">crm-reativacao.printloja.workers.dev</div></div>
+      <div class="body"><div class="ui narrow" style="padding:8px 0 18px">
+        <div class="ui-login">
+          <h4>CRM Reativação</h4>
+          <p>Print Loja · clientes para reconquistar</p>
+          <div class="ui-goog">
+            <svg width="17" height="17" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+            Entrar com Google
+          </div>
+          <div class="ui-or">ou com usuário e senha</div>
+          <div class="ui-inp">usuário</div>
+          <div class="ui-inp">senha</div>
+          <div class="ui-btn sec" style="display:block;text-align:center">Entrar</div>
+        </div>
+      </div></div>
+    </div>
+    <p class="cap">tela de login · o botão do Google é a rota de todo dia; o campo de senha existe pra quando o OAuth cai</p>
+
+    <p>Só e-mail cadastrado entra — o Google diz quem você é, a tabela de usuários diz se você tem permissão. O par usuário/senha continua vivo por baixo porque dependência externa cai, e CRM que não abre num dia de OAuth instável é CRM que a equipe deixa de usar na semana seguinte.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">03 · Tela 1</div>
+    <h2>A carteira: sete números que também são filtros</h2>
+    <p>É a tela de abertura e o lugar onde a vendedora passa a maior parte do tempo. Em cima, sete cartões. Eles não são enfeite de dashboard: <strong>cada cartão é clicável e aplica o filtro correspondente na lista abaixo</strong>. "Retorno vencido" mostra 12 e você quer ver quais são os 12 — um clique.</p>
+
+    <div class="screen">
+      <div class="chrome"><div class="dot3"><i></i><i></i><i></i></div><div class="url">crm-reativacao.printloja.workers.dev</div></div>
+      <div class="body"><div class="ui">
+        <div class="ui-hd"><b>CRM Reativação</b><span class="u">Ana · vendedora</span><span class="sp"></span><span class="bt">📊 Desempenho</span><span class="bt">Sair</span></div>
+        <div class="ui-wrap">
+          <div class="ui-cards">
+            <div class="ui-card"><div class="k">Total</div><div class="v">418</div></div>
+            <div class="ui-card"><div class="k">A contatar</div><div class="v">214</div></div>
+            <div class="ui-card"><div class="k">Tentativa</div><div class="v">96</div></div>
+            <div class="ui-card"><div class="k">Em negociação</div><div class="v">31</div></div>
+            <div class="ui-card"><div class="k">Reativados</div><div class="v">17</div></div>
+            <div class="ui-card on"><div class="k">Meus</div><div class="v">209</div></div>
+            <div class="ui-card"><div class="k">Retorno vencido</div><div class="v">12</div></div>
+          </div>
+          <div class="ui-filtros">
+            <div class="ui-inp w">buscar nome, CNPJ, cidade…</div>
+            <div class="ui-inp sel">status: todos</div>
+            <div class="ui-inp sel">prioridade: todas</div>
+            <div class="ui-inp sel">responsável: todos</div>
+            <div class="ui-inp sel">ordenar: valor 2025</div>
+            <label class="ui-chk"><i class="on"></i> só os meus</label>
+            <span class="ui-sp"></span><span class="ui-mut">209 clientes</span>
+          </div>
+          <table>
+            <thead><tr><th>Cliente</th><th>Cidade</th><th>Prio.</th><th>Últ. compra</th><th>Parado</th><th>Cadência</th><th>Valor 2025</th><th>Status</th><th>Resp.</th><th></th></tr></thead>
+            <tbody>
+              <tr>
+                <td><b>METALÚRGICA VALE AZUL LTDA</b><br><span class="ui-mut">00.000.000/0001-00</span></td>
+                <td>Curitiba PR</td><td><span class="pill seg-Alta">Alta</span></td>
+                <td>12/11/2025</td><td>256d</td><td>~34d</td><td class="money">R$ 18.940</td>
+                <td><span class="pill st-em_negociacao">Em negociação</span></td><td>Ana</td>
+                <td><span class="lk">abrir ›</span></td>
+              </tr>
+              <tr>
+                <td><b>CONTABILIDADE MARIANO ME</b><br><span class="ui-mut">00.000.000/0001-00</span></td>
+                <td>Pinhais PR</td><td><span class="pill seg-Alta">Alta</span></td>
+                <td>03/12/2025</td><td>235d</td><td>~28d</td><td class="money">R$ 14.220</td>
+                <td><span class="pill st-tentativa">Tentativa</span></td><td>Ana</td>
+                <td><span class="lk">abrir ›</span></td>
+              </tr>
+              <tr>
+                <td><b>AUTO CENTER VILA NOVA LTDA</b><br><span class="ui-mut">00.000.000/0001-00</span></td>
+                <td>São José dos Pinhais PR</td><td><span class="pill seg-MediaAlta">Méd-Alta</span></td>
+                <td>28/09/2025</td><td>301d</td><td>~61d</td><td class="money">R$ 9.870</td>
+                <td><span class="pill st-reativado">Reativado</span> <span title="convertido">✅</span></td><td>Ana</td>
+                <td><span class="lk">abrir ›</span></td>
+              </tr>
+              <tr>
+                <td><b>GRÁFICA PONTO CERTO ME</b><br><span class="ui-mut">00.000.000/0001-00</span></td>
+                <td>Colombo PR</td><td><span class="pill seg-MediaAlta">Méd-Alta</span></td>
+                <td>19/10/2025</td><td>280d</td><td>~45d</td><td class="money">R$ 8.115</td>
+                <td><span class="pill st-a_contatar">A contatar</span></td><td>Ana</td>
+                <td><span class="lk">abrir ›</span></td>
+              </tr>
+              <tr>
+                <td><b>ESCRITÓRIO LEMOS ADVOGADOS</b><br><span class="ui-mut">00.000.000/0001-00</span></td>
+                <td>Curitiba PR</td><td><span class="pill seg-Media">Media</span></td>
+                <td>05/08/2025</td><td>355d</td><td>~90d</td><td class="money">R$ 5.480</td>
+                <td><span class="pill st-sem_contato">Sem contato</span></td><td>Ana</td>
+                <td><span class="lk">abrir ›</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="ui-pag"><span class="b">‹ anterior</span> página 1 de 5 <span class="b">próxima ›</span></div>
+        </div>
+      </div></div>
+    </div>
+    <p class="cap">tela da carteira · cartões clicáveis, filtros, paginação — dados de exemplo</p>
+
+    <p>As colunas foram escolhidas pra responder uma pergunta só: <strong>vale a pena ligar pra esse agora?</strong></p>
+    <ul>
+      <li><strong>Prio.</strong> — Alta, Méd-Alta ou Media, calculado pela frequência de compra em 2025. Quem comprava todo mês pesa mais que quem comprava duas vezes no ano.</li>
+      <li><strong>Parado</strong> — dias desde a última compra. O número cru, sem eufemismo.</li>
+      <li><strong>Cadência</strong> — o intervalo típico entre as compras daquele cliente. É a coluna que dá sentido à anterior: 90 dias parado é normal pra quem compra a cada 90; é grave pra quem comprava a cada 28.</li>
+      <li><strong>Valor 2025</strong> — quanto esse cliente comprou no ano em que ainda estava ativo.</li>
+      <li><strong>Status e responsável</strong> — em que ponto do funil está e de quem é.</li>
+    </ul>
+    <p>A ordenação padrão é por valor, mas dá pra ordenar por dias parado, por cadência (os mais frequentes primeiro), por número de pedidos ou por nome. A busca cobre nome, CNPJ e cidade — porque a pergunta que chega é "aquele cliente de Colombo, como chama mesmo?".</p>
+    <div class="callout">
+      <p>"Número que não vira filtro é enfeite. Se eu mostro 12 retornos vencidos e a pessoa precisa reconstruir a busca na mão pra ver quais são, eu criei trabalho em vez de tirar."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">04 · Tela 2</div>
+    <h2>A ficha: tudo que dá pra saber antes de discar</h2>
+    <p>Essa é a tela que muda a conversa. Ligar pra cliente sumido dizendo "oi, sentimos sua falta" é uma coisa. Ligar sabendo que ele comprava a cada 34 dias, está parado há 256, gastou R$ 18.940 no ano passado e levava sempre o mesmo toner é outra.</p>
+
+    <div class="screen">
+      <div class="chrome"><div class="dot3"><i></i><i></i><i></i></div><div class="url">crm-reativacao.printloja.workers.dev</div></div>
+      <div class="body"><div class="ui">
+        <div class="ui-hd"><b>CRM Reativação</b><span class="u">Ana · vendedora</span><span class="sp"></span><span class="bt">📊 Desempenho</span><span class="bt">Sair</span></div>
+        <div class="ui-wrap">
+          <div style="color:#1F7A4D;font-weight:600;font-size:12px;margin-bottom:8px">‹ voltar à lista</div>
+          <div class="ui-box">
+            <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+              <h4 style="margin:0;font-size:17px;color:#1a2230">METALÚRGICA VALE AZUL LTDA</h4>
+              <span class="pill seg-Alta">Alta</span>
+              <span class="pill seg-Alta">sumido: 7.5x o intervalo normal</span>
+            </div>
+            <div class="ui-mut" style="margin:5px 0 11px;font-size:12px">00.000.000/0001-00 · Curitiba PR · Print Loja, PL Print · 👤 Ana</div>
+            <div class="ui-contato"><a href="#">📱 WhatsApp</a><a href="#">📞 (41) 9····-····</a><a href="#">✉️ compras@·······.com.br</a></div>
+            <div class="ui-kpis">
+              <div class="ui-kpi"><div class="k">Valor 2025</div><div class="v money">R$ 18.940</div></div>
+              <div class="ui-kpi"><div class="k">Pedidos 2025</div><div class="v">11</div></div>
+              <div class="ui-kpi"><div class="k">Ticket médio</div><div class="v money">R$ 1.721</div></div>
+              <div class="ui-kpi"><div class="k">Cadência</div><div class="v">~34d</div></div>
+              <div class="ui-kpi"><div class="k">Sem comprar</div><div class="v">256d</div></div>
+              <div class="ui-kpi"><div class="k">Total pedidos</div><div class="v">38</div></div>
+            </div>
+          </div>
+          <div class="ui-grid2">
+            <div>
+              <div class="ui-box"><h4>Histórico de contatos (3)</h4>
+                <div class="ui-tl">
+                  <div class="it">
+                    <div><b>Ligação</b> → <span class="pill st-em_negociacao">Em negociação</span></div>
+                    <div>Pediu orçamento de toner pros dois modelos. Retorno combinado pra segunda.</div>
+                    <div class="meta">Ana · 24/07/2026 15:12 · retorno 28/07/2026</div>
+                  </div>
+                  <div class="it">
+                    <div><b>WhatsApp</b> → <span class="pill st-tentativa">Tentativa</span></div>
+                    <div>Mandei mensagem, visualizou e não respondeu.</div>
+                    <div class="meta">Ana · 21/07/2026 09:40</div>
+                  </div>
+                  <div class="it">
+                    <div><b>E-mail</b></div>
+                    <div>Contato por e-mail (detectado automaticamente)</div>
+                    <div class="meta">Ana · 18/07/2026</div>
+                  </div>
+                </div>
+              </div>
+              <div class="ui-box"><h4>Pedidos (38)</h4>
+                <div class="ui-ped">
+                  <div class="h"><b>12/11/2025</b><span class="ui-mut">#48210 · Print Loja</span><span class="sp"></span><span class="pill st-a_contatar">Entregue</span><b class="money">R$ 2.184,00</b></div>
+                  <table><tbody>
+                    <tr><td>TN-3472 · Toner Brother preto 12k</td><td style="text-align:right;white-space:nowrap">4 × R$ 389,00</td></tr>
+                    <tr><td>DR-3440 · Cilindro Brother 30k</td><td style="text-align:right;white-space:nowrap">2 × R$ 314,00</td></tr>
+                  </tbody></table>
+                </div>
+                <div class="ui-ped"><div class="h"><b>09/10/2025</b><span class="ui-mut">#47033 · PL Print</span><span class="sp"></span><span class="pill st-a_contatar">Entregue</span><b class="money">R$ 1.556,00</b></div></div>
+                <div class="ui-ped"><div class="h"><b>04/09/2025</b><span class="ui-mut">#45871 · Print Loja</span><span class="sp"></span><span class="pill st-a_contatar">Entregue</span><b class="money">R$ 2.020,00</b></div></div>
+              </div>
+            </div>
+            <div>
+              <div class="ui-box"><h4>Top produtos comprados</h4>
+                <table><tbody>
+                  <tr><td><b>TN-3472</b><br><span class="ui-mut" style="font-size:11px">Toner Brother preto 12k</span></td><td style="text-align:right;white-space:nowrap">46 un<br><span class="money">R$ 17.894</span></td></tr>
+                  <tr><td><b>DR-3440</b><br><span class="ui-mut" style="font-size:11px">Cilindro Brother 30k</span></td><td style="text-align:right;white-space:nowrap">12 un<br><span class="money">R$ 3.768</span></td></tr>
+                  <tr><td><b>CF283A</b><br><span class="ui-mut" style="font-size:11px">Toner HP 83A compatível</span></td><td style="text-align:right;white-space:nowrap">9 un<br><span class="money">R$ 1.341</span></td></tr>
+                </tbody></table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+    <p class="cap">ficha do cliente · cabeçalho, contato em um toque, seis indicadores, timeline, pedidos e top produtos — dados de exemplo</p>
+
+    <p>Detalhes que parecem pequenos e não são:</p>
+    <ul>
+      <li><strong>A etiqueta vermelha "sumido: 7.5x o intervalo normal"</strong> é a conta que ninguém fazia de cabeça: dias parado dividido pela cadência do próprio cliente. Abaixo de 1x, "dentro do intervalo". Entre 1x e 2x, "atrasado". Acima de 2x, sumido. É o único indicador da tela que compara o cliente com ele mesmo.</li>
+      <li><strong>Contato em um toque</strong> — WhatsApp abre no <code>wa.me</code> com o número já formatado, telefone abre o discador, e-mail abre o cliente de e-mail. Ninguém copia e cola número de telefone.</li>
+      <li><strong>Top produtos</strong> — o que esse cliente comprava, em quantidade e valor. É a munição da ligação: dá pra abrir a conversa com o produto, não com a saudade.</li>
+      <li><strong>Pedidos expansíveis</strong> — o mais recente já vem aberto com os itens; os outros abrem no clique. Vem tudo do mesmo banco do hub, incluindo em qual das empresas do grupo ele comprava.</li>
+      <li><strong>Timeline de contatos</strong> — canal, desfecho, o que foi conversado, quem registrou e quando. Quando não tem nada, a tela diz: "nenhum contato ainda — seja o primeiro a falar com esse cliente".</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">05 · Os três blocos de ação</div>
+    <h2>Registrar contato, gerir e — separado — marcar pedido</h2>
+    <p>Na mesma ficha, do lado direito, ficam os blocos que gravam. Registrar contato é a ação de rotina; gestão muda status, dono e data de retorno; pedido fechado é o bloco que existe pra não deixar o número mentir.</p>
+
+    <div class="screen">
+      <div class="chrome"><div class="dot3"><i></i><i></i><i></i></div><div class="url">crm-reativacao.printloja.workers.dev</div></div>
+      <div class="body"><div class="ui" style="min-width:560px"><div class="ui-wrap">
+        <div class="ui-box"><h4>Registrar contato</h4>
+          <div class="ui-linha">
+            <div><span class="ui-lab">canal</span><div class="ui-inp sel">Ligação</div></div>
+            <div><span class="ui-lab">resultado / novo status</span><div class="ui-inp sel">Em negociação</div></div>
+            <div><span class="ui-lab">próximo contato</span><div class="ui-inp">28/07/2026</div></div>
+          </div>
+          <span class="ui-lab">observação (o que foi conversado)</span>
+          <div class="ui-ta">ex: falei com a Ana do financeiro, pediu orçamento de toner…</div>
+          <div style="margin-top:10px"><span class="ui-btn">Salvar contato</span></div>
+        </div>
+        <div class="ui-box"><h4>Gestão</h4>
+          <div class="ui-linha">
+            <div><span class="ui-lab">status</span><div class="ui-inp sel">Em negociação</div></div>
+            <div style="flex:1"><span class="ui-lab">responsável</span><div class="ui-inp sel">Ana</div></div>
+            <div><span class="ui-lab">próximo contato</span><div class="ui-inp">28/07/2026</div></div>
+            <span class="ui-btn sec">Salvar</span>
+          </div>
+        </div>
+        <div class="ui-box" style="border-left:4px solid #08794a"><h4>🛒 Pedido fechado (recompra)</h4>
+          <div class="ui-linha">
+            <div><span class="ui-lab">data do pedido</span><div class="ui-inp">26/07/2026</div></div>
+            <div><span class="ui-lab">valor (opcional)</span><div class="ui-inp">R$</div></div>
+          </div>
+          <span class="ui-lab" style="font-size:12px;color:#1a2230;font-weight:600">Foi resultado do seu contato?</span>
+          <div class="ui-linha" style="gap:18px;margin-top:6px">
+            <label class="ui-radio"><i class="on"></i> Não / não sei (espontânea)</label>
+            <label class="ui-radio"><i></i> Sim, eu converti</label>
+          </div>
+          <div class="ui-ta" style="min-height:34px">observação (opcional)</div>
+          <div style="margin-top:9px"><span class="ui-btn">Marcar pedido fechado</span></div>
+        </div>
+      </div></div></div>
+    </div>
+    <p class="cap">blocos de ação da ficha · repare no que vem marcado por padrão na pergunta de atribuição</p>
+
+    <p>O funil tem seis estados: <strong>a contatar · tentativa · em negociação · reativado · sem interesse · sem contato</strong>. "Sem contato" não é desistência da vendedora — é cadastro sem telefone e sem e-mail válidos, o que é um problema diferente e merece uma fila diferente.</p>
+    <p>O canal do contato é obrigatório (WhatsApp, ligação, e-mail, visita, outro) porque a pergunta "o que funciona pra reativar" só tem resposta se o canal estiver gravado. E a data de próximo contato alimenta o cartão "retorno vencido" lá na carteira: promessa de retorno que passou da data reaparece na tela de abertura.</p>
+
+    <h3 class="sub">A pergunta que mais mudou o sistema</h3>
+    <p>No bloco de pedido fechado, a pergunta <em>"Foi resultado do seu contato?"</em> tem duas respostas e <strong>a que vem marcada por padrão é "Não / não sei (espontânea)"</strong>. Isso é deliberado: o caminho de menor esforço tem que ser o honesto. Se o padrão fosse "sim, eu converti", metade das marcações viraria conversão por descuido, e a taxa de conversão do time seria ficção.</p>
+    <p>Cliente sumido às vezes volta sozinho. Recompra espontânea conta no faturamento e aparece no relatório — mas não conta como conversão de ninguém.</p>
+    <div class="callout">
+      <p>"Métrica que mistura mérito com sorte vira meta que ninguém respeita. O radiobutton marcado por padrão define qual das duas o sistema vai colecionar."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">06 · Tela 3</div>
+    <h2>Desempenho: esforço de um lado, conversão do outro</h2>
+    <p>Uma tabela, uma linha por vendedora, um total embaixo. Carteira, quantos foram contatados, quantas interações, quantos pedidos fecharam, quantos desses foram creditados ao contato, quantos foram espontâneos, a taxa e o valor.</p>
+
+    <div class="screen">
+      <div class="chrome"><div class="dot3"><i></i><i></i><i></i></div><div class="url">crm-reativacao.printloja.workers.dev</div></div>
+      <div class="body"><div class="ui"><div class="ui-wrap">
+        <div style="color:#1F7A4D;font-weight:600;font-size:12px;margin-bottom:8px">‹ voltar à lista</div>
+        <div class="ui-box">
+          <h4>📊 Desempenho — esforço x conversão</h4>
+          <div class="ui-mut" style="margin-bottom:11px;font-size:12px">Contato = clientes abordados. Conversão = pedido fechado creditado ao contato. Recompra espontânea não conta como conversão.</div>
+          <table>
+            <thead><tr><th>Vendedora</th><th style="text-align:center">Carteira</th><th style="text-align:center">Contatados</th><th style="text-align:center">Interações</th><th style="text-align:center">Pedidos fechados</th><th style="text-align:center">Conversões</th><th style="text-align:center">Espontâneas</th><th style="text-align:center">Taxa conv.</th><th style="text-align:right">Valor recuperado</th></tr></thead>
+            <tbody>
+              <tr><td><b>Ana</b></td><td style="text-align:center">209</td><td style="text-align:center">58 <span class="ui-mut">(28%)</span></td><td style="text-align:center">94</td><td style="text-align:center">7</td><td style="text-align:center"><b style="color:#08794a">2</b></td><td style="text-align:center">5</td><td style="text-align:center"><b>3%</b></td><td class="money" style="text-align:right">R$ 4.180,00</td></tr>
+              <tr><td><b>Bia</b></td><td style="text-align:center">209</td><td style="text-align:center">47 <span class="ui-mut">(22%)</span></td><td style="text-align:center">71</td><td style="text-align:center">6</td><td style="text-align:center"><b style="color:#08794a">1</b></td><td style="text-align:center">5</td><td style="text-align:center"><b>2%</b></td><td class="money" style="text-align:right">R$ 2.940,00</td></tr>
+              <tr style="border-top:2px solid #1F7A4D"><td><b>Total</b></td><td style="text-align:center"><b>418</b></td><td style="text-align:center"><b>105</b> <span class="ui-mut">(25%)</span></td><td style="text-align:center"><b>165</b></td><td style="text-align:center"><b>13</b></td><td style="text-align:center"><b style="color:#08794a">3</b></td><td style="text-align:center"><b>10</b></td><td style="text-align:center"><b>3%</b></td><td class="money" style="text-align:right"><b>R$ 7.120,00</b></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div></div></div>
+    </div>
+    <p class="cap">painel de desempenho · nomes e números de exemplo, colunas e regra de cálculo são as reais</p>
+
+    <p>As duas colunas do meio são o ponto. <strong>Conversões</strong> e <strong>espontâneas</strong> vêm da mesma marcação de pedido fechado, separadas pela resposta da vendedora. Se eu mostrasse só "pedidos fechados", todo mês pareceria um mês bom. Com a separação, o painel mostra duas coisas ao mesmo tempo: quanta gente está sendo trabalhada e quanto disso virou venda por causa do trabalho.</p>
+    <p>E a coluna "Contatados" com o percentual da carteira ao lado responde a pergunta que a gestora realmente faz: <strong>quanto da lista já foi tocada?</strong></p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">07 · Tela 4</div>
+    <h2>Usuários, e a decisão de mostrar em vez de esconder</h2>
+    <p>A quarta tela é a mais chata e a mais curta: um diálogo de admin com a lista de pessoas, campo de nome, login, senha e papel (vendedor ou admin). Vendedora nova entra em trinta segundos; quem sai vira inativo e some dos filtros sem apagar histórico nenhum.</p>
+    <p>A parte interessante é a regra de permissão dentro da ficha. Cliente que não é da sua carteira <strong>não fica escondido</strong> — abre normal, com histórico, pedidos e timeline visíveis. O que muda é que os blocos de gravar somem e no lugar aparece um aviso:</p>
+
+    <div class="screen" style="max-width:640px">
+      <div class="chrome"><div class="dot3"><i></i><i></i><i></i></div><div class="url">crm-reativacao.printloja.workers.dev</div></div>
+      <div class="body"><div class="ui" style="min-width:0"><div class="ui-wrap">
+        <div class="ui-box" style="border-left:4px solid #1F7A4D;margin:0">
+          <h4>👁 Somente leitura</h4>
+          <div class="ui-mut" style="font-size:12.5px">Cliente da carteira de <b style="color:#1a2230">Bia</b>. Você vê todo o histórico, mas só Bia (ou a Jaque) registra contatos aqui.</div>
+        </div>
+      </div></div></div>
+    </div>
+    <p class="cap">bloco que substitui os campos de gravação quando o cliente é de outra carteira</p>
+
+    <p>Esconder criaria o problema clássico: duas pessoas ligando pro mesmo cliente sem saber. Mostrando em somente-leitura, qualquer uma consegue responder "esse aqui já foi contatado?" antes de discar — e ainda vê o que a colega já conversou, o que é útil quando o cliente liga de volta e cai em quem estiver livre.</p>
+    <p>O aviso cita a gestora pelo nome de propósito. "Contate o administrador" é mensagem de sistema; "só a Bia (ou a Jaque) registra contatos aqui" é uma frase que a pessoa entende e resolve sozinha.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">08 · Fora da tela</div>
+    <h2>O que o sistema faz sem ninguém abrir o navegador</h2>
+
+    <h3 class="sub">E-mail enviado vira contato registrado sozinho</h3>
+    <p>Registro manual é onde CRM morre. A vendedora manda o e-mail, resolve a próxima coisa e nunca volta pra marcar que mandou — aí o painel de esforço mostra menos trabalho do que existiu, e ela conclui, com razão, que preencher o CRM é burocracia.</p>
+    <p>Então um script roda de hora em hora na conta Google de cada uma, olha com quais endereços houve troca de mensagem na janela recente e manda a lista pro CRM. O CRM cruza com o e-mail do cadastro do cliente; quando bate, grava a interação com o canal "E-mail" e a observação "detectado automaticamente", e move o status de "a contatar" pra "tentativa".</p>
+    <ul>
+      <li><strong>É idempotente</strong> — o mesmo e-mail no mesmo dia não vira dois registros. Sem isso, uma varredura por hora criaria vinte e quatro contatos por dia.</li>
+      <li><strong>Quem fala primeiro vira dono</strong> — se o cliente ainda não tinha sido trabalhado por ninguém, quem mandou o e-mail assume a responsabilidade. Se já tinha dono, o dono não muda.</li>
+      <li><strong>Só o endereço e a data saem do Gmail</strong> — conteúdo de e-mail não é enviado nem armazenado.</li>
+    </ul>
+
+    <h3 class="sub">Dois relatórios no Slack, com públicos diferentes</h3>
+    <p>Um às 8h, no canal de resultados, pra equipe começar o dia vendo o dia anterior. Outro às 19h, no canal técnico, com o detalhe operacional. Nenhum dos dois posta em fim de semana.</p>
+
+    <div class="slack">
+      <div class="sh"><div class="av">CRM</div><div class="who">CRM Reativação</div><div class="ts">8:00</div></div>
+      <div class="msg">📈 <b>Reativação — contatos de 24/07/2026</b>
+
+<b>Contatos no dia</b> (total 14):
+• <b>Ana</b>: 8
+• <b>Bia</b>: 6
+
+🛒 <b>Vendas em julho</b> (total 13):
+• <b>Ana</b>: 7
+• <b>Bia</b>: 6</div>
+    </div>
+    <div class="slack">
+      <div class="sh"><div class="av">CRM</div><div class="who">CRM Reativação</div><div class="ts">19:00</div></div>
+      <div class="msg">📊 <b>CRM Reativação — 25/07</b>
+
+<b>Contatos do dia</b> (11 clientes):
+• <b>Ana</b>: 6 contatos · 4 retomadas
+• <b>Bia</b>: 5 contatos · 2 retomadas
+
+🛒 <b>Voltaram a comprar:</b> 1 hoje · 13 no total
+💰 <b>Reativado:</b> R$ 1.240,00 hoje · R$ 7.120,00 no total</div>
+    </div>
+    <p class="cap">as duas mensagens automáticas · valores e nomes de exemplo</p>
+
+    <p>A palavra "retomadas" no relatório das 19h é a que interessa: são clientes que já tinham sido contatados antes e receberam contato de novo. Contato novo é volume; retomada é insistência — e reativação se ganha na segunda ou terceira conversa, não na primeira.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">09 · Decisões</div>
+    <h2>Cinco escolhas de tela que mudaram o uso</h2>
+    <div class="grid-dec">
+      <div class="dec">
+        <div class="d-t">Todo número é um filtro</div>
+        <p class="d-p">Os sete cartões da carteira aplicam filtro no clique. Nenhum deles existe só pra informar. Isso matou a necessidade de uma tela de relatório separada.</p>
+      </div>
+      <div class="dec">
+        <div class="d-t">A cadência ao lado dos dias parados</div>
+        <p class="d-p">"300 dias sem comprar" sozinho não diz nada. Ao lado de "~90d de cadência", vira prioridade. É a comparação do cliente com ele mesmo.</p>
+      </div>
+      <div class="dec">
+        <div class="d-t">O padrão honesto</div>
+        <p class="d-p">A pergunta de atribuição vem marcada como "não sei". O caminho de menor esforço precisa ser o que não infla o número.</p>
+      </div>
+      <div class="dec">
+        <div class="d-t">Somente leitura em vez de invisível</div>
+        <p class="d-p">Cliente de outra carteira aparece com todo o histórico. Esconder gera ligação duplicada; mostrar gera coordenação.</p>
+      </div>
+      <div class="dec">
+        <div class="d-t">O sistema registra o que ele consegue ver</div>
+        <p class="d-p">E-mail enviado vira interação sem ninguém digitar. Todo campo que depende de disciplina humana é um campo que vai estar vazio em três semanas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">10 · Limites</div>
+    <h2>O que ficou de fora, e o que ainda incomoda</h2>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Fora de propósito</div>
+      <h3>Sem e-mail em massa, sem automação de cadência, sem app</h3>
+      <p>Nada de disparo de campanha, sequência automática de follow-up ou aplicativo de celular. O trabalho aqui é ligação e mensagem feita por pessoa — o sistema organiza a fila e guarda o que aconteceu. <strong>Cada funcionalidade que eu não construí é uma que ninguém precisa manter.</strong></p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Incomoda 1 · a régua é um retrato</div>
+      <h3>A carteira é um recorte congelado, não uma fila viva</h3>
+      <p>A lista veio de uma query rodada uma vez: quem comprava em 2025 e sumiu em 2026. Cliente que esfriar de agora em diante <strong>não entra sozinho</strong> — vai precisar de uma nova rodada. O próximo passo natural é a régua rodar continuamente, com cliente entrando e saindo da carteira conforme o comportamento muda.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Incomoda 2 · a tela é de computador</div>
+      <h3>Responsiva, mas pensada pra mesa</h3>
+      <p>A tabela da carteira tem dez colunas e a ficha tem duas colunas de blocos. Funciona no celular, mas não foi desenhada pra ele. Como o trabalho acontece sentado, com o telefone do lado, isso ainda não virou dor — <strong>e eu prefiro esperar a dor aparecer a redesenhar por precaução.</strong></p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Incomoda 3 · valor do pedido é opcional</div>
+      <h3>Metade do "valor recuperado" depende de alguém digitar</h3>
+      <p>Na marcação de pedido fechado, o campo de valor é opcional — foi assim pra não travar o registro. O efeito é que o total de valor recuperado no painel é <strong>piso, não número exato</strong>. O certo seria puxar o valor do pedido direto do hub pelo CNPJ e pela data, e é o que pretendo fazer.</p>
+    </div>
+
+    <p>O padrão que se repete em todo projeto que documento aqui: <strong>a tela boa é a que faz a pergunta certa e some.</strong> Nenhuma dessas quatro telas ensina alguém a vender. Elas só respondem, em um clique, pra quem ligar agora e o que dizer quando atender.</p>
+  </div>
+</section>
+
+<section class="case-section" style="background:#0a0e13">
+  <div class="container">
+    <div class="label">Cases relacionados</div>
+    <h2>A sequência que levou até aqui</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <a href="crm-reativacao" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Vendas · o problema</div>
+        <div style="font-size:16px;font-weight:500">Nenhum relatório mostra o cliente que está esfriando →</div>
+      </a>
+      <a href="hub-de-dados" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Infra · Dados · A fundação</div>
+        <div style="font-size:16px;font-weight:500">R$ 17 mil por ano a menos no ERP →</div>
+      </a>
+      <a href="atendimento-insights" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Atendimento · IA</div>
+        <div style="font-size:16px;font-weight:500">Análise diária do WhatsApp Business →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container row">
+    <div><strong style="color:var(--text);">nak.api.br</strong> · <a href="../">voltar pro laboratório</a></div>
+    <div><a href="mailto:labs@nak.api.br">labs@nak.api.br</a> · Caso documentado em 2026</div>
+  </div>
+</footer>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c48dfb70ce8140ffa8ad30637454ad88"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
