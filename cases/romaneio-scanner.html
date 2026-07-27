@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Romaneio de coleta conferido por bipe de celular · nak.api.br</title>
+<meta name="description" content="Coletor de código de barras feito em Apps Script + Sheets. Cada volume é bipado antes da coleta, o código diz sozinho qual transportadora é, e o romaneio do dia cai no Slack. Custo R$ 0.">
+<meta name="keywords" content="coletor código de barras web, romaneio transportadora, apps script leitor código barras, barcodedetector javascript, conferência de coleta expedição">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/cases/romaneio-scanner">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="O romaneio da coleta virou bipe de celular">
+<meta property="og:description" content="Cada volume passa pelo celular antes de entrar no carro da transportadora. O código identifica a transportadora sozinho e o romaneio do dia sai no Slack.">
+<meta property="og:url" content="https://nak.api.br/cases/romaneio-scanner">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:image" content="https://nak.api.br/og/romaneio-scanner.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="article:section" content="Logística">
+<meta property="article:tag" content="apps-script">
+<meta property="article:tag" content="sheets">
+<meta property="article:tag" content="código-de-barras">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="O romaneio da coleta virou bipe de celular">
+<meta name="twitter:description" content="Bipou, entrou na lista. O código de rastreio diz sozinho qual transportadora é. No fim do dia, romaneio fechado no Slack.">
+<meta name="twitter:image" content="https://nak.api.br/og/romaneio-scanner.png">
+
+<!-- Schema.org Article -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "O romaneio da coleta virou bipe de celular",
+  "description": "Coletor de código de barras em Apps Script + Sheets: cada volume é bipado antes da coleta, o padrão do código identifica a transportadora, e o romaneio do dia é publicado no Slack.",
+  "author": { "@type": "Person", "name": "nak" },
+  "publisher": { "@type": "Organization", "name": "nak.api.br" },
+  "datePublished": "2026-07-27",
+  "inLanguage": "pt-BR",
+  "url": "https://nak.api.br/cases/romaneio-scanner",
+  "about": ["Logística", "Conferência de expedição", "Código de barras"],
+  "keywords": "romaneio, coletor de código de barras, apps script, google sheets, expedição"
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--danger:#EF4444;--warn:#F59E0B;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--radius:10px;--max:1100px}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+.case-hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.case-hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+.breadcrumb{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:24px}
+.category{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.case-hero h1{font-size:42px;font-weight:700;line-height:1.1;margin:0 0 20px;letter-spacing:-.02em}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.tag{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--border);color:var(--muted);border-radius:4px;text-transform:lowercase}
+.lead{color:var(--muted);font-size:17px;max-width:600px;margin:0}
+.running-since{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px;padding:5px 10px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:4px}
+.live-dot-mini{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent-2);animation:pulse-mini 2.2s ease-in-out infinite}
+@keyframes pulse-mini{0%,100%{opacity:1}50%{opacity:.35}}
+.mock-window{background:#0d1117;border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:0 20px 60px -20px rgba(0,0,0,.6)}
+.mock-dots{display:flex;gap:6px;margin-bottom:20px}
+.mock-dots span{width:12px;height:12px;border-radius:50%}
+.mock-dots .d1{background:#ff5f57}.mock-dots .d2{background:#febc2e}.mock-dots .d3{background:#28c840}
+.mock-log{font-family:var(--mono);font-size:12.5px;background:#0a0e13;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;line-height:1.5;word-break:break-word}
+.mock-log.ok{color:var(--accent-2)}.mock-log.warn{color:var(--warn)}.mock-log.err{color:var(--danger)}.mock-log.info{color:var(--muted)}
+.mock-caption{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:center;margin-top:14px;font-style:italic}
+.case-section{padding:64px 0;border-bottom:1px solid var(--border)}
+.case-section:last-child{border-bottom:none}
+.label{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.case-section h2{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0 0 24px}
+.case-section h3{font-size:20px;font-weight:600;margin:40px 0 16px;letter-spacing:-.01em}
+.case-section p{font-size:16px;color:var(--text);margin:0 0 16px;max-width:760px}
+.case-section ul{font-size:16px;color:var(--text);padding-left:20px;max-width:760px}
+.case-section ul li{margin-bottom:10px}
+.case-section ul li::marker{color:var(--muted)}
+code{font-family:var(--mono);font-size:.9em;background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1px 5px}
+.callout{border-left:3px solid var(--accent);background:var(--card);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin:24px 0;max-width:760px}
+.callout p{margin:0;font-style:italic;color:var(--muted)}
+.flow-grid{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:32px 0;max-width:760px}
+.flow-node{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;flex:1;min-width:110px}
+.flow-node .icon{font-family:var(--mono);font-size:22px;color:var(--accent);margin-bottom:6px}
+.flow-node .name{font-size:13px;font-weight:500}
+.flow-node .sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px}
+.flow-arrow{font-family:var(--mono);color:var(--muted);font-size:18px;flex-shrink:0}
+.flow-note{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--muted);max-width:760px;text-align:center}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;max-width:760px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.kpi .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.kpi .val{font-size:24px;font-weight:600;font-family:var(--mono);color:var(--accent-2);line-height:1}
+.kpi .delta{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono)}
+.kpi.alt .val{color:var(--accent)}
+/* REGRAS DE DETECÇÃO — tabela mono */
+.regras{max-width:760px;margin:24px 0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.regra{display:flex;gap:16px;align-items:baseline;padding:11px 16px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:13px}
+.regra:last-child{border-bottom:none}
+.regra .pat{color:var(--accent);flex:0 0 180px;word-break:break-all}
+.regra .res{color:var(--text)}
+.regra.bloqueio .pat{color:var(--danger)}
+.regra.bloqueio .res{color:var(--muted)}
+/* SLACK MOCK */
+.slack-mock{max-width:560px;margin:28px 0;background:#1a1d21;border:1px solid #2b2f33;border-radius:10px;overflow:hidden}
+.slack-bar{padding:10px 16px;border-bottom:1px solid #2b2f33;font-family:var(--mono);font-size:12px;color:#9ca3af}
+.slack-body{padding:16px 18px;font-size:14px;line-height:1.7;color:#e5e7eb}
+.slack-body .t{font-weight:700;color:#fff}
+.slack-body .g{font-weight:700;color:#fff;display:block;margin-top:14px}
+.slack-body .cod{font-family:var(--mono);font-size:12.5px;background:#232629;border:1px solid #35393d;border-radius:4px;padding:1px 5px;color:#e5e7eb}
+.slack-body .hr{color:#9ca3af;font-style:italic}
+.slack-note{padding:9px;font-family:var(--mono);font-size:11px;color:#6b7280;text-align:center;font-style:italic;border-top:1px solid #2b2f33}
+footer{padding:48px 0;color:var(--muted);font-size:13px}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--muted)}
+@media(max-width:900px){.case-hero-grid{grid-template-columns:1fr;gap:40px}.dash-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.case-hero h1{font-size:32px}.case-section{padding:48px 0}.case-section h2{font-size:24px}.flow-grid{flex-direction:column}.flow-arrow{transform:rotate(90deg)}nav .links{gap:16px}.regra{flex-direction:column;gap:2px}.regra .pat{flex:none}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <a href="../" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <div class="links">
+      <a href="../#cases">Cases</a>
+      <a href="../#filosofia">Filosofia</a>
+      <a href="../#stack">Stack</a>
+    </div>
+  </div>
+</nav>
+
+<header class="case-hero">
+  <div class="container">
+    <div class="case-hero-grid">
+      <div>
+        <div class="breadcrumb"><a href="../">~</a> / cases / romaneio-scanner</div>
+        <div class="category">Logística · Expedição</div>
+        <h1>O romaneio da coleta virou bipe de celular</h1>
+        <div class="tags">
+          <span class="tag">apps-script</span>
+          <span class="tag">sheets</span>
+          <span class="tag">código-de-barras</span>
+          <span class="tag">slack</span>
+          <span class="tag">tiny-api</span>
+        </div>
+        <div class="running-since"><span class="live-dot-mini"></span>em produção desde mai/2026 · melhorias contínuas</div>
+        <p class="lead">A transportadora chega, leva os volumes e vai embora. Semanas depois aparece a cobrança de um pacote que "não chegou". Agora cada volume passa pelo celular antes de entrar no carro — e o romaneio do dia fica registrado com hora, operador e conferência de local.</p>
+      </div>
+      <div>
+        <div class="mock-window">
+          <div class="mock-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+          <div class="mock-log ok">09:12:03 &nbsp;bip AA123456789BR → Correios · #4821 · NF 9134</div>
+          <div class="mock-log ok">09:12:19 &nbsp;bip 192837465 → Jadlog · #4822 · NF 9135</div>
+          <div class="mock-log warn">09:12:31 &nbsp;bip AA123456789BR → duplicado, já está na lista</div>
+          <div class="mock-log err">09:12:48 &nbsp;bip 3524…0158 → é chave de NF-e, não é rastreio</div>
+          <div class="mock-log warn">09:13:02 &nbsp;bip LG9F2K7M4X1P → Loggi · fora do raio (312 m)</div>
+          <div class="mock-caption">— comportamentos reais do coletor, códigos ilustrativos —</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">01 · Dor operacional</div>
+    <h2>Quem prova o que saiu daqui?</h2>
+    <p>Toda transportadora que faz coleta trabalha com <strong>romaneio</strong>: a lista do que está sendo entregue àquele motorista, naquele dia. Quando dá divergência — pacote que a transportadora diz que nunca recebeu, volume que aparece na lista mas não foi coletado — o romaneio é a única coisa que decide de quem é o prejuízo.</p>
+    <p>A conferência era no papel, no olho. Alguém pegava a lista impressa e ia riscando volume por volume enquanto o motorista esperava. Isso tem três problemas de uma vez: o conferente erra, o motorista tem pressa, e o papel some.</p>
+    <div class="callout">
+      <p>"Sem romaneio conferido, quem tem que provar que o pacote saiu é sempre a gente."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">02 · Impacto do problema</div>
+    <h2>Conferência no olho não deixa rastro</h2>
+    <p>O problema não era só a divergência em si. Era não ter como voltar atrás depois:</p>
+    <ul>
+      <li><strong>Sem prova do que saiu</strong> — na hora da cobrança, a discussão vira "eu acho que saiu" contra a planilha da transportadora.</li>
+      <li><strong>Sem saber quem conferiu</strong> — se algum volume passou batido, não dá pra apurar em que turno, com quem, em qual coleta.</li>
+      <li><strong>Sem saber o horário</strong> — coleta da manhã e da tarde viravam a mesma pilha na cabeça de quem conferiu.</li>
+      <li><strong>Uma lista por transportadora</strong> — cada uma com formato próprio, cada uma exigindo uma conferência separada.</li>
+    </ul>
+    <p>E tinha um detalhe que só quem trabalha na expedição sabe: a etiqueta tem <strong>vários</strong> códigos de barras. O da transportadora, o do canal de venda, a chave da NF-e. Conferir no olho significa acertar qual dos códigos é o certo, volume por volume.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">03 · Solução criada</div>
+    <h2>O celular da equipe virou o coletor</h2>
+    <p>Coletor de código de barras é hardware caro e amarrado a um sistema. Aqui o coletor é a câmera do celular que a pessoa já tem no bolso, e o sistema é uma página web aberta pelo navegador — nada pra instalar, nada pra configurar em aparelho novo.</p>
+    <p>A leitura usa o <code>BarcodeDetector</code> nativo do navegador quando existe, com biblioteca de fallback quando não existe. Tem lanterna pra galpão escuro, vibração no bipe certo e vibração diferente no erro — porque na expedição ninguém fica olhando a tela.</p>
+
+    <h3>O código diz sozinho qual transportadora é</h3>
+    <p>Esta é a parte que fez o sistema servir pra todas as transportadoras, e não só pra quem pediu o romaneio. Cada transportadora tem um formato próprio de código de rastreio. Nove padrões cobrem o que passa pela expedição, e o sistema classifica no ato do bipe — sem ninguém escolher transportadora numa lista antes:</p>
+    <div class="regras">
+      <div class="regra"><span class="pat">AA123456789BR</span><span class="res">2 letras + 9 dígitos + BR → Correios</span></div>
+      <div class="regra"><span class="pat">192837465</span><span class="res">9 dígitos → Jadlog</span></div>
+      <div class="regra"><span class="pat">LG9F2K7M4X1P</span><span class="res">prefixo LG → Loggi</span></div>
+      <div class="regra"><span class="pat">888000111222</span><span class="res">prefixo 888 → J&amp;T</span></div>
+      <div class="regra"><span class="pat">TT / AZ …</span><span class="res">prefixo de 2 letras → Total Express, Azul Cargo</span></div>
+      <div class="regra bloqueio"><span class="pat">44 dígitos</span><span class="res">chave de NF-e → recusa o bipe e avisa</span></div>
+      <div class="regra bloqueio"><span class="pat">não bateu nada</span><span class="res">exige um segundo bipe pra confirmar</span></div>
+    </div>
+    <p>As duas últimas linhas são as que evitam lixo na lista. Mirar na chave da NF-e é o erro mais comum de quem está começando — o código é grande, chama a atenção, e não serve pra nada no romaneio. E código que não bate com nenhum padrão só entra se a pessoa bipar de novo, confirmando que é aquilo mesmo.</p>
+
+    <h3>O bipe já mostra pedido e nota fiscal</h3>
+    <p>Bipar só o rastreio resolveria a conferência, mas não diz <em>o que</em> é aquele volume. Um sincronismo em segundo plano puxa do ERP os pedidos faturados e prontos pra envio, guardando <code>rastreio → pedido → NF</code> numa aba de cache. Quando a pessoa bipa, o número do pedido e da nota aparecem na tela na hora — sem chamada de API no meio da fila.</p>
+
+    <h3>Conferência de local e trava de duplicado</h3>
+    <ul>
+      <li><strong>Raio de 150 m da expedição</strong> — o navegador manda a posição junto com o bipe e o sistema grava a distância. Bipe feito fora do raio fica marcado. Não bloqueia, só registra.</li>
+      <li><strong>Duplicado no mesmo dia é recusado</strong> — vibração diferente, aviso na tela, e o volume não entra duas vezes no romaneio.</li>
+      <li><strong>Remover é reversível</strong> — item removido fica marcado como removido, não some. Bipar de novo o mesmo código reativa a linha original em vez de criar outra.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">04 · Como funciona</div>
+    <h2>Do volume na mão ao romaneio fechado</h2>
+    <div class="flow-grid">
+      <div class="flow-node">
+        <div class="icon">▭</div>
+        <div class="name">Volume</div>
+        <div class="sub">etiqueta na mão</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">◉</div>
+        <div class="name">Câmera</div>
+        <div class="sub">BarcodeDetector</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">/^/</div>
+        <div class="name">Padrão</div>
+        <div class="sub">acha a transportadora</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">▤</div>
+        <div class="name">Sheets</div>
+        <div class="sub">hora · operador · GPS</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">#</div>
+        <div class="name">Slack</div>
+        <div class="sub">romaneio do dia</div>
+      </div>
+    </div>
+    <p class="flow-note">um clique em "fechar dia" agrupa por transportadora, publica no Slack e trava a lista</p>
+
+    <p>O fechamento é o que transforma bipe em documento. A mensagem sai agrupada por transportadora, com resumo de quantidade no fim — a mesma estrutura que a transportadora usa na lista dela, o que torna a comparação direta quando dá divergência.</p>
+
+    <div class="slack-mock">
+      <div class="slack-bar">#expedicao</div>
+      <div class="slack-body">
+        <span class="t">Romaneio 24/07 — total: 3 envios</span>
+        <span class="g">Correios (2)</span>
+        • <span class="cod">AA123456789BR</span> <span class="hr">09:12</span> — Brock · Pedido 4821 · NF 9134<br>
+        • <span class="cod">AA987654321BR</span> <span class="hr">09:14</span> — Brock · Pedido 4823 · NF 9136
+        <span class="g">Jadlog (1)</span>
+        • <span class="cod">192837465</span> <span class="hr">09:12</span> — Misty · Pedido 4822 · NF 9135
+        <span class="g">Resumo por transportadora:</span>
+        • Correios: 2<br>
+        • Jadlog: 1
+      </div>
+      <div class="slack-note">— formato real da mensagem, dados ilustrativos —</div>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">05 · Resultado</div>
+    <h2>Toda coleta sai com lista assinada por bipe</h2>
+    <div class="dash-grid">
+      <div class="kpi alt">
+        <div class="lbl">Digitação por volume</div>
+        <div class="val">0</div>
+        <div class="delta">antes: conferência no papel</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Transportadoras</div>
+        <div class="val">9</div>
+        <div class="delta">reconhecidas pelo padrão do código</div>
+      </div>
+      <div class="kpi alt">
+        <div class="lbl">Custo mensal</div>
+        <div class="val">R$ 0</div>
+        <div class="delta">sem coletor, sem licença</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Fechar romaneio</div>
+        <div class="val">1 clique</div>
+        <div class="delta">publica no Slack e trava o dia</div>
+      </div>
+    </div>
+    <ul>
+      <li><strong>Divergência virou consulta, não discussão.</strong> A transportadora cobra um volume, a gente abre o romaneio daquele dia e responde com hora, operador e o pedido correspondente.</li>
+      <li><strong>Vale pra qualquer transportadora.</strong> Nasceu por exigência de uma, mas como a classificação é pelo padrão do código, todas as outras entraram sem uma linha nova.</li>
+      <li><strong>Zero hardware.</strong> Coletor de código de barras custa caro e amarra em fornecedor. Aqui é o celular da equipe, o Apps Script e uma planilha.</li>
+      <li><strong>O histórico ficou em pé.</strong> Bips de dias anteriores vão pra uma aba de arquivo de madrugada — a lista do dia continua leve e nada é apagado.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">06 · Erros e aprendizados</div>
+    <h2>A primeira versão travava exatamente na hora errada</h2>
+
+    <h3>Consultar o ERP no meio do bipe foi um erro</h3>
+    <p>Na primeira versão, cada bipe fazia uma chamada na API do ERP pra descobrir o pedido e a nota daquele rastreio. Funcionava perfeitamente na minha mesa, com um volume por vez. Na expedição, com o motorista esperando, cada bipe ficava parado esperando a resposta HTTP — e a fila engasgava.</p>
+    <p>A correção foi inverter: um sincronismo roda em segundo plano, guarda <code>rastreio → pedido → NF</code> numa aba de cache, e o bipe faz uma busca local. O dado que aparece na tela pode estar alguns minutos velho. Na prática isso não muda nada, e a fila anda.</p>
+
+    <h3>Ler a planilha inteira a cada bipe também</h3>
+    <p>Pra checar duplicado, o código lia todas as linhas da aba e comparava. No começo era instantâneo. Conforme os bips acumularam, foi ficando lento — não por causa do volume de um dia, mas do acúmulo de todos os dias.</p>
+    <p>Três mudanças resolveram: busca direta na coluna do código em vez de varrer a planilha, leitura só das últimas linhas (bipe do dia está sempre no fim), e um gatilho de madrugada que move o histórico pra uma aba de arquivo. A lição foi que "ler a planilha inteira" é uma decisão que só cobra a conta meses depois.</p>
+
+    <h3>A trava de duplicado não podia ser definitiva</h3>
+    <p>A primeira trava recusava qualquer código já bipado no dia, ponto final. Aí alguém removeu um item por engano e não conseguia mais colocar de volta — o sistema dizia "duplicado" pra um item que não estava mais na lista. Hoje o item removido fica marcado, e bipar de novo reativa a linha original.</p>
+
+    <div class="callout">
+      <p>"Automação de expedição não pode ser testada só na mesa. O que trava não é o caso difícil — é o caso comum com alguém esperando."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section" style="background:#0a0e13">
+  <div class="container">
+    <div class="label">Cases relacionados</div>
+    <h2>Outras automações de operação</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <a href="motoboy-impressao" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Python</div>
+        <div style="font-size:16px;font-weight:500">Motoboy na rua em 10 minutos →</div>
+      </a>
+      <a href="fretes-consolidado" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Financeiro · Frete</div>
+        <div style="font-size:16px;font-weight:500">Custo real de frete por NF →</div>
+      </a>
+      <a href="hub-de-dados" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Infra · Dados</div>
+        <div style="font-size:16px;font-weight:500">O banco de dados próprio da operação →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container row">
+    <div><strong style="color:var(--text);">nak.api.br</strong> · <a href="../">voltar pro laboratório</a></div>
+    <div><a href="mailto:labs@nak.api.br">labs@nak.api.br</a> · Caso documentado em 2026</div>
+  </div>
+</footer>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c48dfb70ce8140ffa8ad30637454ad88"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
