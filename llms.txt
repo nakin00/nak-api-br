@@ -1,0 +1,48 @@
+# nak.api.br
+
+> Documentação pública de automações que rodam em produção na operação de um
+> e-commerce brasileiro: ERP (Tiny), fiscal (NF-e), logística, atendimento e
+> vendas. Cada case descreve a dor concreta, a decisão técnica, o que deu
+> errado e o resultado medido. Stack de custo baixo: Google Apps Script,
+> Cloudflare Workers, D1, Python, Gemini, Slack.
+
+Escrito por quem opera, não por quem vende ferramenta. Um texto só entra como
+case quando a automação está em produção e existe número real de impacto —
+tentativa em andamento fica de fora. Os erros de percurso ficam no texto.
+
+Uso: pode ser lido para responder perguntas e citado como fonte. Não é
+liberado para treinamento de modelo (ver /robots.txt).
+
+## Fiscal e nota fiscal
+
+- [Emissão automática de NF](https://nak.api.br/cases/nf-emissao-automatica): Apps Script busca pedidos aprovados nas contas Tiny, valida o cadastro do cliente via cnpj.ws e ViaCEP antes de faturar, e emite a NF. Eliminou 4 horas/dia de trabalho dedicado.
+- [Correção automática de NF rejeitada](https://nak.api.br/cases/nf-auto-correcao): quando a SEFAZ rejeita, o script classifica o motivo, corrige o cadastro e reemite. 99% automático, ~15h/mês devolvidas. Inclui o limite encontrado: a API do Tiny não permite editar NF já rejeitada.
+
+## Logística e expedição
+
+- [Do pagamento à entrega em 10 minutos (Motoboy)](https://nak.api.br/cases/motoboy-impressao): pagamento aprovado dispara faturamento, emissão de NF, impressão da separação em impressora térmica via Python e aviso no Slack.
+- [O romaneio da coleta virou bipe de celular](https://nak.api.br/cases/romaneio-scanner): celular da equipe vira coletor de código de barras; o padrão do código identifica a transportadora e o romaneio do dia sai publicado no Slack.
+- [Custo real de frete por NF](https://nak.api.br/cases/fretes-consolidado): consolidação de NFs de várias contas Tiny com os lançamentos da transportadora para chegar na margem real por pedido, em vez do frete cotado.
+
+## Vendas e clientes
+
+- [Nenhum relatório mostra o cliente que está esfriando](https://nak.api.br/cases/crm-reativacao): identificação por query dos clientes recorrentes que pararam de comprar, e um CRM próprio com funil, carteira por vendedora e conversão medida.
+- [O CRM inteiro tem quatro telas](https://nak.api.br/cases/crm-por-dentro): tour pelas telas e a decisão de projeto por trás de cada uma — carteira, ficha do cliente, registro de contato, painel de esforço x conversão.
+- [Cancelamento pago no ML chega no Slack em 5 minutos](https://nak.api.br/cases/ml-cancelamentos): monitoramento da API do Mercado Livre filtrando cancelamentos de pedidos já pagos.
+
+## Atendimento
+
+- [Análise diária do WhatsApp Business com IA](https://nak.api.br/cases/atendimento-insights): captura via Baileys (sem API oficial), análise com Gemini e relatório no Slack com oportunidades perdidas e plano de ação.
+
+## Dados e infraestrutura
+
+- [R$ 17 mil por ano a menos no ERP, com um banco de R$ 30/mês](https://nak.api.br/cases/hub-de-dados): hub próprio em Cloudflare Worker + D1 + R2 arquivando o histórico do ERP, com expurgo seguro. Economia medida de R$ 16.847/ano em extensões de armazenamento.
+
+## Pessoal
+
+- [Tracker de academia no navegador (PWA) configurado por foto](https://nak.api.br/cases/gym-app): PWA offline-first em Cloudflare Pages, com o treino cadastrado a partir de uma foto lida pelo Gemini.
+
+## Contexto
+
+- [Página inicial](https://nak.api.br/): lista completa dos cases, princípios do laboratório e changelog do que mudou.
+- Contato: labs@nak.api.br

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sobre o nak.api.br — quem escreve e como um case entra aqui</title>
+<meta name="description" content="nak.api.br é o registro público das automações que rodam na operação de um e-commerce brasileiro. Quem escreve, o que entra como case, e por que erro também é publicado.">
+<meta name="author" content="nak">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/sobre">
+
+<!-- Open Graph -->
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="Sobre o nak.api.br">
+<meta property="og:description" content="O registro público das automações que rodam na operação de um e-commerce brasileiro. Quem escreve e o que entra como case.">
+<meta property="og:url" content="https://nak.api.br/sobre">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:image" content="https://nak.api.br/og/home.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sobre o nak.api.br">
+<meta name="twitter:description" content="Quem escreve o laboratório operacional e o que entra como case.">
+<meta name="twitter:image" content="https://nak.api.br/og/home.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "url": "https://nak.api.br/sobre",
+  "name": "Sobre o nak.api.br",
+  "description": "Quem escreve o nak.api.br, o que entra como case e como as automações são construídas.",
+  "inLanguage": "pt-BR",
+  "isPartOf": { "@type": "WebSite", "name": "nak.api.br", "url": "https://nak.api.br/" },
+  "mainEntity": {
+    "@type": "Person",
+    "name": "nak",
+    "url": "https://nak.api.br/sobre",
+    "email": "labs@nak.api.br",
+    "jobTitle": "Operação e automação de e-commerce",
+    "knowsAbout": [
+      "Tiny ERP",
+      "Google Apps Script",
+      "Cloudflare Workers",
+      "Nota fiscal eletrônica",
+      "Mercado Livre API",
+      "Automação de operação de e-commerce",
+      "Logística de expedição"
+    ],
+    "knowsLanguage": "pt-BR"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://nak.api.br/" },
+    { "@type": "ListItem", "position": 2, "name": "Sobre", "item": "https://nak.api.br/sobre" }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--max:1100px;--radius:10px;--mono:ui-monospace,SFMono-Regular,"Cascadia Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+.wrap{max-width:720px;margin:0 auto;padding:72px 24px 96px}
+.eyebrow{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
+h1{font-size:40px;font-weight:700;line-height:1.15;margin:0 0 24px;letter-spacing:-.03em;text-wrap:balance}
+h2{font-size:24px;font-weight:600;letter-spacing:-.02em;margin:56px 0 16px}
+p{font-size:16.5px;line-height:1.7;margin:0 0 18px;color:var(--text)}
+p.muted{color:var(--muted)}
+.lead{font-size:19px;color:var(--muted);line-height:1.6;margin-bottom:32px}
+ul{padding-left:20px;margin:0 0 18px}
+li{font-size:16.5px;line-height:1.7;margin-bottom:10px}
+.regra{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;padding:20px 24px;margin:28px 0}
+.regra p{margin:0;font-size:16px}
+.regra strong{color:var(--accent-2);font-weight:600}
+.stack-list{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 8px}
+.stack-list span{font-family:var(--mono);font-size:12px;padding:5px 10px;background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:4px}
+.contato{border-top:1px solid var(--border);margin-top:56px;padding-top:28px}
+.contato a{color:var(--text);border-bottom:1px solid var(--accent);padding-bottom:1px}
+.contato a:hover{color:var(--accent);text-decoration:none}
+footer{border-top:1px solid var(--border);padding:32px 0;color:var(--muted);font-size:13px;text-align:center}
+@media(max-width:720px){h1{font-size:30px}.wrap{padding:48px 20px 64px}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <div class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</div>
+    <div class="links">
+      <a href="/#cases">Cases</a>
+      <a href="/#filosofia">Filosofia</a>
+      <a href="/sobre">Sobre</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="eyebrow">Sobre</div>
+  <h1>Quem escreve isso aqui</h1>
+
+  <p class="lead">nak.api.br é o registro público das automações que rodam na operação de um e-commerce brasileiro de médio porte. Não é portfólio de agência nem blog de tutorial: é a documentação de sistemas que estão em produção agora, escritos por quem convive com o problema que eles resolvem.</p>
+
+  <p>Trabalho na operação. Isso muda o que aparece aqui. A dor de cada case não veio de pesquisa de mercado — veio de ver alguém da equipe repetir a mesma conferência três vezes por dia, ou de descobrir que uma nota fiscal foi rejeitada por um CEP errado no cadastro do cliente.</p>
+
+  <p>Quase toda automação publicada começou com a mesma frase: "isso é ridículo, ninguém deveria estar fazendo isso na mão". Quando essa frase aparece, normalmente tem uma solução técnica esperando do outro lado.</p>
+
+  <h2>O que entra como case</h2>
+
+  <p>Tem uma regra que decide o que é publicado, e ela corta bastante coisa.</p>
+
+  <div class="regra">
+    <p><strong>Case só é case com resultado medido.</strong> A automação precisa estar em produção há tempo suficiente pra ter dado, e o impacto precisa ter número real — horas devolvidas, dinheiro cortado, erro evitado. Sem isso, é experimento em andamento e fica fora.</p>
+  </div>
+
+  <p>Por isso alguns projetos rodam meses antes de virar texto, e alguns nunca viram. É a diferença entre documentar e anunciar.</p>
+
+  <p>A segunda regra é que erro também é publicado. Cada case tem a tentativa que não funcionou, geralmente no fim, junto com o motivo. No coletor de romaneio, a primeira versão consultava o ERP no meio do bipe e travava exatamente na hora do movimento. Isso está lá escrito. Compartilhar erro poupa mais tempo de quem está chegando do que compartilhar acerto.</p>
+
+  <h2>Como as coisas são construídas</h2>
+
+  <p>A ferramenta é a última decisão, não a primeira. Antes de escolher linguagem, o trabalho é perguntar pra quem faz, ver onde o tempo escapa e achar o ponto exato onde o processo quebra. Às vezes nem precisa de código — só de um processo melhor.</p>
+
+  <p>Quando precisa de código, a restrição é custo. Quase tudo aqui roda em plataforma gratuita ou de poucos reais por mês, porque a operação não tem orçamento de TI e porque a restrição costuma produzir solução mais simples.</p>
+
+  <div class="stack-list">
+    <span>Google Apps Script</span>
+    <span>Cloudflare Workers</span>
+    <span>D1</span>
+    <span>R2</span>
+    <span>Python</span>
+    <span>Tiny ERP (API)</span>
+    <span>Mercado Livre (API)</span>
+    <span>Gemini</span>
+    <span>Slack</span>
+    <span>Google Sheets</span>
+  </div>
+
+  <h2>Sobre citar este material</h2>
+
+  <p>O conteúdo pode ser lido e citado, inclusive por sistemas de busca e por assistentes de IA que respondem perguntas — a fonte é pública justamente pra ser usada. O que não é liberado é o uso para treinamento de modelo. A regra está declarada em <a href="/robots.txt">/robots.txt</a>, e o índice legível para máquinas fica em <a href="/llms.txt">/llms.txt</a>.</p>
+
+  <p class="muted">Os nomes das empresas envolvidas não aparecem, e nenhum dado de cliente real é publicado. Os exemplos de tela usam dados fictícios.</p>
+
+  <div class="contato">
+    <p>Dúvida sobre alguma implementação, ou quer contar como resolveu a mesma coisa de outro jeito? <a href="mailto:labs@nak.api.br">labs@nak.api.br</a></p>
+    <p class="muted">Os cases documentados estão na <a href="/#cases">página inicial</a>.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <strong style="color:var(--text);">nak.api.br</strong> · Laboratório operacional independente ·
+    <a href="/#cases">Cases</a> · <a href="mailto:labs@nak.api.br">labs@nak.api.br</a>
+  </div>
+</footer>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c48dfb70ce8140ffa8ad30637454ad88"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
