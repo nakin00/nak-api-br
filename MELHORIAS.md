@@ -6,6 +6,29 @@ Regra: item só sai daqui quando FEITO e VALIDADO, ou quando decidirmos conscien
 
 ---
 
+## 🔴 P0 — Bloqueio ativo (só resolve no painel Cloudflare)
+
+### 0. O site é invisível pra IA de busca — duas camadas bloqueando
+**Descoberto em 31/07/2026.** Objetivo declarado: ser lida e citada por assistente de IA, sem liberar treinamento.
+
+Duas travas independentes, as duas herdadas de padrão do Cloudflare (ninguém ligou de propósito):
+
+1. **WAF / AI bot block** — `GPTBot`, `ClaudeBot`, `PerplexityBot`, `OAI-SearchBot` e `meta-externalagent` recebem **403** no edge. User-agent qualquer recebe 200. Nenhum modelo consegue ler o site.
+2. **robots.txt gerenciado** — o Cloudflare injeta um bloco *antes* do nosso, com `Disallow: /` pra GPTBot, ClaudeBot, Google-Extended, CCBot, Bytespider, Amazonbot, Applebot-Extended e `Content-Signal: ai-train=no`. Como vem primeiro, nosso arquivo não consegue sobrescrever — no Google-Extended os dois se contradizem hoje.
+
+**Ação (painel, zona `nak.api.br`):**
+- [ ] Security → Bots → *AI Scrapers and Crawlers* → desligar
+- [ ] Security → WAF → Custom rules → **Skip** com `hostname eq "nak.api.br"` (mantém `frete`, `central`, `status`, `print-pulse`, `gym` bloqueados)
+- [ ] AI Crawl Control → *Managed robots.txt* → desligar (aí o `/robots.txt` do repo passa a valer)
+
+**Esforço:** baixo (3 toggles) · **Impacto:** alto — é pré-requisito de tudo em GEO
+**Validar depois:** `curl -A "OAI-SearchBot/1.0" https://nak.api.br/` tem que dar 200, e `curl -A "GPTBot/1.2"` pode continuar bloqueado (é o de treino).
+
+### 0b. ~~Tabela de frete exposta em `frete.nak.api.br`~~ ✅ FEITO 31/07
+Achado no mesmo pente fino: `?test=1` rodava antes da validação de token e devolvia as regras de frete inteiras (CEP, peso, preço, prazo) pra qualquer um com a URL. Corrigido e no ar — modo teste exige `TRAY_TOKEN`, nega se o secret não existir, raiz não conta mais as regras, `/robots.txt` com `Disallow: /`. Caminho da cotação intacto. Ver repo `tray_frete`.
+
+---
+
 ## 🔴 P1 — Alto impacto, faz logo
 
 ### 1. Backlinks externos (o gargalo real do SEO agora)
@@ -87,6 +110,12 @@ Próximo check: 17/jul (Mês 2). Cadência mensal daqui pra frente.
 | 15/06 | Badges "em produção desde X" nos 7 cases |
 | 15/06 | Changelog "em movimento" na home |
 | 21/06 | Esta lista |
+| 18/07 | Imagem Open Graph real (1200×630) por case |
+| 31/07 | `llms.txt` — índice legível por máquina, 11 cases agrupados por área |
+| 31/07 | `/sobre` — página de entidade (autor, regra do case, stack, licença de citação) |
+| 31/07 | `robots.txt` novo: libera bots que citam, bloqueia os de treino, `Content-Signal` |
+| 31/07 | Schema: `dateModified` real, autor como `Person` com URL, `publisher`, `isPartOf`, `image`, `BreadcrumbList` nos 11 cases |
+| 31/07 | Home: `WebSite` enriquecido + `CollectionPage` listando os 11 cases |
 
 ---
 

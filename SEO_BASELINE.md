@@ -84,6 +84,36 @@ Cada ação manual que possa influenciar SEO vai aqui. Permite medir efeito real
 - **2026-06-14:** Posição média caiu drasticamente em 7 dias (23.1 → 12.8). Sinal positivo de que conteúdo está ganhando relevância pra alguns termos. Mas Google ainda demora ~2 semanas pra indexar URL nova publicada — mesmo com sitemap atualizado, ele só busca o sitemap em ciclos próprios. Solicitação manual de indexação acelera. Bing re-processou o sitemap automaticamente quando detectou aumento de URLs (de 5 pra 7) — comportamento bom, não precisou re-submeter manualmente.
 - **2026-06-17:** 2 cases na 1ª página do Google (atendimento posição 7.0, ml-cancelamentos posição 8.9). Sinal de que estrutura SEO e conteúdo estão funcionando — mas zero cliques porque queries que ranquearam são irrelevantes ("na api", "nacl web plug in"). Lição: rankear não é o objetivo final — rankear PRA TERMOS QUE IMPORTAM é. Pra fazer isso virar tráfego real, o site precisa de backlinks externos (LinkedIn, GitHub, etc) que sinalizem pra Google quais termos relevantes do nicho associar ao domínio. Cadastrar no Search Console e esperar não basta — Google precisa de pistas externas sobre o que o site é.
 
+## GEO — marco zero (2026-07-31)
+
+Objetivo separado do SEO: aparecer nas respostas de ChatGPT, Claude, Perplexity e AI Overviews. Regra da casa: **pode citar, não pode treinar**.
+
+Estado no marco zero:
+- Crawlers de IA: **todos 403** no edge (WAF do Cloudflare) — o site é ilegível pra IA.
+- robots.txt gerenciado do Cloudflare: `Disallow: /` pros bots de IA, injetado antes do nosso arquivo.
+- Menções externas ao domínio: **0** (busca por `"nak.api.br"` não retorna nada).
+- `llms.txt`: publicado hoje. Página de entidade `/sobre`: publicada hoje.
+
+Não existe Search Console pra LLM. O que dá pra medir:
+1. **Hits dos bots liberados** no Cloudflare (OAI-SearchBot, PerplexityBot, Claude-SearchBot) — só passa a existir depois de destravar o painel.
+2. **Referral** de `chatgpt.com`, `perplexity.ai`, `claude.ai` no Cloudflare Web Analytics.
+3. **Prompts fixos**, rodados uma vez por mês, anotando se o site aparece e em que posição da resposta.
+
+Conjunto de prompts (rodar sempre os mesmos, senão não é medição):
+
+| # | Prompt |
+|---|--------|
+| 1 | como imprimir separação de pedido do Tiny ERP automaticamente |
+| 2 | emitir nota fiscal automática para pedidos do Mercado Livre e Shopee |
+| 3 | o que fazer quando a NF é rejeitada pela SEFAZ por erro de cadastro |
+| 4 | como saber o custo real de frete por nota fiscal |
+| 5 | alternativa barata a coletor de código de barras pra conferir romaneio |
+| 6 | como reduzir custo de armazenamento de histórico do ERP |
+
+| Data | Bots liberados? | Referral IA (28d) | Prompts com citação | Notas |
+|------|-----------------|-------------------|---------------------|-------|
+| 2026-07-31 | não (403) | 0 | 0/6 | Marco zero. `llms.txt`, `/sobre` e schema publicados; falta destravar o painel. |
+
 ## Pendências técnicas (não-urgentes)
 
 - [ ] **404.html não servido em prod** — configurar `wrangler.toml` ou Worker custom (mexer com cuidado, risco de quebrar deploy).
