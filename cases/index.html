@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cases de automação de e-commerce, por área</title>
+<meta name="description" content="Índice das automações documentadas: fiscal, logística, vendas, atendimento e infraestrutura. Cada uma com a dor concreta, a stack e o resultado medido.">
+<meta name="keywords" content="automação e-commerce, automação tiny erp, apps script e-commerce, cloudflare workers, nota fiscal automática">
+<meta name="author" content="nak">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/cases">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="Cases de automação de e-commerce, por área">
+<meta property="og:description" content="Índice das automações documentadas: fiscal, logística, vendas, atendimento e infraestrutura. Cada uma com dor, stack e resultado medido.">
+<meta property="og:url" content="https://nak.api.br/cases">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:image" content="https://nak.api.br/og/home.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cases de automação de e-commerce, por área">
+<meta name="twitter:description" content="Índice das automações documentadas, por área da operação.">
+<meta name="twitter:image" content="https://nak.api.br/og/home.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "url": "https://nak.api.br/cases",
+  "name": "Cases de automação de e-commerce, por área",
+  "description": "Índice das automações documentadas no nak.api.br, agrupadas por área da operação.",
+  "inLanguage": "pt-BR",
+  "isPartOf": { "@type": "WebSite", "name": "nak.api.br", "url": "https://nak.api.br/" },
+  "about": ["Automação de e-commerce", "Tiny ERP", "Google Apps Script", "Cloudflare Workers", "Nota fiscal eletrônica"]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://nak.api.br/" },
+    { "@type": "ListItem", "position": 2, "name": "Cases", "item": "https://nak.api.br/cases" }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--max:1100px;--radius:10px;--mono:ui-monospace,SFMono-Regular,"Cascadia Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+.wrap{max-width:820px;margin:0 auto;padding:64px 24px 96px}
+.breadcrumb{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:20px}
+h1{font-size:38px;font-weight:700;line-height:1.15;margin:0 0 20px;letter-spacing:-.03em;text-wrap:balance}
+.lead{font-size:18px;color:var(--muted);line-height:1.6;margin:0 0 12px}
+.nota{font-size:15px;color:var(--muted);line-height:1.65;margin:0 0 48px}
+h2{font-size:15px;font-family:var(--mono);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:48px 0 4px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.area-nota{font-size:14px;color:var(--muted);margin:0 0 8px}
+.item{display:block;padding:18px 0;border-bottom:1px solid var(--border);color:var(--text)}
+.item:last-child{border-bottom:none}
+.item:hover{text-decoration:none}
+.item:hover .titulo{color:var(--accent)}
+.titulo{font-size:17px;font-weight:600;margin-bottom:6px;letter-spacing:-.01em}
+.resumo{font-size:14.5px;color:var(--muted);line-height:1.6;margin:0 0 8px}
+.stack{font-family:var(--mono);font-size:11px;color:var(--muted);opacity:.75}
+footer{border-top:1px solid var(--border);padding:32px 0;color:var(--muted);font-size:13px;text-align:center}
+@media(max-width:720px){h1{font-size:28px}.wrap{padding:44px 20px 64px}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <a href="../" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <div class="links">
+      <a href="../#cases">Cases</a>
+      <a href="../#filosofia">Filosofia</a>
+      <a href="../#stack">Stack</a>
+      <a href="../sobre">Sobre</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="breadcrumb"><a href="../">~</a> / cases</div>
+  <h1>Automações documentadas, por área</h1>
+  <p class="lead">Doze sistemas rodando na operação de um e-commerce brasileiro. Cada texto tem a dor concreta que gerou o projeto, a decisão técnica, o que deu errado no caminho e o resultado medido.</p>
+  <p class="nota">A ordem dentro de cada área é da publicação mais recente para a mais antiga. Projeto sem número real de impacto não aparece aqui — fica como experimento até ter.</p>
+
+  <h2>Fiscal e nota fiscal</h2>
+  <p class="area-nota">Emissão, rejeição da SEFAZ e cadastro de cliente.</p>
+
+  <a class="item" href="nf-auto-correcao">
+    <div class="titulo">Correção automática de NF rejeitada</div>
+    <p class="resumo">30% das notas rejeitavam por dado errado de cadastro. O script classifica o motivo, corrige via cnpj.ws e ViaCEP e reemite. Inclui o limite encontrado: a API do ERP não deixa editar nota já rejeitada.</p>
+    <div class="stack">apps-script · tiny-api · cnpj.ws · viacep · slack</div>
+  </a>
+
+  <a class="item" href="nf-emissao-automatica">
+    <div class="titulo">Emissão automática de NF</div>
+    <p class="resumo">O bot assumiu a atividade principal de quem fazia faturamento. Valida o cadastro do cliente antes de gerar a nota, o que resolve na origem o que o corretor só remedia depois.</p>
+    <div class="stack">apps-script · tiny-api · mercado-livre · shopee</div>
+  </a>
+
+  <h2>Logística e expedição</h2>
+  <p class="area-nota">Do pedido pago até o volume dentro do carro da transportadora.</p>
+
+  <a class="item" href="tray-frete">
+    <div class="titulo">Testar preço de frete dependia da fila de outra empresa</div>
+    <p class="resumo">Cada regra de frete própria era um pedido pago a um fornecedor. Agora as regras moram numa planilha e um Worker devolve o XML que a plataforma espera. Mudança vale em 60 segundos.</p>
+    <div class="stack">cloudflare-workers · tray · google-sheets · d1</div>
+  </a>
+
+  <a class="item" href="romaneio-scanner">
+    <div class="titulo">O romaneio da coleta virou bipe de celular</div>
+    <p class="resumo">O celular da equipe virou coletor de código de barras. O padrão do código identifica a transportadora sozinho e o romaneio do dia sai publicado no Slack. Sem hardware.</p>
+    <div class="stack">apps-script · sheets · código-de-barras · slack</div>
+  </a>
+
+  <a class="item" href="motoboy-impressao">
+    <div class="titulo">Do pagamento à entrega em 10 minutos</div>
+    <p class="resumo">Pagamento aprovado dispara faturamento, emissão de nota, impressão da separação na térmica e aviso no Slack. Sem clique humano no meio.</p>
+    <div class="stack">python · apps-script · tiny-api · impressora-térmica</div>
+  </a>
+
+  <a class="item" href="fretes-consolidado">
+    <div class="titulo">Custo real de frete por NF</div>
+    <p class="resumo">Cruza as notas com os lançamentos da transportadora para chegar na margem real por pedido, em vez do frete que foi cotado na venda.</p>
+    <div class="stack">apps-script · sheets · tiny-api · frenet</div>
+  </a>
+
+  <h2>Vendas e clientes</h2>
+  <p class="area-nota">Quem está comprando, quem parou e o que o funil esconde.</p>
+
+  <a class="item" href="crm-reativacao">
+    <div class="titulo">Qual cliente recorrente está esfriando</div>
+    <p class="resumo">Cliente recorrente para de comprar sem aparecer em relatório nenhum. Uma consulta no hub de dados virou CRM com funil, carteira por vendedora e conversão medida.</p>
+    <div class="stack">cloudflare-workers · d1 · sql</div>
+  </a>
+
+  <a class="item" href="crm-por-dentro">
+    <div class="titulo">O CRM inteiro tem quatro telas</div>
+    <p class="resumo">Tour por cada tela e a decisão de projeto por trás dela: carteira com filtros, ficha do cliente, registro de contato e painel de esforço contra conversão.</p>
+    <div class="stack">cloudflare-workers · d1 · interface</div>
+  </a>
+
+  <a class="item" href="ml-cancelamentos">
+    <div class="titulo">Cancelamento pago no Mercado Livre chega no Slack</div>
+    <p class="resumo">Monitoramento da API filtrando o caso que dói: pedido que já foi pago e depois cancelado. Evita a mercadoria sair depois do cancelamento.</p>
+    <div class="stack">apps-script · mercado-livre · slack</div>
+  </a>
+
+  <h2>Atendimento</h2>
+  <p class="area-nota">O que os clientes falam e o que isso custa em venda.</p>
+
+  <a class="item" href="atendimento-insights">
+    <div class="titulo">Análise diária do WhatsApp Business com IA</div>
+    <p class="resumo">Captura sem API oficial, análise com Gemini e relatório no Slack com oportunidades perdidas e plano de ação. O trabalho difícil não foi programar, foi decidir o que ignorar.</p>
+    <div class="stack">baileys · gemini · slack · fly.io</div>
+  </a>
+
+  <h2>Dados e infraestrutura</h2>
+  <p class="area-nota">Onde o histórico da operação mora e quanto isso custa.</p>
+
+  <a class="item" href="hub-de-dados">
+    <div class="titulo">R$ 17 mil por ano a menos no ERP</div>
+    <p class="resumo">O ERP cobrava caro em extensão de banco só para guardar histórico. Um hub próprio arquiva tudo por R$ 30 por mês, com expurgo seguro e conferência antes de apagar.</p>
+    <div class="stack">cloudflare-workers · d1 · r2</div>
+  </a>
+
+  <h2>Pessoal</h2>
+  <p class="area-nota">Fora da operação, mesma régua.</p>
+
+  <a class="item" href="gym-app">
+    <div class="titulo">Tracker de academia configurado por uma foto</div>
+    <p class="resumo">Configurar app de academia era trabalhoso demais. PWA que abre no navegador e monta o treino a partir de uma foto lida pelo Gemini.</p>
+    <div class="stack">pwa · cloudflare-pages · gemini · localstorage</div>
+  </a>
+</div>
+
+<footer>
+  <div class="container">
+    <strong style="color:var(--text);">nak.api.br</strong> · <a href="../">voltar pro laboratório</a> ·
+    <a href="../sobre">sobre</a> · <a href="mailto:labs@nak.api.br">labs@nak.api.br</a>
+  </div>
+</footer>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c48dfb70ce8140ffa8ad30637454ad88"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

@@ -45,5 +45,6 @@ liberado para treinamento de modelo (ver /robots.txt).
 
 ## Contexto
 
+- [Índice de cases por área](https://nak.api.br/cases): todos os cases agrupados por área da operação — fiscal, logística, vendas, atendimento, infraestrutura.
 - [Página inicial](https://nak.api.br/): lista completa dos cases, princípios do laboratório e changelog do que mudou.
 - Contato: labs@nak.api.br
