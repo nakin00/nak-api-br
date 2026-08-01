@@ -89,18 +89,18 @@ footer{border-top:1px solid var(--border);padding:32px 0;color:var(--muted);font
 
 <nav class="top">
   <div class="container row">
-    <a href="../" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <a href="/" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
     <div class="links">
-      <a href="../#cases">Cases</a>
-      <a href="../#filosofia">Filosofia</a>
-      <a href="../#stack">Stack</a>
-      <a href="../sobre">Sobre</a>
+      <a href="/#cases">Cases</a>
+      <a href="/#filosofia">Filosofia</a>
+      <a href="/#stack">Stack</a>
+      <a href="/sobre">Sobre</a>
     </div>
   </div>
 </nav>
 
 <div class="wrap">
-  <div class="breadcrumb"><a href="../">~</a> / cases</div>
+  <div class="breadcrumb"><a href="/">~</a> / cases</div>
   <h1>Automações documentadas, por área</h1>
   <p class="lead">Doze sistemas rodando na operação de um e-commerce brasileiro. Cada texto tem a dor concreta que gerou o projeto, a decisão técnica, o que deu errado no caminho e o resultado medido.</p>
   <p class="nota">A ordem dentro de cada área é da publicação mais recente para a mais antiga. Projeto sem número real de impacto não aparece aqui — fica como experimento até ter.</p>
@@ -108,13 +108,13 @@ footer{border-top:1px solid var(--border);padding:32px 0;color:var(--muted);font
   <h2>Fiscal e nota fiscal</h2>
   <p class="area-nota">Emissão, rejeição da SEFAZ e cadastro de cliente.</p>
 
-  <a class="item" href="nf-auto-correcao">
+  <a class="item" href="/cases/nf-auto-correcao">
     <div class="titulo">Correção automática de NF rejeitada</div>
     <p class="resumo">30% das notas rejeitavam por dado errado de cadastro. O script classifica o motivo, corrige via cnpj.ws e ViaCEP e reemite. Inclui o limite encontrado: a API do ERP não deixa editar nota já rejeitada.</p>
     <div class="stack">apps-script · tiny-api · cnpj.ws · viacep · slack</div>
   </a>
 
-  <a class="item" href="nf-emissao-automatica">
+  <a class="item" href="/cases/nf-emissao-automatica">
     <div class="titulo">Emissão automática de NF</div>
     <p class="resumo">O bot assumiu a atividade principal de quem fazia faturamento. Valida o cadastro do cliente antes de gerar a nota, o que resolve na origem o que o corretor só remedia depois.</p>
     <div class="stack">apps-script · tiny-api · mercado-livre · shopee</div>
@@ -123,25 +123,25 @@ footer{border-top:1px solid var(--border);padding:32px 0;color:var(--muted);font
   <h2>Logística e expedição</h2>
   <p class="area-nota">Do pedido pago até o volume dentro do carro da transportadora.</p>
 
-  <a class="item" href="tray-frete">
+  <a class="item" href="/cases/tray-frete">
     <div class="titulo">Testar preço de frete dependia da fila de outra empresa</div>
     <p class="resumo">Cada regra de frete própria era um pedido pago a um fornecedor. Agora as regras moram numa planilha e um Worker devolve o XML que a plataforma espera. Mudança vale em 60 segundos.</p>
     <div class="stack">cloudflare-workers · tray · google-sheets · d1</div>
   </a>
 
-  <a class="item" href="romaneio-scanner">
+  <a class="item" href="/cases/romaneio-scanner">
     <div class="titulo">O romaneio da coleta virou bipe de celular</div>
     <p class="resumo">O celular da equipe virou coletor de código de barras. O padrão do código identifica a transportadora sozinho e o romaneio do dia sai publicado no Slack. Sem hardware.</p>
     <div class="stack">apps-script · sheets · código-de-barras · slack</div>
   </a>
 
-  <a class="item" href="motoboy-impressao">
+  <a class="item" href="/cases/motoboy-impressao">
     <div class="titulo">Do pagamento à entrega em 10 minutos</div>
     <p class="resumo">Pagamento aprovado dispara faturamento, emissão de nota, impressão da separação na térmica e aviso no Slack. Sem clique humano no meio.</p>
     <div class="stack">python · apps-script · tiny-api · impressora-térmica</div>
   </a>
 
-  <a class="item" href="fretes-consolidado">
+  <a class="item" href="/cases/fretes-consolidado">
     <div class="titulo">Custo real de frete por NF</div>
     <p class="resumo">Cruza as notas com os lançamentos da transportadora para chegar na margem real por pedido, em vez do frete que foi cotado na venda.</p>
     <div class="stack">apps-script · sheets · tiny-api · frenet</div>
@@ -150,19 +150,19 @@ footer{border-top:1px solid var(--border);padding:32px 0;color:var(--muted);font
   <h2>Vendas e clientes</h2>
   <p class="area-nota">Quem está comprando, quem parou e o que o funil esconde.</p>
 
-  <a class="item" href="crm-reativacao">
+  <a class="item" href="/cases/crm-reativacao">
     <div class="titulo">Qual cliente recorrente está esfriando</div>
     <p class="resumo">Cliente recorrente para de comprar sem aparecer em relatório nenhum. Uma consulta no hub de dados virou CRM com funil, carteira por vendedora e conversão medida.</p>
     <div class="stack">cloudflare-workers · d1 · sql</div>
   </a>
 
-  <a class="item" href="crm-por-dentro">
+  <a class="item" href="/cases/crm-por-dentro">
     <div class="titulo">O CRM inteiro tem quatro telas</div>
     <p class="resumo">Tour por cada tela e a decisão de projeto por trás dela: carteira com filtros, ficha do cliente, registro de contato e painel de esforço contra conversão.</p>
     <div class="stack">cloudflare-workers · d1 · interface</div>
   </a>
 
-  <a class="item" href="ml-cancelamentos">
+  <a class="item" href="/cases/ml-cancelamentos">
     <div class="titulo">Cancelamento pago no Mercado Livre chega no Slack</div>
     <p class="resumo">Monitoramento da API filtrando o caso que dói: pedido que já foi pago e depois cancelado. Evita a mercadoria sair depois do cancelamento.</p>
     <div class="stack">apps-script · mercado-livre · slack</div>
@@ -171,7 +171,7 @@ footer{border-top:1px solid var(--border);padding:32px 0;color:var(--muted);font
   <h2>Atendimento</h2>
   <p class="area-nota">O que os clientes falam e o que isso custa em venda.</p>
 
-  <a class="item" href="atendimento-insights">
+  <a class="item" href="/cases/atendimento-insights">
     <div class="titulo">Análise diária do WhatsApp Business com IA</div>
     <p class="resumo">Captura sem API oficial, análise com Gemini e relatório no Slack com oportunidades perdidas e plano de ação. O trabalho difícil não foi programar, foi decidir o que ignorar.</p>
     <div class="stack">baileys · gemini · slack · fly.io</div>
@@ -180,7 +180,7 @@ footer{border-top:1px solid var(--border);padding:32px 0;color:var(--muted);font
   <h2>Dados e infraestrutura</h2>
   <p class="area-nota">Onde o histórico da operação mora e quanto isso custa.</p>
 
-  <a class="item" href="hub-de-dados">
+  <a class="item" href="/cases/hub-de-dados">
     <div class="titulo">R$ 17 mil por ano a menos no ERP</div>
     <p class="resumo">O ERP cobrava caro em extensão de banco só para guardar histórico. Um hub próprio arquiva tudo por R$ 30 por mês, com expurgo seguro e conferência antes de apagar.</p>
     <div class="stack">cloudflare-workers · d1 · r2</div>
@@ -189,7 +189,7 @@ footer{border-top:1px solid var(--border);padding:32px 0;color:var(--muted);font
   <h2>Pessoal</h2>
   <p class="area-nota">Fora da operação, mesma régua.</p>
 
-  <a class="item" href="gym-app">
+  <a class="item" href="/cases/gym-app">
     <div class="titulo">Tracker de academia configurado por uma foto</div>
     <p class="resumo">Configurar app de academia era trabalhoso demais. PWA que abre no navegador e monta o treino a partir de uma foto lida pelo Gemini.</p>
     <div class="stack">pwa · cloudflare-pages · gemini · localstorage</div>
@@ -198,8 +198,8 @@ footer{border-top:1px solid var(--border);padding:32px 0;color:var(--muted);font
 
 <footer>
   <div class="container">
-    <strong style="color:var(--text);">nak.api.br</strong> · <a href="../">voltar pro laboratório</a> ·
-    <a href="../sobre">sobre</a> · <a href="mailto:labs@nak.api.br">labs@nak.api.br</a>
+    <strong style="color:var(--text);">nak.api.br</strong> · <a href="/">voltar pro laboratório</a> ·
+    <a href="/sobre">sobre</a> · <a href="mailto:labs@nak.api.br">labs@nak.api.br</a>
   </div>
 </footer>
 
