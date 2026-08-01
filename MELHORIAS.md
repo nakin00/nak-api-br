@@ -8,6 +8,11 @@ Regra: item só sai daqui quando FEITO e VALIDADO, ou quando decidirmos conscien
 
 ## 🔴 P0 — Bloqueio ativo (só resolve no painel Cloudflare)
 
+### 0. ~~O site é invisível pra IA de busca~~ ✅ RESOLVIDO 01/08
+Destravado no painel: `Training = Block` / `Search` e `Agent` = Allow, regra legada "Block AI bots" desligada e "Managed robots.txt" desligado. Bots de busca passaram a 200, treino segue bloqueado, internos seguem atrás de login. Detalhe do que mudou e o estado verificado estão no `SEO_BASELINE.md`. **Volta na agenda em 15/09/2026**, quando a Cloudflare passa a bloquear crawlers de propósito misto (GPTBot, ClaudeBot) junto com os de treino.
+
+<details><summary>Diagnóstico original (mantido pro histórico)</summary>
+
 ### 0. O site é invisível pra IA de busca — duas camadas bloqueando
 **Descoberto em 31/07/2026.** Objetivo declarado: ser lida e citada por assistente de IA, sem liberar treinamento.
 
@@ -23,6 +28,8 @@ Duas travas independentes, as duas herdadas de padrão do Cloudflare (ninguém l
 
 **Esforço:** baixo (3 toggles) · **Impacto:** alto — é pré-requisito de tudo em GEO
 **Validar depois:** `curl -A "OAI-SearchBot/1.0" https://nak.api.br/` tem que dar 200, e `curl -A "GPTBot/1.2"` pode continuar bloqueado (é o de treino).
+
+</details>
 
 ### 0b. ~~Tabela de frete exposta em `frete.nak.api.br`~~ ✅ FEITO 31/07
 Achado no mesmo pente fino: `?test=1` rodava antes da validação de token e devolvia as regras de frete inteiras (CEP, peso, preço, prazo) pra qualquer um com a URL. Corrigido e no ar — modo teste exige `TRAY_TOKEN`, nega se o secret não existir, raiz não conta mais as regras, `/robots.txt` com `Disallow: /`. Caminho da cotação intacto. Ver repo `tray_frete`.

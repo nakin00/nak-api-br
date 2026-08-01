@@ -113,6 +113,31 @@ Conjunto de prompts (rodar sempre os mesmos, senão não é medição):
 | Data | Bots liberados? | Referral IA (28d) | Prompts com citação | Notas |
 |------|-----------------|-------------------|---------------------|-------|
 | 2026-07-31 | não (403) | 0 | 0/6 | Marco zero. `llms.txt`, `/sobre` e schema publicados; falta destravar o painel. |
+| 2026-08-01 | **sim** | 0 | 0/6 | **Destravado.** Três mudanças no painel (ver abaixo). Bots de busca passam a 200, treino segue 403, internos seguem atrás de login. Contagem de dias pra primeira citação começa aqui. |
+
+### O que foi mudado no painel em 01/08/2026
+
+O painel do Cloudflare já não é o que o `MELHORIAS.md` descrevia: existe agora uma tela **AI Crawl Control** que separa os bots por *finalidade*, que é exatamente o recorte da regra da casa.
+
+1. **AI bot policies** (Security → Settings → Bot traffic): `Search` = Allow, `Agent` = Allow, `Training` = **Block**. Antes os três estavam em Allow, e quem bloqueava era a regra legada — de forma indiscriminada.
+2. **Block AI bots (legado)**: de `Block on all pages` para `Do not block`. Era esta que devolvia 403 pro `OAI-SearchBot` e pro `PerplexityBot`. A Cloudflare aposenta essa opção em 15/09/2026, substituída pelo item 1.
+3. **Managed robots.txt** (AI Crawl Control → Signals): desligado. O `/robots.txt` do repositório passou a ser servido — a coluna Status da tela mudou de "Cloudflare Managed" para "200 OK".
+
+Ordem importou: `Training = Block` foi salvo **antes** de desligar o legado, pra não existir nenhuma janela em que crawler de treino entrasse.
+
+### Estado verificado (01/08/2026)
+
+| Alvo | Resultado |
+|---|---|
+| `OAI-SearchBot`, `PerplexityBot`, `Claude-SearchBot`, `Googlebot` em `nak.api.br` | 200 |
+| `CCBot`, `Bytespider` em `nak.api.br` | 403 |
+| `central`, `status`, `print-pulse` com user-agent de bot | 302 pro login |
+| `/robots.txt` | servido do repositório, sem o bloco da Cloudflare |
+| Visitante normal | 200 |
+
+**Limite dessa verificação, registrado de propósito:** a Cloudflare identifica bot verificado por **IP**, não por User-Agent. Então `curl -A "GPTBot"` de uma máquina qualquer **não** prova que o GPTBot real está bloqueado — ele responde 200 porque não é reconhecido como GPTBot de verdade. O bloqueio de treino foi confirmado pelo estado do painel (categoria "AI Crawler" toda em Block), não pelo curl. Os 403 de `CCBot`/`Bytespider` saem de outra regra, que casa por UA.
+
+**Pendência com data:** em **15/09/2026** a Cloudflare passa a incluir crawlers de propósito misto (usados pra busca *e* treino, caso do GPTBot e do ClaudeBot) no bloqueio de treino. A preferência da conta está marcada como "serão bloqueados" — coerente com a regra da casa, mas é uma perda de alcance programada. Revisitar nessa data e decidir conscientemente.
 
 ## Pendências técnicas (não-urgentes)
 
