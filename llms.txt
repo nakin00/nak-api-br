@@ -22,6 +22,7 @@ liberado para treinamento de modelo (ver /robots.txt).
 
 - [Do pagamento à entrega em 10 minutos (Motoboy)](https://nak.api.br/cases/motoboy-impressao): pagamento aprovado dispara faturamento, emissão de NF, impressão da separação em impressora térmica via Python e aviso no Slack.
 - [O romaneio da coleta virou bipe de celular](https://nak.api.br/cases/romaneio-scanner): celular da equipe vira coletor de código de barras; o padrão do código identifica a transportadora e o romaneio do dia sai publicado no Slack.
+- [Testar preço de frete dependia da fila de outra empresa](https://nak.api.br/cases/tray-frete): webservice de frete personalizado para a plataforma Tray, em Cloudflare Worker, com as regras numa planilha Google. Mudar preço de uma faixa de CEP leva 60 segundos e não depende de fornecedor. 2.422 cotações em produção, custo zero.
 - [Custo real de frete por NF](https://nak.api.br/cases/fretes-consolidado): consolidação de NFs de várias contas Tiny com os lançamentos da transportadora para chegar na margem real por pedido, em vez do frete cotado.
 
 ## Vendas e clientes

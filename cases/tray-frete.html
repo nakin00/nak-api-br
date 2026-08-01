@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frete personalizado na Tray com planilha e Cloudflare Worker</title>
+<meta name="description" content="WebService próprio de frete pra Tray: as regras moram numa planilha, um Cloudflare Worker devolve o XML da cotação e mudar preço leva 60 segundos.">
+<meta name="keywords" content="frete personalizado tray, webservice frete tray, cloudflare worker frete, tabela de frete em planilha">
+<meta name="author" content="nak">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/cases/tray-frete">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="Testar preço de frete dependia da fila de outra empresa">
+<meta property="og:description" content="WebService próprio de frete pra Tray: as regras moram numa planilha, um Cloudflare Worker devolve o XML da cotação e mudar preço leva 60 segundos.">
+<meta property="og:url" content="https://nak.api.br/cases/tray-frete">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:image" content="https://nak.api.br/og/tray-frete.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Testar preço de frete dependia da fila de outra empresa">
+<meta name="twitter:description" content="WebService próprio de frete pra Tray: as regras moram numa planilha, um Cloudflare Worker devolve o XML da cotação e mudar preço leva 60 segundos.">
+<meta name="twitter:image" content="https://nak.api.br/og/tray-frete.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Testar preço de frete dependia da fila de outra empresa",
+  "description": "WebService próprio de frete pra Tray: as regras moram numa planilha, um Cloudflare Worker devolve o XML da cotação e mudar preço leva 60 segundos.",
+  "author": {
+    "@type": "Person",
+    "name": "nak",
+    "url": "https://nak.api.br/sobre"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "nak.api.br",
+    "url": "https://nak.api.br/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://nak.api.br/og/home.png"
+    }
+  },
+  "datePublished": "2026-08-01",
+  "dateModified": "2026-08-01",
+  "inLanguage": "pt-BR",
+  "url": "https://nak.api.br/cases/tray-frete",
+  "about": [
+    "Frete personalizado",
+    "Tray",
+    "Cloudflare Workers"
+  ],
+  "keywords": "frete personalizado tray, webservice frete tray, cloudflare worker frete, tabela de frete planilha",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "nak.api.br",
+    "url": "https://nak.api.br/"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://nak.api.br/cases/tray-frete"
+  },
+  "image": "https://nak.api.br/og/tray-frete.png"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Início",
+      "item": "https://nak.api.br/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Testar preço de frete dependia da fila de outra empresa",
+      "item": "https://nak.api.br/cases/tray-frete"
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--danger:#EF4444;--warn:#F59E0B;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--radius:10px;--max:1100px}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+.case-hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.case-hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+.breadcrumb{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:24px}
+.category{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.case-hero h1{font-size:42px;font-weight:700;line-height:1.1;margin:0 0 20px;letter-spacing:-.02em}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.tag{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--border);color:var(--muted);border-radius:4px;text-transform:lowercase}
+.lead{color:var(--muted);font-size:17px;max-width:600px;margin:0}
+.running-since{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px;padding:5px 10px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:4px}
+.live-dot-mini{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent-2);animation:pulse-mini 2.2s ease-in-out infinite}
+@keyframes pulse-mini{0%,100%{opacity:1}50%{opacity:.35}}
+.mock-window{background:#0d1117;border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:0 20px 60px -20px rgba(0,0,0,.6)}
+.mock-dots{display:flex;gap:6px;margin-bottom:20px}
+.mock-dots span{width:12px;height:12px;border-radius:50%}
+.mock-dots .d1{background:#ff5f57}.mock-dots .d2{background:#febc2e}.mock-dots .d3{background:#28c840}
+.mock-log{font-family:var(--mono);font-size:12.5px;background:#0a0e13;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;line-height:1.5;word-break:break-word}
+.mock-log.ok{color:var(--accent-2)}.mock-log.warn{color:var(--warn)}.mock-log.err{color:var(--danger)}.mock-log.info{color:var(--muted)}
+.mock-caption{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:center;margin-top:14px;font-style:italic}
+.case-section{padding:64px 0;border-bottom:1px solid var(--border)}
+.case-section:last-child{border-bottom:none}
+.label{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.case-section h2{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0 0 24px}
+.case-section h3{font-size:20px;font-weight:600;margin:40px 0 16px;letter-spacing:-.01em}
+.case-section p{font-size:16px;color:var(--text);margin:0 0 16px;max-width:760px}
+.case-section ul{font-size:16px;color:var(--text);padding-left:20px;max-width:760px}
+.case-section ul li{margin-bottom:10px}
+.case-section ul li::marker{color:var(--muted)}
+code{font-family:var(--mono);font-size:.9em;background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1px 5px}
+.callout{border-left:3px solid var(--accent);background:var(--card);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin:24px 0;max-width:760px}
+.callout p{margin:0;font-style:italic;color:var(--muted)}
+.flow-grid{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:32px 0;max-width:760px}
+.flow-node{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;flex:1;min-width:110px}
+.flow-node .icon{font-family:var(--mono);font-size:22px;color:var(--accent);margin-bottom:6px}
+.flow-node .name{font-size:13px;font-weight:500}
+.flow-node .sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px}
+.flow-arrow{font-family:var(--mono);color:var(--muted);font-size:18px;flex-shrink:0}
+.flow-note{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--muted);max-width:760px;text-align:center}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;max-width:760px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.kpi .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.kpi .val{font-size:24px;font-weight:600;font-family:var(--mono);color:var(--accent-2);line-height:1}
+.kpi .delta{font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono)}
+.kpi.alt .val{color:var(--accent)}
+/* REGRAS DE DETECÇÃO — tabela mono */
+.regras{max-width:760px;margin:24px 0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.regra{display:flex;gap:16px;align-items:baseline;padding:11px 16px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:13px}
+.regra:last-child{border-bottom:none}
+.regra .pat{color:var(--accent);flex:0 0 180px;word-break:break-all}
+.regra .res{color:var(--text)}
+.regra.bloqueio .pat{color:var(--danger)}
+.regra.bloqueio .res{color:var(--muted)}
+/* SLACK MOCK */
+.slack-mock{max-width:560px;margin:28px 0;background:#1a1d21;border:1px solid #2b2f33;border-radius:10px;overflow:hidden}
+.slack-bar{padding:10px 16px;border-bottom:1px solid #2b2f33;font-family:var(--mono);font-size:12px;color:#9ca3af}
+.slack-body{padding:16px 18px;font-size:14px;line-height:1.7;color:#e5e7eb}
+.slack-body .t{font-weight:700;color:#fff}
+.slack-body .g{font-weight:700;color:#fff;display:block;margin-top:14px}
+.slack-body .cod{font-family:var(--mono);font-size:12.5px;background:#232629;border:1px solid #35393d;border-radius:4px;padding:1px 5px;color:#e5e7eb}
+.slack-body .hr{color:#9ca3af;font-style:italic}
+.slack-note{padding:9px;font-family:var(--mono);font-size:11px;color:#6b7280;text-align:center;font-style:italic;border-top:1px solid #2b2f33}
+footer{padding:48px 0;color:var(--muted);font-size:13px}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--muted)}
+@media(max-width:900px){.case-hero-grid{grid-template-columns:1fr;gap:40px}.dash-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.case-hero h1{font-size:32px}.case-section{padding:48px 0}.case-section h2{font-size:24px}.flow-grid{flex-direction:column}.flow-arrow{transform:rotate(90deg)}nav .links{gap:16px}.regra{flex-direction:column;gap:2px}.regra .pat{flex:none}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <a href="../" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <div class="links">
+      <a href="../#cases">Cases</a>
+      <a href="../#filosofia">Filosofia</a>
+      <a href="../#stack">Stack</a>
+      <a href="../sobre">Sobre</a>
+    </div>
+  </div>
+</nav>
+
+<header class="case-hero">
+  <div class="container">
+    <div class="case-hero-grid">
+      <div>
+        <div class="breadcrumb"><a href="../">~</a> / cases / tray-frete</div>
+        <div class="category">Operação · Frete</div>
+        <h1>Testar preço de frete dependia da fila de outra empresa</h1>
+        <div class="tags">
+          <span class="tag">cloudflare-workers</span>
+          <span class="tag">tray</span>
+          <span class="tag">google-sheets</span>
+          <span class="tag">d1</span>
+          <span class="tag">frete</span>
+        </div>
+        <div class="running-since"><span class="live-dot-mini"></span>em produção desde jul/2026</div>
+        <p class="lead">A loja usa a Tray, e a Tray aceita apontar o cálculo de frete pra uma URL sua. Escrevi essa URL. As regras moram numa planilha, um Worker devolve o XML que a Tray espera, e mudar o preço de uma faixa de CEP virou editar uma linha.</p>
+      </div>
+      <div>
+        <div class="mock-window">
+          <div class="mock-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+          <div class="mock-log ok">GET /?cep_destino=80035000&amp;prods=… → 1 opção · R$ 10,00</div>
+          <div class="mock-log ok">GET /?cep_destino=04578000&amp;prods=… → 2 opções · menor R$ 7,00</div>
+          <div class="mock-log warn">GET /?cep_destino=87050000&amp;prods=… → 0 opções · fora das faixas</div>
+          <div class="mock-log err">GET /?token=… → token invalido · cotacao vazia</div>
+          <div class="mock-caption">— chamadas reais da Tray, CEPs ilustrativos —</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="case-section">
+  <div class="container">
+    <h2>Cada ideia de frete virava um pedido pra terceiro</h2>
+    <p>A loja já cotava frete por um serviço de cotação contratado. Ele funciona bem pro que é padrão: transportadora conhecida, tabela conhecida, cálculo automático.</p>
+    <p>O problema aparece quando a regra é sua. Frete fixo pra uma cidade onde você tem motoboy. Retirada na loja. Uma tabela promocional pra uma região específica, por um mês, pra ver o que acontece. Nesse serviço, cada forma de envio personalizada é um pedido: <strong>é cobrado e entra numa fila</strong>. Ajuste depois também é cobrado.</p>
+    <p>Isso muda o que você se permite testar. Quando cada tentativa tem preço e prazo, você para de tentar. Testa o que tem certeza — e teste que você tem certeza não é teste.</p>
+    <p>Não era um sistema quebrado. Era um sistema de outra pessoa, com o ritmo de outra pessoa.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <h2>O contrato já estava documentado</h2>
+    <p>A Tray tem uma opção de frete personalizado: você informa uma URL e um token, e ela chama essa URL toda vez que alguém calcula frete no carrinho. Manda o CEP de origem, o CEP de destino e os produtos, e espera um XML de volta.</p>
+    <p>Ou seja, o encaixe existe e está aberto. O que faltava era alguém do lado de cá.</p>
+
+    <div class="flow-grid">
+      <div class="flow-node">
+        <div class="icon">1</div>
+        <div class="name">Cliente calcula frete</div>
+        <div class="label">Tray chama a URL</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">2</div>
+        <div class="name">Worker lê a planilha</div>
+        <div class="label">cache de 60s na borda</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">3</div>
+        <div class="name">Filtra as regras</div>
+        <div class="label">CEP + peso + valor</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">4</div>
+        <div class="name">Devolve o XML</div>
+        <div class="label">uma opção por regra</div>
+      </div>
+    </div>
+    <p class="flow-note">Cada linha da planilha que casa com o destino vira uma opção na tela do cliente. Casaram três linhas, ele vê três opções.</p>
+
+    <h3>A planilha é a interface, e isso foi de propósito</h3>
+    <p>Podia ter feito uma tela de cadastro. Não fiz. Quem mexe em preço de frete já vive dentro de planilha, e uma planilha tem coisas que eu não ia escrever tão bem: histórico de versão, comentário na célula, duas pessoas editando ao mesmo tempo, desfazer.</p>
+    <p>As colunas são o que a regra precisa: faixa de CEP inicial e final, peso mínimo e máximo, valor mínimo e máximo do pedido, valor do frete, prazo. Uma coluna <code>ativo</code> desliga a linha sem apagar — dá pra guardar a regra do mês passado sem ela valer.</p>
+    <p>O leitor de colunas é tolerante de propósito. <code>valor_frete</code>, <code>valor</code>, <code>preço</code> e <code>frete</code> são aceitos como a mesma coisa, com ou sem acento. Planilha de verdade não tem cabeçalho estável.</p>
+
+    <h3>O Worker não decide nada</h3>
+    <p>Ele lê a planilha, filtra as linhas que casam com o destino e traduz pro XML. Não tem regra de negócio no código. Isso é o ponto: se a lógica de preço estivesse no Worker, mudar frete voltaria a ser tarefa de programação — e eu teria trocado a fila de um fornecedor pela minha própria.</p>
+
+    <h3>Sessenta segundos, e o motivo do número</h3>
+    <p>A planilha é buscada a cada cotação, com cache de 60 segundos na borda da Cloudflare. Editou, espera um minuto, está valendo na loja.</p>
+    <p>Sem cache, cada carrinho viraria uma chamada ao Google no meio do checkout. Com cache longo, mudança de preço demoraria a valer e a promessa de autonomia cairia. Um minuto foi onde os dois lados ficaram aceitáveis.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <h2>Se o Google cair, a loja não pode cair junto</h2>
+    <p>Essa foi a decisão mais importante e a menos visível. O cálculo de frete fica no caminho do checkout: se ele trava, a venda trava.</p>
+    <p>Então a falha é silenciosa por escolha. Planilha fora do ar, CSV malformado, timeout — em qualquer um desses casos o Worker devolve uma cotação vazia, e não um erro. O cliente vê as outras opções de frete da loja e segue comprando. O motivo da falha vai num cabeçalho da resposta, pra quem for investigar depois.</p>
+    <div class="callout">
+      <p>Derrubar o checkout porque um serviço externo piscou seria pior do que mostrar uma opção a menos. Automação que entra no caminho do dinheiro precisa saber sumir com elegância.</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <h2>Três semanas em produção</h2>
+    <div class="dash-grid">
+      <div class="kpi alt">
+        <div class="lbl">Cotações recebidas</div>
+        <div class="val">2.422</div>
+        <div class="delta">em 17 dias de log</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Custo mensal</div>
+        <div class="val">R$ 0</div>
+        <div class="delta">plano gratuito e uma planilha</div>
+      </div>
+      <div class="kpi alt">
+        <div class="lbl">Mudar uma regra</div>
+        <div class="val">60s</div>
+        <div class="delta">sem deploy, sem pedido, sem fila</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Falha de configuração</div>
+        <div class="val">1</div>
+        <div class="delta">em 2.422 chamadas</div>
+      </div>
+    </div>
+    <p>Dentro das faixas de CEP que as regras cobrem, o atendimento é de 100%. Fora delas o webservice devolve zero opção — e é assim que tem que ser: ele é <em>uma</em> das fontes de frete da loja, não a única. Carrinho fora das faixas segue vendo as opções das outras integrações.</p>
+    <p>O que não está medido aqui, e eu não vou fingir que está: se frete mais barato numa região vende mais. Esse é o experimento que o sistema existe pra permitir, e ele ainda está rodando. Quando tiver resposta, vira outro texto.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <h2>Dois erros que valem mais que o acerto</h2>
+
+    <h3>O modo de teste entregava a tabela inteira</h3>
+    <p>Existe um parâmetro <code>?test=1</code> que devolve as regras como o Worker está lendo. Serve pra conferir se a planilha foi interpretada certo, e me poupou tempo várias vezes.</p>
+    <p>Ele rodava <strong>antes</strong> da validação de token. Qualquer pessoa com a URL baixava a tabela de frete completa em JSON: faixas, preços, prazos. A página inicial ainda anunciava o endereço do modo de teste e contava quantas regras existiam.</p>
+    <p>Não havia como adivinhar a URL, e nada indica que alguém tenha achado. Mas "ninguém achou" não é controle de acesso. Hoje o modo de teste exige o mesmo token da Tray e, se o token não estiver configurado, ele recusa em vez de liberar — descuido de configuração não pode abrir a tabela de preços.</p>
+    <p>O erro tem uma forma reconhecível: a checagem de segurança estava depois da funcionalidade, porque a funcionalidade foi escrita primeiro. É quase sempre assim que acontece.</p>
+
+    <h3>Li o meu próprio log errado</h3>
+    <p>O Worker registra cada cotação: CEP, peso, valor do carrinho e quantas opções foram devolvidas. Sem nome, sem e-mail, sem endereço — o carrinho, não a pessoa.</p>
+    <p>Ao olhar os números pela primeira vez, encontrei 85% das cotações com zero opção e li aquilo como buraco de cobertura. Estava errado. Zero opção ali é o caso <em>esperado</em>: significa que o carrinho estava fora das faixas que essas regras cobrem, e o cliente viu as opções das outras integrações normalmente. O log enxerga um pedaço da tela, não a tela.</p>
+    <p>O pior é que a leitura errada estava escrita no próprio projeto. Um comentário no schema dizia que aquele campo marcava buraco de cobertura. O comentário envelheceu junto com a suposição que o gerou, e me convenceu com a minha própria letra.</p>
+    <div class="callout">
+      <p>Métrica sem a fronteira do que ela enxerga não é métrica, é sugestão. Hoje o schema começa avisando o que aquele número <em>não</em> significa.</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <h2>O que ficou depois</h2>
+    <p>O ganho não foi o dinheiro de uma mensalidade. Foi o custo de tentar cair pra perto de zero.</p>
+    <p>Tem uma tabela promocional rodando agora numa região específica, criada pra descobrir uma coisa só: se frete mais barato ali muda alguma coisa. Ela existe porque deu pra criar sem pedir, sem pagar por ajuste e sem esperar. Se o resultado for ruim, apago a linha e sigo.</p>
+    <p>É esse o tipo de coisa que some quando cada teste tem preço: não a capacidade de executar, a de experimentar.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <h2>Outras automações de operação</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <a href="fretes-consolidado" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Financeiro · Frete</div>
+        <div style="font-size:16px;font-weight:500">Custo real de frete por NF →</div>
+      </a>
+      <a href="romaneio-scanner" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Logística · Expedição</div>
+        <div style="font-size:16px;font-weight:500">O romaneio da coleta virou bipe de celular →</div>
+      </a>
+      <a href="hub-de-dados" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Infra · Dados</div>
+        <div style="font-size:16px;font-weight:500">O banco de dados próprio da operação →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container row">
+    <div><strong style="color:var(--text);">nak.api.br</strong> · <a href="../">voltar pro laboratório</a></div>
+    <div><a href="mailto:labs@nak.api.br">labs@nak.api.br</a> · Caso documentado em 2026</div>
+  </div>
+</footer>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c48dfb70ce8140ffa8ad30637454ad88"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

@@ -78,6 +78,7 @@
     { "@type": "TechArticle", "headline": "Emissão automática de NF — bot fazendo a atividade principal de uma pessoa", "url": "https://nak.api.br/cases/nf-emissao-automatica" },
     { "@type": "TechArticle", "headline": "Correção automática de NF rejeitada (quando a IA diz que não dá)", "url": "https://nak.api.br/cases/nf-auto-correcao" },
     { "@type": "TechArticle", "headline": "Do pagamento à entrega em 10 minutos (Motoboy)", "url": "https://nak.api.br/cases/motoboy-impressao" },
+    { "@type": "TechArticle", "headline": "Testar preço de frete dependia da fila de outra empresa", "url": "https://nak.api.br/cases/tray-frete" },
     { "@type": "TechArticle", "headline": "O romaneio da coleta virou bipe de celular", "url": "https://nak.api.br/cases/romaneio-scanner" },
     { "@type": "TechArticle", "headline": "Custo real de frete por NF", "url": "https://nak.api.br/cases/fretes-consolidado" },
     { "@type": "TechArticle", "headline": "Nenhum relatório mostra o cliente que está esfriando", "url": "https://nak.api.br/cases/crm-reativacao" },
@@ -254,6 +255,10 @@ footer a{color:var(--muted)}
     <p class="changelog-intro">Não tem "Sobre nós" parado no tempo. Cada case novo ou revisão de case existente aparece aqui — com data. As últimas mudanças no conteúdo:</p>
     <ul class="changelog-list">
       <li class="changelog-item">
+        <span class="changelog-date">01/08</span>
+        <span class="changelog-msg">novo case <a href="cases/tray-frete"><strong>tray-frete</strong></a> — a tabela de frete da loja virou uma planilha, sem depender de fornecedor pra testar preço</span>
+      </li>
+      <li class="changelog-item">
         <span class="changelog-date">27/07</span>
         <span class="changelog-msg">novo case <a href="cases/romaneio-scanner"><strong>romaneio-scanner</strong></a> — o celular da expedição virou coletor de código de barras</span>
       </li>
@@ -330,6 +335,19 @@ footer a{color:var(--muted)}
         <h3>Análise diária do WhatsApp Business com IA</h3>
         <p class="meta"><span class="meta-label problem">Problema</span>160 atendimentos/semana no WhatsApp viravam caixa preta — gestão não conseguia ver padrão nem revisar.</p>
         <p class="meta"><span class="meta-label result">Resultado</span>Relatório diário no Slack com KPIs, oportunidades perdidas, destaques e plano de ação. Custo efetivo R$ 0.</p>
+        <span class="arrow">ver documentação →</span>
+      </a>
+
+      <a href="cases/tray-frete" class="case-card">
+        <div class="tags">
+          <span class="tag">cloudflare-workers</span>
+          <span class="tag">tray</span>
+          <span class="tag">sheets</span>
+          <span class="tag">d1</span>
+        </div>
+        <h3>Testar preço de frete dependia da fila de outra empresa</h3>
+        <p class="meta"><span class="meta-label problem">Problema</span>Toda regra de frete própria — motoboy, retirada, tabela promocional — era pedido pago pra um fornecedor, com prazo. Cada teste tinha preço, então testava-se pouco.</p>
+        <p class="meta"><span class="meta-label result">Resultado</span>As regras moram numa planilha e um Worker devolve o XML que a Tray espera. 2.422 cotações em produção, custo R$ 0, mudança de preço valendo em 60 segundos.</p>
         <span class="arrow">ver documentação →</span>
       </a>
 
