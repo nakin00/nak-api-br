@@ -55,10 +55,22 @@ Achado no mesmo pente fino: `?test=1` rodava antes da validação de token e dev
 
 ## 🔴 P1 — Achados do pente fino de 01/08
 
-### A. URLs `.html` antigas redirecionam com 307, não 301
-**Problema:** `/cases/x.html`, `/index.html`, `/sobre.html` respondem **307** (temporário). O `MELHORIAS` registrava isso como corrigido em 31/05 — não foi, só a URL nova passou a funcionar. 307 faz o Google manter a URL velha no índice e **não transferir autoridade** pra nova. Bate com o que o painel mostra: Googlebot com 601 requisições malsucedidas em 24h num site de 15 páginas.
-**Ação:** Redirect Rule no Cloudflare, `.html` → sem extensão, status **301**. O 307 vem do handler de assets do Worker e não é configurável; regra explícita ganha dele.
-**Esforço:** baixo (1 rule) · **Impacto:** alto — é o que trava a consolidação do que já foi rastreado
+### A. ~~URLs `.html` antigas redirecionam com 307, não 301~~ ✅ FEITO 01/08
+**Era:** `/cases/x.html`, `/index.html`, `/sobre.html` respondiam **307** (temporário). O registro de 31/05 dizia corrigido — não estava, só a URL nova passou a funcionar. 307 faz o Google manter a URL velha no índice e **não transferir autoridade**. Batia com Googlebot acumulando 601 requisições malsucedidas em 24h num site de 15 páginas.
+
+**Resolvido com duas Redirect Rules** (o 307 vem do handler de assets do Worker e não é configurável; regra explícita ganha dele, porque roda antes):
+
+| Regra | Filtro | Destino |
+|---|---|---|
+| `.html para URL sem extensao (301)` | `ends_with(uri.path, ".html") and not ends_with(uri.path, "/index.html")` | `wildcard_replace(full_uri, "https://nak.api.br/*.html", "https://nak.api.br/${1}")` |
+| `index.html para raiz (301)` | `uri.path eq "/index.html"` | `https://nak.api.br/` (estático) |
+
+Ambas 301, com *preserve query string* ligado (não perde UTM de link antigo).
+
+**Por que duas e não uma:** a primeira tentativa usou `regex_replace`, que dava pra resolver os dois casos numa regra só. A Cloudflare recusou — **`regex_replace` exige plano Business**, e a zona é free. `wildcard_replace` é liberado no free, mas transformaria `/index.html` em `/index` (404). Daí o `index.html` sair por exclusão na primeira regra e ganhar a sua própria.
+
+### D. ~~IndexNow~~ ✅ FEITO 01/08
+Crawler Hints ligado em Caching → Configuration. Avisa Bing e Yandex na hora que uma página muda, em vez de esperar o crawler passar. Ligar implica concordar com os Supplemental Terms da Cloudflare pro recurso e compartilhar a informação de quais URLs mudaram.
 
 ### B. Dois cases curtos demais
 `fretes-consolidado` (693 palavras) e `ml-cancelamentos` (685). Os outros têm de 1.000 a 3.100. Abaixo de ~800 o texto não sustenta long-tail.
@@ -66,7 +78,10 @@ Achado no mesmo pente fino: `?test=1` rodava antes da validação de token e dev
 **Esforço:** médio (precisa de dado real) · **Impacto:** médio
 
 ### C. Barra final redireciona com 307
-`/cases/tray-frete/` → 307. Mesma família do item A, mesma correção.
+`/cases/tray-frete/` → 307. Sobrou: a regra do item A casa por `.html`, e a barra final não tem extensão. Impacto baixo (nada linka com barra), mas fica anotado.
+
+### E. Bing / Yahoo — pendente com ela
+Yahoo não tem índice próprio desde 2009: quem serve é o Bing. Então "aparecer no Yahoo" = aparecer no Bing, que também alimenta o Copilot. **Bing Webmaster Tools** aceita importar do Search Console e dá dado de indexação que não existe de outra forma. Segue como item do `SEO_PLAYBOOK` desde maio.
 
 ---
 
