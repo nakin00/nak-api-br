@@ -53,6 +53,23 @@ Achado no mesmo pente fino: `?test=1` rodava antes da validação de token e dev
 
 ---
 
+## 🔴 P1 — Achados do pente fino de 01/08
+
+### A. URLs `.html` antigas redirecionam com 307, não 301
+**Problema:** `/cases/x.html`, `/index.html`, `/sobre.html` respondem **307** (temporário). O `MELHORIAS` registrava isso como corrigido em 31/05 — não foi, só a URL nova passou a funcionar. 307 faz o Google manter a URL velha no índice e **não transferir autoridade** pra nova. Bate com o que o painel mostra: Googlebot com 601 requisições malsucedidas em 24h num site de 15 páginas.
+**Ação:** Redirect Rule no Cloudflare, `.html` → sem extensão, status **301**. O 307 vem do handler de assets do Worker e não é configurável; regra explícita ganha dele.
+**Esforço:** baixo (1 rule) · **Impacto:** alto — é o que trava a consolidação do que já foi rastreado
+
+### B. Dois cases curtos demais
+`fretes-consolidado` (693 palavras) e `ml-cancelamentos` (685). Os outros têm de 1.000 a 3.100. Abaixo de ~800 o texto não sustenta long-tail.
+**Ação:** ampliar com o que falta nos dois — decisão técnica, o que deu errado, número atualizado.
+**Esforço:** médio (precisa de dado real) · **Impacto:** médio
+
+### C. Barra final redireciona com 307
+`/cases/tray-frete/` → 307. Mesma família do item A, mesma correção.
+
+---
+
 ## 🟠 P2 — Impacto médio, quando der
 
 ### 3. ~~Imagem Open Graph real (1200×630 por case)~~ ✅ FEITO 18/07
@@ -123,6 +140,12 @@ Próximo check: 17/jul (Mês 2). Cadência mensal daqui pra frente.
 | 31/07 | `robots.txt` novo: libera bots que citam, bloqueia os de treino, `Content-Signal` |
 | 31/07 | Schema: `dateModified` real, autor como `Person` com URL, `publisher`, `isPartOf`, `image`, `BreadcrumbList` nos 11 cases |
 | 31/07 | Home: `WebSite` enriquecido + `CollectionPage` listando os 11 cases |
+| 01/08 | Painel Cloudflare destravado (ver `SEO_BASELINE.md`) |
+| 01/08 | `sameAs` ligando GitHub, LinkedIn e Instagram, em schema e link visível |
+| 01/08 | Novo case `tray-frete` |
+| 01/08 | Titles ≤60 e descriptions ≤160 em todas as páginas (tinham regredido em 14 páginas) |
+| 01/08 | `/cases` — índice por área, que antes dava 404 |
+| 01/08 | `sitemap.xml` com `lastmod` real, gerado por `gerar_sitemap.mjs` a partir do git |
 
 ---
 
