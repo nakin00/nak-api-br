@@ -125,6 +125,25 @@ Só faz sentido com 15+ cases. Pagefind ou similar (estático, sem backend).
 
 ---
 
+## 🔵 Subdomínios internos fora do índice (feito 10/08)
+
+**Problema:** a propriedade do GSC é do tipo **Domínio**, então monitora `nak.api.br` E todos os subdomínios. Os apps internos (login-protected) não tinham `robots.txt` — todos serviam o HTML da aplicação no lugar. Google tentava rastrear, batia na barreira de login, reportava **403** e poluía o relatório de indexação com 4 páginas de erro que não têm nada a ver com o site público.
+
+**Resolvido:**
+
+| Subdomínio | Arquitetura | Como | Status |
+|---|---|---|---|
+| status | Worker | rota `/robots.txt` no fetch | ✓ |
+| vendedor | Worker | rota `/robots.txt` no fetch | ✓ |
+| print-pulse | Worker | rota `/robots.txt` no fetch | ✓ (subiu no deploy de outra sessão) |
+| gym | CF Pages | arquivo `robots.txt` na raiz | ✓ |
+| romaneio | CF Pages | arquivo `public/robots.txt` | ✓ |
+| central | CF Pages + **Access** | ✗ — Access intercepta ANTES do Pages, `/robots.txt` nunca chega | pendente |
+
+**Sobre o central:** o Cloudflare Access barra tudo antes do conteúdo, então não dá pra servir `robots.txt` por lá. Duas saídas: (a) criar policy de **Bypass** no Access só pro path `/robots.txt`, ou (b) aceitar — o Access barrando é o comportamento correto de segurança, e o ruído no relatório some com a propriedade "Prefixo de URL" no GSC. Ficamos em (b) por ora; (a) só se o relatório continuar incomodando.
+
+**Regra pra apps futuros em subdomínio:** todo app interno nasce com `robots.txt` = `Disallow: /`. Worker → rota no início do fetch, antes de qualquer auth. Pages → arquivo estático.
+
 ## 📊 Instrumentação (acompanhar, não agir)
 
 ### 11. Cloudflare Web Analytics
