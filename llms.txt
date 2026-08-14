@@ -27,6 +27,7 @@ liberado para treinamento de modelo (ver /robots.txt).
 
 ## Vendas e clientes
 
+- [Lucro real por venda, calculado sozinho 3× por dia](https://nak.api.br/cases/lucratividade): Worker + KV cruzando a nota fiscal, o custo do produto (vindo do hub) e o frete que a transportadora cobrou de verdade, pra calcular lucro e margem por venda. Inclui simulador que lê a proposta comercial e devolve o desconto máximo que ainda fecha na margem alvo.
 - [Nenhum relatório mostra o cliente que está esfriando](https://nak.api.br/cases/crm-reativacao): identificação por query dos clientes recorrentes que pararam de comprar, e um CRM próprio com funil, carteira por vendedora e conversão medida.
 - [O CRM inteiro tem quatro telas](https://nak.api.br/cases/crm-por-dentro): tour pelas telas e a decisão de projeto por trás de cada uma — carteira, ficha do cliente, registro de contato, painel de esforço x conversão.
 - [Cancelamento pago no ML chega no Slack em 5 minutos](https://nak.api.br/cases/ml-cancelamentos): monitoramento da API do Mercado Livre filtrando cancelamentos de pedidos já pagos.

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucro real por venda, calculado sozinho 3× por dia · nak.api.br</title>
+<meta name="description" content="Vender não é lucrar. Worker + KV cruzando nota fiscal, custo do produto e frete real pra mostrar quanto sobra em cada venda. 1.681 NFs, 99,8% com custo resolvido.">
+<meta name="keywords" content="lucro real por venda, margem por nota fiscal, custo de produto tiny erp, dashboard lucratividade ecommerce, calcular margem venda, simulador de desconto margem">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/cases/lucratividade">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="Lucro real por venda, calculado sozinho 3× por dia">
+<meta property="og:description" content="Vender não é lucrar. Cruzando NF + custo do produto + frete real pra saber quanto sobra em cada venda — e quanto dá pra descontar antes de fechar.">
+<meta property="og:url" content="https://nak.api.br/cases/lucratividade">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:image" content="https://nak.api.br/og/lucratividade.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="article:section" content="Financeiro">
+<meta property="article:tag" content="cloudflare-workers">
+<meta property="article:tag" content="kv">
+<meta property="article:tag" content="tiny-erp">
+<meta property="article:tag" content="gemini">
+<meta property="article:tag" content="margem">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lucro real por venda, calculado sozinho 3× por dia">
+<meta name="twitter:description" content="NF + custo do produto + frete real = quanto sobrou de verdade em cada venda. 1.681 NFs processadas, 99,8% com custo resolvido.">
+<meta name="twitter:image" content="https://nak.api.br/og/lucratividade.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Lucro real por venda, calculado sozinho 3× por dia",
+  "description": "Cloudflare Worker + KV cruzando nota fiscal, custo de produto e frete real pra calcular lucro e margem por venda, com simulador de desconto na pré-venda.",
+  "author": { "@type": "Person", "name": "nak" },
+  "publisher": { "@type": "Organization", "name": "nak.api.br" },
+  "datePublished": "2026-08-14",
+  "inLanguage": "pt-BR",
+  "url": "https://nak.api.br/cases/lucratividade",
+  "about": ["Lucratividade", "Margem de contribuição", "Cloudflare Workers", "Tiny ERP"],
+  "keywords": "lucro real, margem, nota fiscal, custo, frete, cloudflare, gemini"
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--danger:#EF4444;--warn:#F59E0B;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--radius:10px;--max:1100px}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+
+.case-hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.case-hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+.breadcrumb{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:24px}
+.category{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.case-hero h1{font-size:42px;font-weight:700;line-height:1.1;margin:0 0 20px;letter-spacing:-.02em}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.tag{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--border);color:var(--muted);border-radius:4px;text-transform:lowercase}
+.lead{color:var(--muted);font-size:17px;max-width:600px;margin:0}
+.running-since{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px;padding:5px 10px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:4px}
+.live-dot-mini{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent-2);animation:pulse-mini 2.2s ease-in-out infinite}
+@keyframes pulse-mini{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* MOCK DO DASHBOARD — fiel às cores do app real */
+.app-mock{background:#0a0d10;border:1px solid #1f262c;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px -20px rgba(0,0,0,.7);font-size:12px}
+.app-mock-top{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #1a2025}
+.app-mock-top .t{font-weight:800;font-size:14px;color:#f4f4f1}
+.app-mock-top .m{font-family:var(--mono);font-size:11px;color:#9aa0a6}
+.app-mock-body{padding:14px}
+.app-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.app-kpi{background:#11161a;border:1px solid #1f262c;border-radius:10px;padding:10px}
+.app-kpi .l{font-size:9px;color:#9aa0a6;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.app-kpi .v{font-size:15px;font-weight:800;color:#f4f4f1}
+.app-kpi .v.pos{color:#28e08f}
+.app-kpi .v.neg{color:#ff6b6b}
+.app-tbl{width:100%;border-collapse:collapse;font-size:10.5px;background:#11161a;border:1px solid #1f262c;border-radius:8px;overflow:hidden}
+.app-tbl th{background:#0f1316;color:#9aa0a6;font-weight:600;text-transform:uppercase;font-size:9px;letter-spacing:.04em;padding:7px 8px;text-align:left}
+.app-tbl td{padding:7px 8px;border-top:1px solid #1a2025;color:#f4f4f1}
+.app-tbl td.neg{color:#ff6b6b}
+.app-tbl td.pos{color:#28e08f}
+.app-sec{font-size:9.5px;font-weight:700;color:#9aa0a6;margin:12px 0 6px;text-transform:uppercase;letter-spacing:.04em}
+.app-mock-note{padding:8px;font-family:var(--mono);font-size:10px;color:#7a8590;text-align:center;background:#0f1316;border-top:1px solid #1a2025;font-style:italic}
+
+.case-section{padding:64px 0;border-bottom:1px solid var(--border)}
+.case-section:last-child{border-bottom:none}
+.label{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.case-section h2{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0 0 24px}
+.case-section p{font-size:16px;color:var(--text);margin:0 0 16px;max-width:760px}
+.case-section ul{font-size:16px;color:var(--text);padding-left:20px;max-width:760px}
+.case-section ul li{margin-bottom:10px}
+.case-section ul li::marker{color:var(--muted)}
+
+.callout{border-left:3px solid var(--accent);background:var(--card);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin:24px 0;max-width:760px}
+.callout p{margin:0;font-style:italic;color:var(--muted)}
+
+.formula{max-width:760px;margin:24px 0;padding:20px 24px;background:#0d1117;border:1px solid var(--border);border-radius:var(--radius);font-family:var(--mono);font-size:14px;line-height:2;color:var(--text);overflow-x:auto}
+.formula .op{color:var(--muted)}
+.formula .res{color:var(--accent-2);font-weight:600}
+
+.flow-grid{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:32px 0;max-width:760px}
+.flow-node{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;flex:1;min-width:110px}
+.flow-node .icon{font-family:var(--mono);font-size:22px;color:var(--accent);margin-bottom:6px}
+.flow-node .name{font-size:13px;font-weight:500}
+.flow-node .sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px}
+.flow-arrow{font-family:var(--mono);color:var(--muted);font-size:18px;flex-shrink:0}
+.flow-note{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--muted);max-width:760px;text-align:center}
+
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;max-width:760px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.kpi .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.kpi .val{font-size:24px;font-weight:600;font-family:var(--mono);color:var(--accent-2);line-height:1}
+.kpi .delta{font-size:11px;color:var(--accent-2);margin-top:8px;font-family:var(--mono)}
+.kpi.alt .val{color:var(--accent)}
+
+.erro-block{max-width:760px;margin:32px 0;padding:24px;background:#0d1117;border:1px solid var(--border);border-radius:var(--radius);border-left:3px solid var(--warn)}
+.erro-block .erro-titulo{font-family:var(--mono);font-size:12px;color:var(--warn);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.erro-block h3{font-size:18px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em;color:var(--text)}
+.erro-block p{font-size:15px;color:var(--muted);margin:0;line-height:1.65}
+.erro-block p strong{color:var(--text);font-weight:500}
+
+footer{padding:48px 0;color:var(--muted);font-size:13px}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--muted)}
+
+@media(max-width:900px){.case-hero-grid{grid-template-columns:1fr;gap:40px}.dash-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.case-hero h1{font-size:32px}.case-section{padding:48px 0}.case-section h2{font-size:24px}.flow-grid{flex-direction:column}.flow-arrow{transform:rotate(90deg)}nav .links{gap:16px}.app-kpis{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <a href="../" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <div class="links">
+      <a href="../#cases">Cases</a>
+      <a href="../#filosofia">Filosofia</a>
+      <a href="../#stack">Stack</a>
+    </div>
+  </div>
+</nav>
+
+<header class="case-hero">
+  <div class="container">
+    <div class="case-hero-grid">
+      <div>
+        <div class="breadcrumb"><a href="../">~</a> / cases / lucratividade</div>
+        <div class="category">Financeiro · Dados</div>
+        <h1>Lucro real por venda, calculado sozinho 3× por dia</h1>
+        <div class="tags">
+          <span class="tag">cloudflare-workers</span>
+          <span class="tag">kv</span>
+          <span class="tag">tiny-erp</span>
+          <span class="tag">gemini</span>
+          <span class="tag">margem</span>
+        </div>
+        <div class="running-since"><span class="live-dot-mini"></span>em produção desde jun/2026</div>
+        <p class="lead">Vender não é lucrar. Faltava o número que importa: quanto sobrou em <em>cada</em> venda, depois do custo do produto, do frete que a transportadora cobrou de verdade e dos percentuais que ninguém lembra na hora de dar desconto.</p>
+      </div>
+      <div>
+        <div class="app-mock">
+          <div class="app-mock-top">
+            <span class="t">Lucratividade</span>
+            <span class="m">‹ julho ›</span>
+          </div>
+          <div class="app-mock-body">
+            <div class="app-kpis">
+              <div class="app-kpi"><div class="l">Receita</div><div class="v">R$ 412.8k</div></div>
+              <div class="app-kpi"><div class="l">Lucro</div><div class="v pos">R$ 47.3k</div></div>
+              <div class="app-kpi"><div class="l">Margem</div><div class="v pos">11,5%</div></div>
+            </div>
+            <div class="app-sec">Por canal</div>
+            <table class="app-tbl">
+              <thead><tr><th>Canal</th><th>Receita</th><th>% frete</th><th>Margem</th></tr></thead>
+              <tbody>
+                <tr><td>Loja</td><td>R$ 268.1k</td><td>7,4%</td><td class="pos">13,2%</td></tr>
+                <tr><td>Vendedor</td><td>R$ 144.7k</td><td>4,1%</td><td class="pos">8,4%</td></tr>
+              </tbody>
+            </table>
+            <div class="app-sec">NFs do mês</div>
+            <table class="app-tbl">
+              <thead><tr><th>NF</th><th>Receita</th><th>Frete</th><th>Lucro</th><th>Margem</th></tr></thead>
+              <tbody>
+                <tr><td>04812</td><td>R$ 1.240</td><td>R$ 89</td><td class="pos">R$ 198</td><td class="pos">16,0%</td></tr>
+                <tr><td>04813</td><td>R$ 386</td><td>R$ 112</td><td class="neg">−R$ 41</td><td class="neg">−10,6%</td></tr>
+                <tr><td>04814</td><td>R$ 2.905</td><td>R$ 143</td><td class="pos">R$ 402</td><td class="pos">13,8%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="app-mock-note">— valores e números de NF fictícios —</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">01 · Dor operacional</div>
+    <h2>Faturamento a gente vê. Lucro por venda, não.</h2>
+    <p>O ERP mostra quanto vendeu. Mostra o total do mês, o ranking de produto, o faturamento por canal. O que ele não mostra é o número que decide o negócio: <strong>quanto sobrou em cada venda</strong>.</p>
+    <p>Pra chegar nesse número faltavam três peças que moram em lugares diferentes: o <strong>custo do produto</strong> (no cadastro), o <strong>frete que a transportadora cobrou de verdade</strong> (na fatura, que chega dias depois) e os <strong>percentuais que incidem sobre a receita</strong> — imposto, anúncios, custo fixo. Juntar isso na mão, nota por nota, com centenas de notas por mês, é inviável.</p>
+    <p>Sem esse cruzamento, a operação inteira funciona no escuro: vende-se achando que se ganha, dá-se desconto sem saber onde é o chão, e o prejuízo só aparece no fechamento — quando já aconteceu.</p>
+    <div class="callout">
+      <p>"Não dava pra ver lucro ou prejuízo por venda. E o que não se vê, não se corrige."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">02 · Impacto do problema</div>
+    <h2>Decisão no escuro custa nos dois sentidos</h2>
+    <ul>
+      <li><strong>Venda no prejuízo passando batida</strong> — pedido pequeno com frete caro pode fechar negativo, e sem cálculo por NF ninguém percebe.</li>
+      <li><strong>Desconto no chute</strong> — sem saber o piso, ou se dá desconto demais e some a margem, ou de menos e perde o negócio.</li>
+      <li><strong>Sem visão por canal</strong> — impossível saber qual canal de venda realmente paga a conta.</li>
+      <li><strong>Sem visão por região</strong> — o frete muda tudo conforme o destino, e isso não aparecia em lugar nenhum.</li>
+      <li><strong>Correção sempre tardia</strong> — o problema só aparecia no fechamento do mês, quando não dá mais pra agir.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">03 · Solução criada</div>
+    <h2>Um Worker que junta o que estava espalhado</h2>
+    <p>Um Cloudflare Worker com KV roda três vezes por dia e monta a conta de cada nota fiscal. A parte interessante é que ele <strong>não recalcula nada</strong> — ele busca cada número na fonte que já é autoridade daquele dado:</p>
+    <ul>
+      <li><strong>A nota</strong> vem do ERP: receita, desconto, itens.</li>
+      <li><strong>O custo do produto</strong> vem do <a href="hub-de-dados">hub de dados</a> — o mesmo arquivo que criei pra tirar histórico de dentro do ERP. Consulta por SKU, e o hub é grátis, então custo não tem orçamento pra estourar.</li>
+      <li><strong>O frete real</strong> vem do <a href="fretes-consolidado">consolidado de fretes</a> — o valor que a transportadora efetivamente cobrou, não a estimativa da cotação.</li>
+      <li><strong>Os percentuais</strong> (imposto, anúncios, custo fixo) ficam num único registro de configuração. São política, não fato da nota — mudou a regra, a conta inteira acompanha sem reprocessar nada.</li>
+    </ul>
+    <p>A conta que sai:</p>
+    <div class="formula">receita <span class="op">=</span> produtos <span class="op">+</span> frete cobrado <span class="op">−</span> desconto<br>
+<span class="res">lucro</span> <span class="op">=</span> receita <span class="op">−</span> custo do produto <span class="op">−</span> frete real <span class="op">−</span> imposto <span class="op">−</span> ads <span class="op">−</span> custo fixo</div>
+    <p>Os três horários do cron não são iguais, e isso foi decisão consciente: a passada <strong>completa</strong> roda de madrugada, porque é a única que consulta o ERP e não pode competir com as automações da operação. As outras duas só resolvem pendência de custo e frete — não tocam no ERP, então rodam tranquilas no horário comercial.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">04 · Como funciona</div>
+    <h2>Cada número vindo de quem é dono dele</h2>
+    <div class="flow-grid">
+      <div class="flow-node">
+        <div class="icon">⊞</div>
+        <div class="name">ERP</div>
+        <div class="sub">notas do dia</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">🗄</div>
+        <div class="name">Hub</div>
+        <div class="sub">custo por SKU</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">🚚</div>
+        <div class="name">Fretes</div>
+        <div class="sub">valor real</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">🧮</div>
+        <div class="name">Worker</div>
+        <div class="sub">monta a conta</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">📊</div>
+        <div class="name">Painel</div>
+        <div class="sub">NF · canal · empresa</div>
+      </div>
+    </div>
+    <p class="flow-note">passada completa de madrugada (toca o ERP) · duas resoluções no horário comercial (só hub e fretes)</p>
+    <p>Nota que chega sem o frete conciliado não fica travada esperando: ela entra com <strong>lucro provisório</strong> e volta pra fila. Quando a fatura da transportadora aparece, a conta se completa sozinha.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">05 · O outro lado da conta</div>
+    <h2>Descobrir o prejuízo depois não impede o prejuízo</h2>
+    <p>O painel resolvia o diagnóstico, mas sempre em retrospecto. O desconto, porém, é decidido <em>antes</em> — na proposta, com o cliente esperando resposta. Faltava a mesma conta rodando na direção contrária.</p>
+    <p>Daí saiu o simulador: <strong>cola o print ou o PDF da proposta</strong> (Ctrl+V, arrastar ou escolher arquivo) e o Gemini extrai os itens — SKU, quantidade, preço unitário. O custo vem do mesmo hub, o frete você informa, e ele devolve a margem daquela venda <strong>e o desconto máximo</strong> que ainda fecha na margem alvo:</p>
+    <div class="formula">receita mínima <span class="op">=</span> (custo <span class="op">+</span> frete) <span class="op">÷</span> (1 <span class="op">−</span> %variáveis <span class="op">−</span> margem alvo)<br>
+<span class="res">desconto máximo</span> <span class="op">=</span> receita da proposta <span class="op">−</span> receita mínima</div>
+    <p>Dois cuidados que o código toma e que valem mais que a fórmula. Quando imposto, anúncios e custo fixo somados já comem a margem alvo, o denominador zera — e aí <strong>não existe preço que resolva</strong>. A tela diz isso, em vez de cuspir um número gigante que enganaria quem está negociando. E ele confere a soma dos itens lidos contra o total declarado na proposta: se não bater, avisa em vez de calcular em cima de leitura errada.</p>
+    <p>O prompt do Gemini também tem uma regra explícita: <strong>não extrair nenhum dado do cliente</strong>. Nome, CNPJ, endereço, telefone e e-mail não voltam da leitura. O simulador só precisa dos itens, então é só isso que ele pede. Não grava nada e não escreve no ERP.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">06 · Resultado</div>
+    <h2>Prejuízo aparece no dia seguinte, não no fechamento</h2>
+    <div class="dash-grid">
+      <div class="kpi alt">
+        <div class="lbl">NFs processadas</div>
+        <div class="val">1.681</div>
+        <div class="delta">desde jun/2026</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Custo resolvido</div>
+        <div class="val">99,8%</div>
+        <div class="delta">3 SKUs sem custo, de 1.681</div>
+      </div>
+      <div class="kpi alt">
+        <div class="lbl">Volume médio</div>
+        <div class="val">~43</div>
+        <div class="delta">notas por dia útil</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Custo mensal</div>
+        <div class="val">~R$ 30</div>
+        <div class="delta">Worker + KV</div>
+      </div>
+    </div>
+    <ul>
+      <li><strong>Prejuízo com nome e sobrenome:</strong> dá pra abrir a nota específica que fechou negativa e entender por quê — normalmente frete alto em pedido pequeno.</li>
+      <li><strong>Comparação por canal e por região:</strong> onde a margem se sustenta e onde o frete come a venda deixou de ser suposição.</li>
+      <li><strong>Ajuste de margem com base em dado</strong>, não em sensação — inclusive pra repensar preço e política de frete grátis.</li>
+      <li><strong>Desconto com piso conhecido:</strong> o vendedor sabe até onde pode ir antes de fechar, não depois.</li>
+      <li>Os <strong>99,8% de custo resolvido</strong> só existem porque o hub já tinha o cadastro de produto arquivado e consultável — um projeto destravou o outro.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">07 · Erros e aprendizados</div>
+    <h2>Tudo que quebrou rodando</h2>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 1 · a fila que nunca andava</div>
+      <h3>Notas que jamais conciliam travavam todas as outras</h3>
+      <p>Algumas notas nunca recebem cobrança de frete da transportadora — e ficavam eternamente pendentes no começo da fila. Como a varredura sempre começava do início, ela gastava o tempo todo nessas mesmas notas e <strong>os meses seguintes nunca eram alcançados</strong>. <strong>Fix:</strong> cursor persistente. A varredura avança sempre, dá a volta e recomeça — então toda nota pendente é re-tentada periodicamente, mas nenhuma trava a fila.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 2 · uma fase comendo a execução inteira</div>
+      <h3>O custo era barato, e por isso engolia todo o tempo</h3>
+      <p>Resolver custo consome tempo mas não consome orçamento (o hub é meu, é grátis). Resolver frete consome os dois. Sem separar, a fase de custo usava a execução inteira e <strong>o frete nunca era resolvido</strong> — o painel ficava cheio de lucro provisório pra sempre. <strong>Fix:</strong> dividir o tempo pela metade entre as duas fases. Aprendizado: <strong>quando um recurso é grátis, ele tende a consumir o que é escasso — no caso, o tempo de execução.</strong></p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 3 · 4 segundos por nota</div>
+      <h3>Consultar uma a uma era caro pelo lado errado</h3>
+      <p>Cada consulta de frete levava cerca de 4 segundos — não por causa da rede, mas porque a planilha do outro lado <strong>relê a aba inteira a cada requisição</strong>. Com dezenas de notas pendentes, a janela de execução acabava antes da metade. <strong>Fix:</strong> juntar as pendentes e consultar em lote — uma leitura da planilha resolve dezenas de notas. Aprendizado: antes de otimizar o seu lado, entenda o que a chamada custa <strong>do outro lado</strong>.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 4 · o frete que existia com outro nome</div>
+      <h3>Notas conciliadas por XML ficavam pendentes pra sempre</h3>
+      <p>O frete real chega por dois caminhos: cobrança direta da transportadora ou XML do conhecimento de transporte. O código só olhava o primeiro campo — então toda nota conciliada pelo XML <strong>parecia não ter custo de frete</strong> e voltava pra fila eternamente. <strong>Fix:</strong> fallback pro segundo campo. Aprendizado: quando um dado tem mais de uma origem legítima, tratar só a principal cria uma fila invisível de casos que nunca fecham.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 5 · o modelo que foi aposentado sem avisar</div>
+      <h3>A leitura de proposta parou do nada</h3>
+      <p>O simulador usava uma versão fixa do modelo do Gemini. Em agosto ela foi aposentada para chaves novas e a leitura começou a responder <em>"model is no longer available"</em>. <strong>Fix:</strong> usar o alias que sempre aponta pra versão corrente em vez de fixar o número da versão. Aprendizado: <strong>fixar versão de modelo de IA protege de mudança de comportamento, mas expõe a ser desligado.</strong> Escolha qual dos dois riscos você prefere — não dá pra fugir dos dois.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 6 · o código fiscal virando código de produto</div>
+      <h3>A IA lia o número de baixo da coluna</h3>
+      <p>Na proposta, a coluna vem como "SKU | NCM" — com o código do produto em cima e o código fiscal embaixo. O Gemini às vezes pegava o de baixo, e aí o custo não era encontrado pra nenhum item. <strong>Fix:</strong> instrução explícita no prompt descrevendo o formato do código fiscal e dizendo que ele nunca é o SKU. Mais um fallback: se o código não existe no hub, procura o produto pelo nome — e a tela sinaliza que aquele custo veio por aproximação, em vez de fingir precisão.</p>
+    </div>
+
+    <p>O fio que costura os seis: <strong>nenhum apareceu no papel</strong>. Fila travada, fase que engole a outra, modelo aposentado — tudo isso só se revela com o sistema rodando de verdade, com dado de verdade. Por isso ciclo curto: sobe, roda, quebra, corrige.</p>
+  </div>
+</section>
+
+<section class="case-section" style="background:#0a0e13">
+  <div class="container">
+    <div class="label">Cases relacionados</div>
+    <h2>Os projetos que este aqui usa</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <a href="hub-de-dados" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Infra · fonte do custo</div>
+        <div style="font-size:16px;font-weight:500">R$ 17 mil por ano a menos no ERP →</div>
+      </a>
+      <a href="fretes-consolidado" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Financeiro · fonte do frete</div>
+        <div style="font-size:16px;font-weight:500">Custo real de frete por NF →</div>
+      </a>
+      <a href="nf-emissao-automatica" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · origem das notas</div>
+        <div style="font-size:16px;font-weight:500">Bot fazendo a atividade principal de uma pessoa →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container row">
+    <div><strong style="color:var(--text);">nak.api.br</strong> · <a href="../">voltar pro laboratório</a></div>
+    <div><a href="mailto:labs@nak.api.br">labs@nak.api.br</a> · Caso documentado em 2026</div>
+  </div>
+</footer>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c48dfb70ce8140ffa8ad30637454ad88"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
