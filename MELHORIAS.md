@@ -8,7 +8,43 @@ Regra: item só sai daqui quando FEITO e VALIDADO, ou quando decidirmos conscien
 
 ## 🔴 P0 — Bloqueio ativo (só resolve no painel Cloudflare)
 
-### 0. ~~O site é invisível pra IA de busca~~ ✅ RESOLVIDO 01/08
+### 00. ~~O Googlebot está tomando 403~~ ✅ RESOLVIDO 17/08, no mesmo dia em que foi achado
+
+`Training` saiu de `Block` (categoria) pra `Allow`, e o bloqueio de treino passou a ser lista por bot: GPTBot, ClaudeBot, Amazonbot, Bytespider, CCBot, Claude-User, Meta-ExternalAgent. Googlebot, BingBot e Applebot liberados. Confirmado pelo Testar URL ao vivo do GSC às 14:48 ("O URL está disponível para o Google") e pelo sitemap, que voltou a ser lido: 16 páginas contra as 5 de maio. Tentativa anterior por regra WAF `Skip` **não funciona** — o ruleset de Bot Management não é pulável; detalhe e prova no `SEO_BASELINE.md`.
+
+**Fica como manutenção recorrente (novo, entra no check mensal):** a lista não cobre bot novo. Hoje seguem liberados, categoria "AI Crawler", nenhum deles no `robots.txt`: `Anchor Browser`, `Cloudflare Crawler`, `FacebookBot`, `Google-CloudVertexBot`, `Novellum AI Crawl`, `PetalBot`, `ProRataInc`, `TikTok Spider`, `Timpibot`. Decidir quais entram no bloqueio.
+
+**Divergência a resolver:** `Claude-User` bloqueado no painel, `Allow` no `robots.txt`.
+
+<details><summary>Diagnóstico original (mantido pro histórico)</summary>
+
+### 00. O Googlebot está tomando 403 — desde ~04/08
+**Descoberto em 17/08/2026 no check do Mês 3**, pela API do Search Console (`.tools/gsc.py`).
+
+Cinco URLs, incluindo a **home**, voltam da inspeção com `pageFetchState: ACCESS_FORBIDDEN` e último rastreio de hoje. `robotsTxtState: ALLOWED` — o robots.txt do repo está certo, quem devolve 403 é o servidor, pro IP verificado do Google. Impressões caíram de 48 pra 24 em 28 dias; o site está saindo do índice.
+
+**Causa confirmada no mesmo dia**, em Security → Events: a regra **`Block AI training crawlers`** (ruleset "Cloudflare Bot Management rules for all plans") bloqueando `66.249.68.4`, **AS15169 Google LLC**, UA `Googlebot/2.1`, host `nak.api.br`, path `/`, às 04:02:50 BRT — o mesmo carimbo que o GSC devolveu como `lastCrawlTime`.
+
+Em AI Crawl Control → Security, o toggle "Block Crawler" está **ligado pra Googlebot E pra BingBot** — os dois na categoria "Search Engine Crawler". O `Training = Block` de 01/08 levou junto os dois buscadores. O Baidu, mesma categoria, ficou liberado: não foi decisão, foi a categorização da Cloudflare.
+
+O custo é maior que o Google: o Bing alimenta Yahoo e Copilot, que esta mesma lista tratava como canal a perseguir (item E).
+
+**Ação (AI Crawl Control → Security, toggle "Block Crawler"):**
+- [ ] **Googlebot** → desligar o bloqueio
+- [ ] **BingBot** → desligar o bloqueio
+- [ ] **Applebot** → desligar. É "AI Search", mesma categoria de OAI-SearchBot e PerplexityBot que já estão liberados; o `robots.txt` do repo só barra `Applebot-Extended`, que é o de treino. Hoje painel e repo se contradizem.
+- [ ] **Claude-User** → decidir. O `robots.txt` do repo diz `Allow`, o painel bloqueia. A Cloudflare classifica como "AI Crawler", não como assistente — liberar é discordar da categorização dela de propósito.
+- [ ] Manter bloqueados: GPTBot, ClaudeBot, CCBot, Bytespider, Amazonbot, Meta-ExternalAgent (regra da casa)
+- [ ] Depois: **Testar URL ativo** no GSC (fetch novo, único jeito de confirmar de fora)
+- [ ] Só com 200 confirmado: reenviar sitemap e pedir indexação
+
+**Esforço:** baixo (2 a 4 toggles) · **Impacto:** alto — sem isso não existe SEO, e o Mês 6 (17/11, decisão de virar case) chega sem dado válido.
+
+**Regra que fica desta:** toda mudança em política de bot precisa de uma conferência da lista inteira de crawlers depois de salvar, não só dos que a mudança pretendia atingir. A tela AI Crawl Control → Security mostra os 33 numa página — é uma leitura de 30 segundos que teria pego isso em 01/08.
+
+</details>
+
+### 0. ~~O site é invisível pra IA de busca~~ ✅ RESOLVIDO 01/08 — mas ver item 00
 Destravado no painel: `Training = Block` / `Search` e `Agent` = Allow, regra legada "Block AI bots" desligada e "Managed robots.txt" desligado. Bots de busca passaram a 200, treino segue bloqueado, internos seguem atrás de login. Detalhe do que mudou e o estado verificado estão no `SEO_BASELINE.md`. **Volta na agenda em 15/09/2026**, quando a Cloudflare passa a bloquear crawlers de propósito misto (GPTBot, ClaudeBot) junto com os de treino.
 
 <details><summary>Diagnóstico original (mantido pro histórico)</summary>
@@ -40,11 +76,18 @@ Achado no mesmo pente fino: `?test=1` rodava antes da validação de token e dev
 
 ### 1. Backlinks externos (o gargalo real do SEO agora)
 **Problema:** site rankeia na 1ª página mas pra queries irrelevantes ("na api", "nacl web plug in"). Google não tem sinais externos pra saber do que o site trata. 0 backlinks conhecidos.
-**Ação:**
-- [ ] 1 post no LinkedIn linkando pra um case específico (não a home) — texto curto contando a dor real
-- [ ] Repetir a cada case novo publicado (vira rotina da cadência quinzenal)
+**Ação:** os 6 posts já estão escritos e datados em [`LINKEDIN.md`](LINKEDIN.md) — um por prompt fixo do `SEO_BASELINE.md`, cada um linkando o case correspondente. Só publicar.
+- [ ] Ajustar headline + seção "Sobre" do perfil (texto pronto no `LINKEDIN.md`, igual ao `/sobre` e ao `llms.txt` de propósito)
+- [ ] Post 1 — NF rejeitada SEFAZ (18/08) → `/cases/nf-auto-correcao`
+- [ ] Post 2 — emissão automática de NF (01/09) → `/cases/nf-emissao-automatica`
+- [ ] Post 3 — custo de armazenamento do ERP (15/09) → `/cases/hub-de-dados`
+- [ ] Post 4 — custo real de frete por NF (29/09) → `/cases/fretes-consolidado`
+- [ ] Post 5 — impressão de separação (13/10) → `/cases/motoboy-impressao`
+- [ ] Post 6 — coletor de código de barras (27/10) → `/cases/romaneio-scanner`
+- [ ] Anotar a data de cada publicação em `SEO_BASELINE.md` → "Experimentos registrados"
 - [ ] Bio do LinkedIn e Instagram com link (feito, manter)
 **Esforço:** baixo (30min por post) · **Impacto:** alto — é o que falta pro Google entender o nicho
+**Nota sobre GEO:** link de LinkedIn é `nofollow`, então isso não é backlink de autoridade. O valor é outro: o Bing indexa LinkedIn em horas e alimenta a busca do ChatGPT, e o domínio escrito em texto puro no meio de conteúdo do nicho vira menção corroborante — que é o que falta pra LLM citar o site.
 **Meta mensurável:** no check Mês 2 (17/jul), ver se as queries começam a incluir termos do nicho (tiny, apps script, whatsapp, nf)
 
 ### 2. Publicar ML Etiquetas (case do dia 21/06 — em andamento)
@@ -151,8 +194,12 @@ Instalado em 15/06 (snippet em todas as páginas). Ainda acumulando dados.
 - [ ] Olhar primeiro relatório de origens no check Mês 2 (17/jul) — ver se UTMs de Insta/LinkedIn aparecem
 
 ### 12. GSC — cadência mensal
-Próximo check: 17/jul (Mês 2). Cadência mensal daqui pra frente.
-- Pergunta-chave do Mês 2: as queries mudaram de aleatórias pra termos do nicho? (depende do P1)
+Mês 2 (17/jul) **não foi feito**. Mês 3 feito em 17/08 — e foi ele que achou o P0 item 00, quase 2 semanas depois do bloqueio começar. Check pulado custa caro.
+
+Desde 17/08 a leitura é por API (`.tools/gsc.py`), não por painel: um comando devolve desempenho, sitemap e o estado de indexação das 16 URLs.
+
+- Próximo check: **17/set (Mês 4)** — e um extra assim que o 403 for corrigido, pra medir a recuperação
+- Pergunta do Mês 4: com o rastreio destravado, as queries saem de ruído pra termos do nicho?
 
 ---
 

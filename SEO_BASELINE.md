@@ -31,16 +31,16 @@ GSC > **Desempenho**:
 - [ ] # de cliques (meta: 0-3 nessa fase)
 - [ ] Queries de impressão — anotar 5 mais frequentes (vai dizer o que Google entendeu sobre o site)
 
-### Mês 3 (até 17/ago/2026)
+### Mês 3 (até 17/ago/2026) — FEITO em 17/08/2026
 **Objetivo:** primeira tração ou diagnóstico precoce.
 
-- [ ] Impressões mensais: __ (anotar)
-- [ ] Cliques mensais: __
-- [ ] Páginas indexadas: __ (deveriam ser 100% das submetidas)
-- [ ] Posição média das 10 queries mais frequentes: __
-- [ ] Existe alguma query com posição < 20? (significa que está concorrendo, mesmo que ainda não converte)
+- [x] Impressões mensais: **24** (28d, 18/07 a 14/08). Os 28d anteriores tinham 48 — caiu pela metade.
+- [x] Cliques mensais: **1** — o primeiro clique da história do site, em 24/07, no `gym-app` (posição 5).
+- [x] Páginas indexadas: **3 de 16**. Deveriam ser 16.
+- [x] Posição média: **15.0** (era 31.7 nos 28d anteriores). Melhorou por sobrevivência: as páginas que ranqueavam mal sumiram do índice.
+- [x] Query com posição < 20? **Não.** As 4 queries do período estão entre 47 e 51, e são ruído ("script expansão noturno", "nando script").
 
-**Se em 3 meses tudo ainda for zero:** revisar conteúdo. Provavelmente os termos escolhidos não têm volume de busca, ou o site não tem autoridade suficiente pra concorrer com o que já existe.
+**Resposta à pergunta do Mês 3:** o diagnóstico previsto — "revisar conteúdo, os termos não têm volume" — **não pode ser feito**, porque a medição está contaminada. O site está devolvendo **403 pro Googlebot** desde o começo de agosto. Antes de concluir qualquer coisa sobre conteúdo ou nicho, é preciso destravar o rastreamento e medir de novo. Ver a seção abaixo.
 
 ### Mês 6 (até 17/nov/2026) — momento da decisão
 **Aqui decidimos se SEO vira case.**
@@ -83,6 +83,20 @@ Cada ação manual que possa influenciar SEO vai aqui. Permite medir efeito real
 - **2026-06-07:** Primeiras 8 impressões em 7 dias. Top query "nacl web plug in" — completamente irrelevante pro site. Google testa em quais termos posicionar conteúdo novo enquanto não tem sinais de autoridade. Termos relevantes (Tiny ERP, Apps Script, Baileys, etc) ainda não aparecem porque o site não tem backlinks nem histórico. Lição: nas primeiras semanas, queries do GSC são RUÍDO — não trate como direcionamento de conteúdo.
 - **2026-06-14:** Posição média caiu drasticamente em 7 dias (23.1 → 12.8). Sinal positivo de que conteúdo está ganhando relevância pra alguns termos. Mas Google ainda demora ~2 semanas pra indexar URL nova publicada — mesmo com sitemap atualizado, ele só busca o sitemap em ciclos próprios. Solicitação manual de indexação acelera. Bing re-processou o sitemap automaticamente quando detectou aumento de URLs (de 5 pra 7) — comportamento bom, não precisou re-submeter manualmente.
 - **2026-06-17:** 2 cases na 1ª página do Google (atendimento posição 7.0, ml-cancelamentos posição 8.9). Sinal de que estrutura SEO e conteúdo estão funcionando — mas zero cliques porque queries que ranquearam são irrelevantes ("na api", "nacl web plug in"). Lição: rankear não é o objetivo final — rankear PRA TERMOS QUE IMPORTAM é. Pra fazer isso virar tráfego real, o site precisa de backlinks externos (LinkedIn, GitHub, etc) que sinalizem pra Google quais termos relevantes do nicho associar ao domínio. Cadastrar no Search Console e esperar não basta — Google precisa de pistas externas sobre o que o site é.
+
+- **2026-08-17:** a exceção que o painel não deixa fazer. A ação `Skip` do WAF parece o instrumento certo pra abrir buraco numa regra gerenciada, e a lista de componentes puláveis dá a impressão de cobrir tudo — "All managed rules" soa exaustivo. Não é: o ruleset de Bot Management fica de fora. O sinal que fecha a questão é o **mesmo Ray ID** logado duas vezes, `Skip` e `Block`, na mesma requisição. Sem olhar o Ray ID, a leitura natural seria "são dois requests diferentes, o skip está funcionando pra um deles" — e a conclusão sairia errada. **Quando dois eventos de segurança discordam, o Ray ID diz se é a mesma requisição ou não.** Foi ele que separou "não funcionou" de "funcionou parcialmente".
+
+- **2026-08-17:** categoria protege, lista precisa de manutenção. A saída foi trocar `Training = Block` (categoria) por bloqueio bot a bot. Resolve, mas muda a natureza do controle: a categoria cobria automaticamente crawler que a Cloudflare passasse a reconhecer; a lista cobre só o que está escrito nela. Sobraram 9 "AI Crawler" liberados no dia da troca. **Configuração que vira lista vira item de revisão recorrente** — se não entrar na cadência do check mensal, ela apodrece sozinha.
+
+- **2026-08-17 (Mês 3):** o mesmo erro de leitura de maio, de novo, e desta vez mais caro. Em 24/05 concluímos que o Google "priorizava conteúdo mais rico" — era redirect 307. Em 10/08 vimos 403 no relatório de indexação e concluímos que era ruído dos subdomínios internos sem `robots.txt` — corrigimos os subdomínios, o que estava certo, e **paramos de olhar**. O 403 do site público estava no meio, escondido atrás de uma explicação plausível. Lição, agora com duas ocorrências: **explicação plausível encerra a investigação cedo demais.** Quando o GSC reporta um estado técnico, a pergunta certa não é "o que explica isso?", é "isso explica *tudo* que estou vendo?". Quatro páginas de subdomínio não explicavam a home no relatório.
+
+- **2026-08-17:** a categoria de terceiro decidindo a sua política. A regra da casa é uma frase clara — "pode citar, não pode treinar" — e o painel só oferece baldes prontos ("Search", "Agent", "Training") montados pela Cloudflare. Marcar `Training = Block` parecia ser a tradução exata da frase. Não era: o balde "treino" da Cloudflare inclui o Googlebot e o BingBot, e exclui o Baidu. **Quando a política é escrita numa frase e aplicada num toggle de terceiro, o que vale é a definição do terceiro** — e ela muda sem avisar (a própria Cloudflare já tem mudança marcada pra 15/09). O único jeito de saber o que ficou valendo é conferir bot a bot depois de salvar.
+
+- **2026-08-17:** o teste que se auto-aprova. A verificação de 01/08 checou os bots *que queríamos liberar* (OAI-SearchBot, PerplexityBot, Claude-SearchBot) e deu 200 em todos. Não checou se a mudança tinha quebrado quem já funcionava. E não tinha como checar: `curl -A Googlebot` responde 200 de qualquer máquina, porque a Cloudflare valida bot por IP. O único instrumento que enxerga a verdade é o próprio Search Console, do lado de dentro. **Mudança em regra de bot só está verificada depois de um ciclo de rastreio do Google, não no minuto seguinte ao deploy.**
+
+- **2026-08-17:** o número que melhora pelo motivo errado. Posição média foi de 31.7 pra 15.0 e, num relatório mensal, isso passa como vitória. Foi o contrário: as páginas que ranqueavam em posição 40-100 pararam de ser rastreadas e sumiram da média. Sobrou o que já estava bem posicionado. **Média sobre um conjunto que encolheu não é comparável com a média anterior** — a checagem que pega isso é olhar impressões (caíram pela metade) e o tamanho do conjunto (16 URLs, 3 indexadas), não a média sozinha.
+
+- **2026-08-16 (plano de menção externa):** escritos os 6 posts de LinkedIn em `LINKEDIN.md`, um por prompt fixo da tabela GEO, cada um linkando o case correspondente. Publicação quinzenal de 18/08 a 27/10. Motivo de existir: no marco zero de 31/07 a busca por `"nak.api.br"` retornava zero resultados — o domínio não tem nenhuma menção externa, então nem o Google sabe de que nicho ele é, nem LLM tem corroboração pra citar. Registrar aqui a data de cada post publicado, senão não dá pra atribuir efeito. Efeito esperado do post 1 isolado: nenhum.
 
 ## GEO — marco zero (2026-07-31)
 
@@ -139,6 +153,110 @@ Ordem importou: `Training = Block` foi salvo **antes** de desligar o legado, pra
 
 **Pendência com data:** em **15/09/2026** a Cloudflare passa a incluir crawlers de propósito misto (usados pra busca *e* treino, caso do GPTBot e do ClaudeBot) no bloqueio de treino. A preferência da conta está marcada como "serão bloqueados" — coerente com a regra da casa, mas é uma perda de alcance programada. Revisitar nessa data e decidir conscientemente.
 
+## 🔴 Achado do Mês 3 (17/08/2026): Googlebot está tomando 403
+
+O check do Mês 3 não encontrou um problema de conteúdo. Encontrou um problema de acesso.
+
+**O que a API do Search Console devolve pra home:**
+
+```
+coverageState : "Bloqueada devido a acesso proibido (403)"
+pageFetchState: ACCESS_FORBIDDEN
+robotsTxtState: ALLOWED
+lastCrawlTime : 2026-08-17T07:02:50Z
+crawledAs     : MOBILE
+```
+
+`robotsTxtState: ALLOWED` é a parte que importa: **não é o robots.txt**. O robots.txt do repositório está correto e libera o Googlebot. É o servidor devolvendo 403 pro IP verificado do Google, na hora do rastreio — hoje de manhã, inclusive.
+
+**Estado das 16 URLs do sitemap:**
+
+| Estado | Qtd | Quais |
+|---|---|---|
+| Indexada | 3 | nf-auto-correcao, nf-emissao-automatica, ml-cancelamentos |
+| **403 no rastreio** | 5 | **home**, atendimento-insights, gym-app, motoboy-impressao, fretes-consolidado |
+| "O Google não reconhece o URL" | 8 | cases, sobre, lucratividade, crm-por-dentro, crm-reativacao, hub-de-dados, romaneio-scanner, tray-frete |
+
+As 3 que ainda constam como indexadas têm último rastreio em 13/07 e 23/07 — ou seja, são as que o Google conseguiu ler **antes** do bloqueio começar. Elas caem do índice na próxima tentativa.
+
+**Quando começou.** Impressões por dia mostram o corte:
+
+- 18/07 a 31/07 (14 dias): **17 impressões**
+- 01/08 a 06/08 (6 dias): **5 impressões**
+- 07/08 a 14/08 (8 dias): **2 impressões**
+
+### Causa confirmada no painel (17/08/2026)
+
+Security → Analytics → Events, evento das 04:02:50 BRT de 17/08:
+
+| campo | valor |
+|---|---|
+| Ruleset | Cloudflare Bot Management rules for all plans |
+| **Rule** | **Block AI training crawlers** (`76c5c5f15fdc46bcb5d8807cc338cd69`) |
+| Action | Block |
+| IP / ASN | `66.249.68.4` · **AS15169 Google LLC** |
+| Host / Path | nak.api.br `/` |
+| User agent | `…(compatible; Googlebot/2.1; +http://www.google.com/bot.html)` |
+
+04:02:50 BRT = 07:02:50 UTC, que é exatamente o `lastCrawlTime` que a API do GSC devolveu pra home. **É o mesmo evento visto dos dois lados** — não sobra dúvida sobre a causa.
+
+A tela AI Crawl Control → Security mostra por quê:
+
+| crawler | categoria da Cloudflare | estado em 17/08 |
+|---|---|---|
+| **Googlebot** | Search Engine Crawler | 🔴 **bloqueado** |
+| **BingBot** | Search Engine Crawler | 🔴 **bloqueado** |
+| Applebot | AI Search | 🔴 bloqueado |
+| Claude-User | AI Crawler | 🔴 bloqueado |
+| Claude-SearchBot, OAI-SearchBot, PerplexityBot | AI Search | ✅ liberado |
+| ChatGPT-User, Perplexity-User | AI Assistant | ✅ liberado |
+| GPTBot, ClaudeBot, CCBot, Bytespider, Amazonbot, Meta-ExternalAgent | AI Crawler | ✅ bloqueado |
+| Baidu | Search Engine Crawler | ✅ liberado |
+
+Ou seja: `Training = Block`, salvo em 01/08 pra proteger o conteúdo de treinamento, levou junto **os dois buscadores** — e o Bing estava fora do índice pelo mesmo motivo que o Google, sem ninguém notar. O Baidu, da mesma categoria, passou ileso. Isso mostra que não foi decisão nossa nem regra coerente: foi a categorização da Cloudflare aplicada bot a bot.
+
+**Por que não dava pra ver daqui:** a Cloudflare reconhece bot verificado por **IP**, não por User-Agent. `curl -A Googlebot https://nak.api.br/` responde **200** desta máquina, porque este IP não é o Google. O limite já estava anotado na verificação de 01/08 — e é justamente por isso que aquele teste passou: ele nunca poderia ter pego este bloqueio.
+
+### Resolvido no mesmo dia (17/08/2026)
+
+**O que NÃO funcionou, e por quê:** a primeira tentativa foi uma regra WAF custom com ação **Skip** em `cf.verified_bot_category in {"Search Engine Crawler" "AI Search"}`, pulando "All managed rules". A regra casou — e o bloqueio aconteceu assim mesmo. A prova é o **mesmo Ray ID** (`a2ca70fea932c96d`) aparecendo duas vezes nos eventos: uma como `Skip` (Custom rules), outra como `Block` (Managed rules). Os componentes puláveis oferecidos são Zone Lockdown, User Agent Blocking, Browser Integrity Check, Hotlink Protection, Security Level e as versões antigas de managed/rate limiting — **o ruleset de Bot Management não está na lista**. Não dá pra abrir exceção pra ele por WAF neste plano. Regra apagada.
+
+**O que funcionou:** trocar o eixo de controle, de categoria pra lista por bot.
+
+1. `Training` deixou de ser `Block` e virou `Allow (do not block)` — isso destrava os toggles por crawler, que ficam inertes enquanto a categoria manda.
+2. Bloqueio individual, um a um: **GPTBot, ClaudeBot, Amazonbot, Bytespider, CCBot, Claude-User, Meta-ExternalAgent**.
+3. `Search` e `Agent` seguem `Allow`.
+
+**Verificado pelo lado do Google**, não por curl: Inspeção de URL → Testar URL ao vivo, às 14:34 e de novo às 14:48 depois de todas as mudanças → **"O URL está disponível para o Google · É possível indexar a página"**.
+
+**Sitemap destravado junto:** reenviado e reprocessado no mesmo dia. Passou de `última leitura 31/05, 5 páginas` para **`última leitura 17/08, 16 páginas`**. Indexação da home solicitada manualmente.
+
+**O que essa correção custou, registrado de propósito:** com o controle na lista e não na categoria, crawler de treino **novo** não nasce mais bloqueado. Ficaram liberados hoje, todos na categoria "AI Crawler" da Cloudflare: `Anchor Browser`, `Cloudflare Crawler`, `FacebookBot`, `Google-CloudVertexBot`, `Novellum AI Crawl`, `PetalBot`, `ProRataInc`, `TikTok Spider`, `Timpibot`. Nenhum deles está no `robots.txt`. Decidir se entram na lista de bloqueio — e revisar a lista a cada check mensal, porque agora ela é manutenção, não configuração.
+
+**Divergência em aberto:** `Claude-User` está bloqueado no painel e `Allow` no `robots.txt` do repositório. A Cloudflare classifica como "AI Crawler"; o repo trata como assistente. Um dos dois tem que ceder.
+
+## 🔴 Achado 2: o sitemap não é lido desde 31/05
+
+A API devolve, pra `https://nak.api.br/sitemap.xml`:
+
+```
+lastDownloaded: 2026-05-31   |   web: 5 URLs enviadas   |   0 erros, 0 avisos
+```
+
+O arquivo tem **16 URLs** hoje. O Google conhece **5** — as de maio. Isso é independente do 403 (a última leitura é de muito antes) e explica sozinho as 8 URLs em "o Google não reconhece o URL": os cases publicados de junho pra cá nunca foram anunciados a ninguém.
+
+Já sabíamos desde 14/06 que "o Google só busca o sitemap em ciclos próprios". O que não sabíamos é que o ciclo dele pode ser de **mais de dois meses**. Reenviar o sitemap no GSC a cada publicação deixa de ser opcional e vira parte do fluxo de publicar case.
+
+## Ferramenta de medição
+
+`.tools/gsc.py` (criado 17/08/2026) lê o Search Console pela API: desempenho 28d contra os 28d anteriores, top queries, top páginas, status do sitemap e inspeção de URL das 16 URLs do sitemap. Substitui a conferência manual página a página no painel, que era o único jeito de ver o estado real de indexação.
+
+```
+D:\Claude\cte_drive\.venv\Scripts\python.exe .tools\gsc.py
+```
+
+Token OAuth em `.tools/gsc_token.json` (fora do git). O cliente OAuth é reusado do `tiny_hub` e pertence a um projeto GCP de outra conta, onde a API não pode ser ligada — por isso o script manda o header `x-goog-user-project` pro projeto `angelic-artwork-357614`, da conta kashinha, onde a Search Console API foi habilitada em 17/08.
+
 ## Pendências técnicas (não-urgentes)
 
 - [ ] **404.html não servido em prod** — configurar `wrangler.toml` ou Worker custom (mexer com cuidado, risco de quebrar deploy).
@@ -156,3 +274,4 @@ Ordem importou: `Training = Block` foi salvo **antes** de desligar o legado, pra
 | 2026-06-07 | 5+ (inspeção) / 3 (report) | **8** | 0 | 23.1 | Check 3 semanas. **Experimento do fix .html confirmado** — motoboy + ml-cancelamentos agora "URL está no Google" via inspeção individual. Report agregado ainda mostra 3 indexadas + 5 não indexadas por causa do lag de 7d (motivos antigos: erro de redirect 2, canonical alternativo 2, redirect 1 — todos pré-fix). **Primeiras impressões reais: 8 em 7 dias** (saiu do zero). 0 cliques (esperado, posição média 23). Top query "nacl web plug in" — irrelevante, Google ainda explorando termos. **Bing finalmente saiu do Processing** — sitemap status "Success", 7 URLs descobertas, last crawl 06/06. |
 | 2026-06-14 | 5 (report) / 5 confirmadas inspeção | **13** | 0 | **12.8** | Check 4 semanas (última semanal). **Posição média DESPENCOU de 23.1 → 12.8** (de 3ª pra 2ª página do Google). Impressões cresceram +62% (8→13). 5 do sitemap antigo indexadas. **2 cases novos (nf-auto-correcao, nf-emissao-automatica) publicados em 31/05 ainda NÃO indexados** — Google ainda diz "não reconhece o URL" depois de 2 semanas, sitemap ainda não foi re-rastreado pelo Google. Solicitação manual de indexação feita pras 2 hoje. **Bing voltou pra Processing** (sitemap mudou de 5 pra 7 URLs, está re-processando). Top queries: vazio. |
 | 2026-06-17 | 7 indexadas (inspeção) | **27** | 0 | **16.1** (28d) | **Check Mês 1.** Janela mudou pra 28d. **🎯 Atendimento e ML cancelamentos entraram na 1ª PÁGINA do Google** (posições 7.0 e 8.9). NF Auto Correção e NF Emissão Automática indexaram em ≤3 dias após solicitação manual de 14/06 — confirma que request manual acelera. Gym App publicado em 15/06, solicitado hoje (esperar 7d). URLs antigas com .html ainda aparecem no índice (fretes-consolidado.html pos 9.7, atendimento-insights.html pos 2.0) — vão consolidar via canonical eventualmente. Top queries: "na api" (pos 7), "script expansão noturno" (pos 53), "nacl web plug in" (pos 70) — ainda exploratório, sem termos relevantes do nicho. **0 cliques** — esperado: queries são irrelevantes, ninguém que clicasse iria converter. |
+| 2026-08-17 | **3 de 16** (API) | **24** | **1** | **15.0** | **Check Mês 3. Medido pela API (`.tools/gsc.py`), não pelo painel.** Mês 2 (17/07) não foi feito. **🔴 Googlebot tomando 403 desde ~04/08** — 5 URLs com `ACCESS_FORBIDDEN` e último rastreio de hoje, `robotsTxtState: ALLOWED` (não é o robots.txt). Impressões caíram 48→24; posição "melhorou" 31.7→15.0 porque as páginas mal posicionadas saíram do índice. **🔴 Sitemap sem releitura desde 31/05** — Google conhece 5 URLs, o arquivo tem 16; daí 8 URLs em "não reconhece o URL". **1º clique da história em 24/07** (`gym-app`, posição 5). Queries do período: 4, todas ruído, posições 47-51. Origem: 20 BR, 3 US, 1 FR. Diagnóstico de conteúdo do Mês 3 **adiado** — não se conclui nada sobre nicho com o rastreio bloqueado. **Os dois corrigidos no mesmo dia** (ver seções acima): rastreio liberado às 14:48 e sitemap relido com 16 páginas. |

@@ -6,3 +6,7 @@ Thumbs.db
 .env
 .env.local
 node_modules/
+
+# tokens OAuth (Search Console)
+.tools/gsc_token.json
+__pycache__/
