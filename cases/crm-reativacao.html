@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Bloco Resultado reflete 18 dias de uso (jul/2026). Reatualizar quando houver meses de dado. -->
+<!-- Bloco Resultado atualizado em 24/08/2026: 7 semanas de uso (07/07 a 21/08). So proporcoes, sem numeros absolutos nem faturamento. -->
 <title>Qual cliente recorrente está esfriando (e como achar)</title>
 <meta name="description" content="Cliente recorrente para de comprar sem aparecer em relatório nenhum. Um SELECT no hub de dados virou CRM com funil, carteiras e conversão medida.">
 <meta name="keywords" content="crm reativacao clientes, clientes inativos recompra, cloudflare d1 crm, funil reativacao pj, medir conversao vendas, hub de dados crm">
@@ -60,7 +60,7 @@
     "D1"
   ],
   "keywords": "crm, reativação, clientes inativos, cloudflare, d1, vendas",
-  "dateModified": "2026-07-26",
+  "dateModified": "2026-08-24",
   "isPartOf": {
     "@type": "WebSite",
     "name": "nak.api.br",
@@ -216,11 +216,11 @@ footer a{color:var(--muted)}
       </div>
       <div>
         <div class="funil-mock">
-          <div class="fm-title">funil de reativação · 18 dias de uso</div>
-          <div class="funil-row"><span class="fr-label">A contatar</span><div class="fr-bar"><div class="fr-fill" style="width:100%;background:#374151"></div></div><span class="fr-num">52%</span></div>
-          <div class="funil-row"><span class="fr-label">Contato feito</span><div class="fr-bar"><div class="fr-fill" style="width:47%;background:#3B82F6"></div></div><span class="fr-num">25%</span></div>
-          <div class="funil-row"><span class="fr-label">Sem contato</span><div class="fr-bar"><div class="fr-fill" style="width:43%;background:#F59E0B"></div></div><span class="fr-num">23%</span></div>
-          <div class="funil-row"><span class="fr-label">Reativado</span><div class="fr-bar"><div class="fr-fill" style="width:4%;background:#22C55E"></div></div><span class="fr-num">&lt;1%</span></div>
+          <div class="fm-title">funil de reativação · 7 semanas de uso</div>
+          <div class="funil-row"><span class="fr-label">Contato feito</span><div class="fr-bar"><div class="fr-fill" style="width:100%;background:#3B82F6"></div></div><span class="fr-num">44%</span></div>
+          <div class="funil-row"><span class="fr-label">Sem contato</span><div class="fr-bar"><div class="fr-fill" style="width:61%;background:#F59E0B"></div></div><span class="fr-num">27%</span></div>
+          <div class="funil-row"><span class="fr-label">A contatar</span><div class="fr-bar"><div class="fr-fill" style="width:59%;background:#374151"></div></div><span class="fr-num">26%</span></div>
+          <div class="funil-row"><span class="fr-label">Reativado</span><div class="fr-bar"><div class="fr-fill" style="width:7%;background:#22C55E"></div></div><span class="fr-num">3%</span></div>
           <div class="funil-note">proporções reais · trabalho em andamento</div>
         </div>
       </div>
@@ -333,22 +333,22 @@ footer a{color:var(--muted)}
 <section class="case-section">
   <div class="container">
     <div class="label">06 · Resultado</div>
-    <h2>18 dias: um quarto da carteira contatada</h2>
+    <h2>7 semanas: quase metade da carteira contatada</h2>
     <div class="dash-grid">
       <div class="kpi alt">
         <div class="lbl">Carteira contatada</div>
-        <div class="val">1 em 4</div>
-        <div class="delta">em 13 dias úteis</div>
+        <div class="val">quase 1 em 2</div>
+        <div class="delta">em 34 dias úteis</div>
       </div>
       <div class="kpi alt">
         <div class="lbl">Tempo de uso</div>
-        <div class="val">18 dias</div>
+        <div class="val">7 semanas</div>
         <div class="delta">desde o primeiro contato</div>
       </div>
       <div class="kpi">
-        <div class="lbl">Recompra espontânea</div>
-        <div class="val">+ da metade</div>
-        <div class="delta">voltaram sem ninguém ligar</div>
+        <div class="lbl">Recompra após contato</div>
+        <div class="val">6 em 10</div>
+        <div class="delta">no início era minoria</div>
       </div>
       <div class="kpi">
         <div class="lbl">Custo do software</div>
@@ -357,14 +357,16 @@ footer a{color:var(--muted)}
       </div>
     </div>
     <p>A lista não virou relatório pra ninguém ler: virou <strong>demanda formal pra equipe de vendas</strong>. Cada vendedora recebeu a própria carteira de clientes esfriando com a instrução de retomar contato — e o sistema registra quem foi retomado, quando e por qual canal.</p>
-    <p>Números de <strong>18 dias de uso real</strong> — é cedo pra falar em taxa de conversão consolidada, e não vou inflar. O que já dá pra afirmar com dado:</p>
+    <p>Números de <strong>7 semanas de uso real</strong>: 34 dias úteis, com contato registrado em 30 deles. Agora já dá pra falar de conversão sem inflar. O que o dado mostra:</p>
     <ul>
-      <li><strong>O esforço virou visível.</strong> Um quarto da carteira contatada e centenas de interações registradas em 13 dias úteis. Antes, esse trabalho existia em listas soltas — sem histórico, sem dono, sem contagem.</li>
+      <li><strong>O esforço virou visível.</strong> Quase metade da carteira já foi abordada. Antes, esse trabalho existia em listas soltas — sem histórico, sem dono, sem contagem.</li>
+      <li><strong>Insistência começou a aparecer.</strong> Quatro em cada dez clientes contatados receberam mais de uma abordagem. Reativação raramente se ganha na primeira conversa, e agora dá pra ver quem voltou a insistir.</li>
       <li><strong>Cliente sumido ganhou dono.</strong> Cada cliente da lista tem responsável, status no funil e data de próximo contato.</li>
-      <li><strong>Mais da metade das recompras foi espontânea</strong> — clientes que voltaram sem ninguém ter ligado. Se a métrica não separasse isso, o case aqui contaria todas como vitória da reativação e estaria mentindo.</li>
+      <li><strong>A recompra mudou de lado.</strong> Nos primeiros dias, a maioria das recompras vinha de gente que ninguém tinha contatado. Hoje é o contrário: <strong>seis em cada dez</strong> recompras da carteira são de clientes já abordados.</li>
       <li><strong>Custo de software zero</strong> além do que o hub já custava. CRM de mercado cobraria por usuária, por mês, pra fazer menos do que a operação precisa.</li>
     </ul>
-    <p>O que ainda não existe é taxa de conversão madura. Das recompras de clientes que já tinham sido contatados, as próprias vendedoras marcaram <strong>só uma como resultado direto do contato</strong> — nas outras, responderam honestamente que o cliente teria voltado de qualquer jeito. Prefiro publicar essa uma do que somar todas e inflar. <strong>Volto a atualizar este bloco quando houver meses de dado, não semanas.</strong></p>
+    <p>A taxa de conversão finalmente tem dado suficiente pra existir — e ela é modesta, como devia ser. <strong>Cerca de três em cada cem clientes contatados fecharam um pedido que a vendedora creditou ao contato.</strong> Parece pouco até lembrar qual era a alternativa: zero. São clientes que a operação já tinha parado de perseguir.</p>
+    <p>O corte que me interessa mais é outro. Das recompras que uma pessoa parou pra revisar, <strong>quase metade foi marcada como resultado do contato</strong> — nas outras, as vendedoras responderam que o cliente teria voltado de qualquer jeito. E existe uma fatia de recompras que o robô diário detectou e ninguém revisou ainda: essas entram como espontâneas por padrão, o que puxa a conversão pra baixo, nunca pra cima. Prefiro o erro nessa direção. <strong>Volto a atualizar quando fechar seis meses</strong> — aí dá pra perguntar se quem voltou continuou comprando, que é a pergunta que realmente importa.</p>
     <p style="font-size:14px;color:var(--muted)">Volumes absolutos e valores de faturamento ficam fora desta publicação — são dados internos da operação. O que interessa aqui é o método, não o extrato.</p>
   </div>
 </section>
@@ -389,7 +391,7 @@ footer a{color:var(--muted)}
     <div class="erro-block">
       <div class="erro-titulo">Erro 3 · medir só contato inflaria o sucesso</div>
       <h3>Recompra espontânea não é conversão</h3>
-      <p>Cliente sumido às vezes volta sozinho — sem ninguém ter ligado. Se toda recompra contasse como sucesso da reativação, o número mentiria. Por isso a marcação de pedido fechado pergunta: <em>"foi resultado do seu contato?"</em>. Recompra espontânea conta no faturamento, mas não na taxa de conversão da vendedora. <strong>Os primeiros 18 dias provaram a necessidade:</strong> mais da metade das recompras veio de clientes que ninguém tinha contatado ainda. Sem a separação, o relatório teria contado todas como reativação — e a maior parte seria mérito de ninguém. <strong>Métrica que mistura mérito com sorte vira meta que ninguém respeita.</strong></p>
+      <p>Cliente sumido às vezes volta sozinho — sem ninguém ter ligado. Se toda recompra contasse como sucesso da reativação, o número mentiria. Por isso a marcação de pedido fechado pergunta: <em>"foi resultado do seu contato?"</em>. Recompra espontânea conta no faturamento, mas não na taxa de conversão da vendedora. <strong>Os primeiros dias provaram a necessidade:</strong> mais da metade das recompras vinha de clientes que ninguém tinha contatado ainda. Sem a separação, o relatório teria contado todas como reativação — e a maior parte seria mérito de ninguém. Sete semanas depois a proporção se inverteu: a maioria das recompras já vem de cliente abordado. <strong>Só dá pra afirmar essa virada porque a separação existia desde o primeiro dia.</strong> Métrica que mistura mérito com sorte vira meta que ninguém respeita.</p>
     </div>
 
     <div class="erro-block">
