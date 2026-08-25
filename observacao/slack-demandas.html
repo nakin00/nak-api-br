@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Em observacao: sem resultado medido. Nao entra em /cases enquanto nao tiver
+     numero real (ver ANTI_IA.md, primeiro principio). Criterio de promocao no proprio texto. -->
+<title>Demanda pedida no Slack vira item com dono e prazo</title>
+<meta name="description" content="Pedido feito no meio da conversa some no scroll. /demanda no Slack abre um item com dono, prazo e botão de concluir — e o sistema cobra sozinho às 8h30.">
+<meta name="keywords" content="demanda no slack, controle de tarefas slack, slack app home, delegar tarefa no slack, cobrar prazo da equipe, cloudflare workers slack bot">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nak.api.br/observacao/slack-demandas">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="nak.api.br">
+<meta property="og:title" content="Pedido feito no meio da conversa não vira tarefa de ninguém">
+<meta property="og:description" content="/demanda no Slack abre um item com dono, prazo e botão de concluir. No ar desde 21/08/2026, ainda sem resultado medido — por isso está em observação, e não em cases.">
+<meta property="og:url" content="https://nak.api.br/observacao/slack-demandas">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:image" content="https://nak.api.br/og/slack-demandas.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="article:section" content="Gestão">
+<meta property="article:tag" content="slack">
+<meta property="article:tag" content="cloudflare-workers">
+<meta property="article:tag" content="d1">
+<meta property="article:tag" content="gestão">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pedido feito no meio da conversa não vira tarefa de ninguém">
+<meta name="twitter:description" content="Demanda pedida no Slack vira item com dono, prazo e cobrança automática. Em observação: no ar, sem resultado medido ainda.">
+<meta name="twitter:image" content="https://nak.api.br/og/slack-demandas.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Pedido feito no meio da conversa não vira tarefa de ninguém",
+  "description": "Sistema de demandas dentro do Slack: slash command e atalho de mensagem abrem um item com dono, prazo e botão de concluir, com cobrança automática por cron. Publicado em observação, sem resultado medido.",
+  "author": {
+    "@type": "Person",
+    "name": "nak",
+    "url": "https://nak.api.br/sobre"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "nak.api.br",
+    "url": "https://nak.api.br/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://nak.api.br/og/home.png"
+    }
+  },
+  "datePublished": "2026-08-25",
+  "dateModified": "2026-08-25",
+  "inLanguage": "pt-BR",
+  "url": "https://nak.api.br/observacao/slack-demandas",
+  "about": [
+    "Slack",
+    "Gestão de demandas",
+    "Cloudflare Workers",
+    "D1"
+  ],
+  "keywords": "slack, demandas, tarefas, cloudflare workers, d1, app home, cron",
+  "creativeWorkStatus": "Em observação",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "nak.api.br",
+    "url": "https://nak.api.br/"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://nak.api.br/observacao/slack-demandas"
+  },
+  "image": "https://nak.api.br/og/slack-demandas.png"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Início",
+      "item": "https://nak.api.br/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Em observação",
+      "item": "https://nak.api.br/#observacao"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Pedido feito no meio da conversa não vira tarefa de ninguém",
+      "item": "https://nak.api.br/observacao/slack-demandas"
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--danger:#EF4444;--warn:#F59E0B;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--radius:10px;--max:1100px}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 24px}
+nav.top{border-bottom:1px solid var(--border);padding:18px 0;position:sticky;top:0;background:rgba(11,15,20,.85);backdrop-filter:blur(8px);z-index:10}
+nav.top .row{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--text)}
+.logo .dot{color:var(--accent)}
+nav .links{display:flex;gap:28px}
+nav .links a{color:var(--muted);font-size:14px}
+nav .links a:hover{color:var(--text);text-decoration:none}
+
+.case-hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.case-hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+.breadcrumb{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:24px}
+.category{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.case-hero h1{font-size:42px;font-weight:700;line-height:1.1;margin:0 0 20px;letter-spacing:-.02em}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.tag{font-family:var(--mono);font-size:11px;padding:3px 8px;background:var(--border);color:var(--muted);border-radius:4px;text-transform:lowercase}
+.lead{color:var(--muted);font-size:17px;max-width:600px;margin:0}
+.running-since{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--accent-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px;padding:5px 10px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:4px}
+.live-dot-mini{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent-2);animation:pulse-mini 2.2s ease-in-out infinite}
+@keyframes pulse-mini{0%,100%{opacity:1}50%{opacity:.35}}
+
+
+.case-section{padding:64px 0;border-bottom:1px solid var(--border)}
+.case-section:last-child{border-bottom:none}
+.label{font-family:var(--mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.case-section h2{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0 0 24px}
+.case-section p{font-size:16px;color:var(--text);margin:0 0 16px;max-width:760px}
+.case-section ul{font-size:16px;color:var(--text);padding-left:20px;max-width:760px}
+.case-section ul li{margin-bottom:10px}
+.case-section ul li::marker{color:var(--muted)}
+
+.callout{border-left:3px solid var(--accent);background:var(--card);padding:20px 24px;border-radius:0 var(--radius) var(--radius) 0;margin:24px 0;max-width:760px}
+.callout p{margin:0;font-style:italic;color:var(--muted)}
+
+/* BLOCO FUNDAÇÃO — link pro case do hub */
+
+.flow-grid{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:32px 0;max-width:760px}
+.flow-node{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;flex:1;min-width:110px}
+.flow-node .icon{font-family:var(--mono);font-size:22px;color:var(--accent);margin-bottom:6px}
+.flow-node .name{font-size:13px;font-weight:500}
+.flow-node .sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px}
+.flow-arrow{font-family:var(--mono);color:var(--muted);font-size:18px;flex-shrink:0}
+.flow-note{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--muted);max-width:760px;text-align:center}
+
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;max-width:760px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.kpi .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.kpi .val{font-size:24px;font-weight:600;font-family:var(--mono);color:var(--accent-2);line-height:1}
+.kpi .delta{font-size:11px;color:var(--accent-2);margin-top:8px;font-family:var(--mono)}
+.kpi.alt .val{color:var(--accent)}
+
+.erro-block{max-width:760px;margin:32px 0;padding:24px;background:#0d1117;border:1px solid var(--border);border-radius:var(--radius);border-left:3px solid var(--warn)}
+.erro-block .erro-titulo{font-family:var(--mono);font-size:12px;color:var(--warn);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.erro-block h3{font-size:18px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em;color:var(--text)}
+.erro-block p{font-size:15px;color:var(--muted);margin:0;line-height:1.65}
+.erro-block p strong{color:var(--text);font-weight:500}
+
+footer{padding:48px 0;color:var(--muted);font-size:13px}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--muted)}
+
+@media(max-width:900px){.case-hero-grid{grid-template-columns:1fr;gap:40px}.dash-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.case-hero h1{font-size:32px}.case-section{padding:48px 0}.case-section h2{font-size:24px}.flow-grid{flex-direction:column}.flow-arrow{transform:rotate(90deg)}nav .links{gap:16px}}
+
+/* SELO EM OBSERVACAO — este texto nao e case: nao tem numero ainda */
+.observando{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--warn);text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px;padding:5px 10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:4px}
+.observando .live-dot-mini{background:var(--warn)}
+
+/* MOCK DO PAINEL NO SLACK (App Home) */
+.slack-mock{background:#0d1117;border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:0 20px 60px -20px rgba(0,0,0,.6)}
+.slack-mock .sm-head{display:flex;align-items:center;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.slack-mock .sm-app{width:20px;height:20px;border-radius:4px;background:var(--accent);flex-shrink:0}
+.slack-mock .sm-nome{font-size:13px;font-weight:600}
+.slack-mock .sm-tab{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-left:auto}
+.sm-abas{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.sm-aba{font-size:11px;padding:5px 10px;border:1px solid var(--border);border-radius:4px;color:var(--muted);background:var(--card);white-space:nowrap}
+.sm-aba.on{color:var(--text);border-color:var(--accent)}
+.sm-aba.novo{color:#0B0F14;background:var(--accent-2);border-color:var(--accent-2);font-weight:600}
+.sm-item{padding:12px 0;border-bottom:1px solid var(--border)}
+.sm-item:last-of-type{border-bottom:none}
+.sm-linha{font-size:13px;line-height:1.5}
+.sm-linha .sm-id{font-family:var(--mono);color:var(--muted)}
+.sm-meta{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px}
+.sm-meta .venceu{color:var(--danger)}
+.sm-meta .hoje{color:var(--warn)}
+.sm-travado{font-size:12px;color:var(--warn);margin-top:6px;font-style:italic}
+.sm-bts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.sm-bt{font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:4px;color:var(--muted);background:var(--card)}
+.sm-bt.ok{color:#0B0F14;background:var(--accent-2);border-color:var(--accent-2);font-weight:600}
+.sm-nota{margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--muted);font-style:italic;text-align:center}
+
+/* MOCK DA DM DO CRON */
+.dm-mock{max-width:600px;margin:24px 0;background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;padding:18px 20px}
+.dm-mock .dm-quando{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.dm-mock .dm-texto{font-size:14px;line-height:1.7;margin:0}
+.dm-mock .dm-texto .dm-forte{font-weight:600;color:var(--text)}
+.dm-mock .dm-linha{font-family:var(--mono);font-size:12px;color:var(--muted);display:block;margin-top:6px}
+
+/* ESCOLHAS DE PROJETO */
+.escolha{max-width:760px;margin:0 0 28px;padding:20px 24px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius)}
+.escolha .e-num{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.08em;margin-bottom:8px}
+.escolha h3{font-size:18px;font-weight:600;margin:0 0 10px;letter-spacing:-.01em}
+.escolha p{font-size:15px;color:var(--muted);margin:0 0 10px;line-height:1.65;max-width:none}
+.escolha p:last-child{margin-bottom:0}
+.escolha p strong{color:var(--text);font-weight:500}
+.escolha code{font-family:var(--mono);font-size:13px;background:var(--border);padding:1px 5px;border-radius:3px;color:var(--text)}
+.case-section p code,.case-section li code{font-family:var(--mono);font-size:14px;background:var(--border);padding:1px 5px;border-radius:3px}
+
+/* O QUE VAI SER MEDIDO */
+.medir{max-width:760px;margin:24px 0;border:1px dashed var(--border);border-radius:var(--radius);padding:8px 24px}
+.medir dl{margin:0}
+.medir dt{font-size:15px;font-weight:600;margin-top:18px}
+.medir dd{margin:6px 0 0;font-size:15px;color:var(--muted);line-height:1.65}
+.medir dl div:last-child dd{margin-bottom:20px}
+
+@media(max-width:720px){.slack-mock{padding:16px}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <a href="../" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
+    <div class="links">
+      <a href="../#cases">Cases</a>
+      <a href="../#observacao">Em observação</a>
+      <a href="../#stack">Stack</a>
+      <a href="../sobre">Sobre</a>
+    </div>
+  </div>
+</nav>
+
+<header class="case-hero">
+  <div class="container">
+    <div class="case-hero-grid">
+      <div>
+        <div class="breadcrumb"><a href="../">~</a> / observação / slack-demandas</div>
+        <div class="category">Gestão · Equipe</div>
+        <h1>Pedido feito no meio da conversa não vira tarefa de ninguém</h1>
+        <div class="tags">
+          <span class="tag">slack</span>
+          <span class="tag">cloudflare-workers</span>
+          <span class="tag">d1</span>
+          <span class="tag">app-home</span>
+          <span class="tag">cron</span>
+        </div>
+        <div class="observando"><span class="live-dot-mini"></span>em observação · no ar desde 21/08/2026</div>
+        <p class="lead">A conversa do Slack é boa pra combinar e péssima pra guardar. O que se pede no meio dela vale enquanto está na tela. <strong>/demanda</strong> abre um item com dono, prazo e botão de concluir — e a cobrança passa a ser do sistema, não da pessoa que pediu. Ainda sem resultado medido: por isso este texto está em observação, e não em cases.</p>
+      </div>
+      <div>
+        <div class="slack-mock">
+          <div class="sm-head">
+            <span class="sm-app"></span>
+            <span class="sm-nome">Demandas</span>
+            <span class="sm-tab">app home</span>
+          </div>
+          <div class="sm-abas">
+            <span class="sm-aba on">● 📥 Pra mim (3)</span>
+            <span class="sm-aba">📤 Que eu abri (2)</span>
+            <span class="sm-aba">✅ Concluídas</span>
+            <span class="sm-aba novo">Abrir demanda</span>
+          </div>
+          <div class="sm-item">
+            <div class="sm-linha">🔴 <span class="sm-id">#48</span> <strong>Conferir o romaneio da coleta antes das 17h</strong></div>
+            <div class="sm-meta">de Misty · <span class="hoje">vence hoje</span></div>
+            <div class="sm-bts"><span class="sm-bt ok">Concluir</span><span class="sm-bt">Comecei</span><span class="sm-bt">Travei</span></div>
+          </div>
+          <div class="sm-item">
+            <div class="sm-linha">▶️ <span class="sm-id">#45</span> <strong>Subir a tabela de frete nova na planilha</strong></div>
+            <div class="sm-meta">de Brock · vence 27/08</div>
+            <div class="sm-bts"><span class="sm-bt ok">Concluir</span><span class="sm-bt">Travei</span></div>
+          </div>
+          <div class="sm-item">
+            <div class="sm-linha">🚧 <span class="sm-id">#41</span> <strong>Fechar o inventário do corredor B</strong></div>
+            <div class="sm-meta">de Misty · <span class="venceu">venceu 22/08</span></div>
+            <div class="sm-travado">🚧 travado: falta a contagem da prateleira 3</div>
+            <div class="sm-bts"><span class="sm-bt ok">Concluir</span><span class="sm-bt">Destravei</span></div>
+          </div>
+          <div class="sm-nota">layout real do painel · nomes trocados</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">01 · Dor operacional</div>
+    <h2>O que se pede no meio da conversa some no scroll</h2>
+    <p>O pedido quase nunca chega sozinho. Ele chega no meio de outro assunto: a pessoa está falando de um pedido atrasado e emenda um <em>"ah, quando puder confere o romaneio da coleta"</em>. Naquele segundo, os dois lados entenderam. Vinte mensagens depois, aquilo não existe mais.</p>
+    <p>O que acontece na prática, sempre igual:</p>
+    <ul>
+      <li><strong>Quem pediu acha que pediu.</strong> Quem recebeu não registrou que recebeu. Ninguém está mentindo — a mensagem passou.</li>
+      <li><strong>"Quando puder" não é prazo.</strong> Sem data, nada está atrasado nunca, e por isso nada tem pressa.</li>
+      <li><strong>Pedido no canal não tem dono.</strong> Mandar pro grupo é pedir pra todo mundo, o que na prática é pedir pra ninguém.</li>
+      <li><strong>A cobrança vira trabalho de quem pediu.</strong> Ela precisa lembrar de lembrar — e ainda escolher o dia de perguntar sem parecer que está cobrando.</li>
+      <li><strong>Quando o assunto volta, volta como atrito.</strong> "Eu tinha te pedido isso semana passada" é uma frase que estraga a semana das duas pessoas.</li>
+    </ul>
+    <div class="callout">
+      <p>"Cobrar o que você pediu não devia dar mais trabalho do que fazer."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">02 · Impacto do problema</div>
+    <h2>Por que planilha, mensagem fixada e app de tarefa não pegam?</h2>
+    <p>Antes disso a equipe tentou o caminho normal. Mensagem fixada no canal, que ninguém desafixa e vira decoração. Planilha compartilhada, que só a pessoa que criou abre. Lista do Slack, que guarda bem e não avisa ninguém. Ferramenta de tarefa de verdade, das boas, que exige abrir outra aba, achar o quadro certo e escolher o rótulo certo.</p>
+    <p>Todas morreram no mesmo ponto: <strong>o passo de sair da conversa pra registrar</strong>. Esse passo custa uns quinze segundos e um pouco de atenção, e é exatamente o que ninguém tem sobrando no meio de um dia de operação. Quando registrar dá mais trabalho que pedir, ninguém registra — e a ferramenta fica lá, atualizada até a segunda semana.</p>
+    <p>O custo disso não aparece em relatório, porque ele não é erro de ninguém — é o formato da ferramenta. Aparece em coisa combinada que precisa ser recombinada, em prazo que só é descoberto depois de vencido, e no tempo de quem coordena, que passa a guardar de cabeça o que deveria estar guardado em algum lugar. Perguntar "e aquilo?" três vezes por dia não é gestão: é uma pessoa fazendo o papel de banco de dados.</p>
+    <div class="callout">
+      <p>"Ferramenta de tarefa não morre por falta de recurso. Morre no passo de sair da conversa."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">03 · Solução criada</div>
+    <h2>Duas portas, as duas dentro do Slack</h2>
+    <p>A decisão que define o projeto inteiro: <strong>nada acontece fora do Slack</strong>. Sem site pra abrir, sem login, sem app novo pra equipe instalar. Abrir uma demanda tem que caber dentro da conversa que já estava acontecendo.</p>
+    <ul>
+      <li><strong><code>/demanda</code></strong> — digitar <code>/demanda conferir o romaneio</code> abre o formulário com o título já preenchido. Sem texto, abre em branco.</li>
+      <li><strong>"Virar demanda"</strong> — no menu de qualquer mensagem. O texto da mensagem vira o título e a demanda guarda o link da original, então dá pra voltar no contexto depois. A confirmação sai na própria thread, pra conversa não perder o fio.</li>
+    </ul>
+    <p>Demanda, aqui, tem uma definição fechada: <strong>um pedido com as três coisas que a conversa não guarda — dono, prazo e um botão que fecha</strong>. Tirando qualquer uma das três, volta a ser mensagem.</p>
+    <p>O formulário pergunta pouco: pra quem (aceita várias pessoas), o que precisa, detalhe opcional, prazo opcional, se é urgente, quem deve ser avisado quando concluir, e até cinco anexos.</p>
+    <p>Quem recebe leva uma DM com o item e o botão de concluir. Quem abriu recebe a confirmação com o número. A partir daí o painel de cada pessoa vive na aba <strong>Demandas</strong> do app — a App Home do Slack, aquela tela que quase ninguém usa e que aqui virou o produto inteiro.</p>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">04 · Como funciona</div>
+    <h2>Da mensagem ao item cobrado sozinho</h2>
+    <div class="flow-grid">
+      <div class="flow-node">
+        <div class="icon">💬</div>
+        <div class="name">Mensagem ou comando</div>
+        <div class="sub">/demanda · atalho</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">▤</div>
+        <div class="name">Formulário</div>
+        <div class="sub">modal do Slack</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">🗄</div>
+        <div class="name">Uma linha por pessoa</div>
+        <div class="sub">worker + d1</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">📥</div>
+        <div class="name">DM com botões</div>
+        <div class="sub">concluir · travei</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">⏰</div>
+        <div class="name">Cobrança 8h30</div>
+        <div class="sub">cron seg–sex</div>
+      </div>
+    </div>
+    <p class="flow-note">Cloudflare Worker + D1. Sem servidor pra manter, sem fila, sem banco pago.</p>
+    <p>O modal fecha na hora e o resto vai pra segundo plano: gravar, mandar as DMs, atualizar o painel de cada pessoa envolvida. O Slack derruba o modal se ele demorar mais que três segundos pra responder, então nada que dependa de rede pode acontecer antes do fechamento.</p>
+    <p>A parte que sustenta o sistema não é o formulário — é o cron. Às 8h30, de segunda a sexta, o Worker varre o que está aberto e escreve pra cada lado o que interessa: quem recebeu leva a lista do que vence hoje, do que vence em breve e do que já venceu; quem abriu leva o aviso quando o prazo estoura.</p>
+    <div class="dm-mock">
+      <div class="dm-quando">DM de segunda-feira, 8h30</div>
+      <p class="dm-texto">🚨 Você tem <span class="dm-forte">2</span> demanda(s) atrasada(s) e 5 no total.
+        <span class="dm-linha">🔴 <strong>#41</strong> Fechar o inventário do corredor B — venceu 22/08 · de Misty</span>
+        <span class="dm-linha">• <strong>#45</strong> Subir a tabela de frete nova — vence hoje · de Brock</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">05 · Decisões de projeto</div>
+    <h2>Seis escolhas que mudam mais o uso do que o código</h2>
+    <p>Nenhuma dessas é difícil de programar. Todas mudam o comportamento de quem usa — e é aí que sistema de tarefa costuma morrer.</p>
+
+    <div class="escolha">
+      <div class="e-num">01</div>
+      <h3>Urgente é sim ou não, sem níveis</h3>
+      <p>Não existe alta, média e baixa. Existe uma caixinha <strong>Urgente</strong>. Prioridade em três níveis vira tudo alta em duas semanas — todo mundo aprende que o nível de baixo não é olhado e para de usar.</p>
+      <p>Binário é constrangedor de usar à toa: marcar urgente é gastar crédito com quem vai receber. Quando marcada, sobe pro topo de toda lista (<code>ORDER BY urgente DESC</code>), ganha 🔴 no painel e no resumo, e a DM de abertura chega como <em>"🔴 URGENTE"</em>.</p>
+    </div>
+
+    <div class="escolha">
+      <div class="e-num">02</div>
+      <h3>Três pessoas viram três demandas, não uma</h3>
+      <p>O campo "pra quem" aceita várias pessoas. Cada uma ganha <strong>a demanda dela</strong>, com número próprio, e conclui separado. Não é um item compartilhado com três responsáveis.</p>
+      <p>Item de dono coletivo não é concluído por ninguém — cada um assume que o outro fez. Separando, quem abriu enxerga quem já entregou e quem não, e cobra a pessoa certa em vez de mandar recado pro grupo.</p>
+    </div>
+
+    <div class="escolha">
+      <div class="e-num">03</div>
+      <h3>Quem acompanha não ganha tarefa</h3>
+      <p>Tem um campo separado: <strong>avisar quando concluir</strong>. Quem entra ali recebe DM no fecho e mais nada — não aparece no painel dessas pessoas, não entra na cobrança, não conta como pendência delas.</p>
+      <p>Isso resolve o vício do "coloca fulano em cópia", que na maioria das ferramentas transforma interesse em responsabilidade. E reabrir uma demanda <strong>não</strong> avisa esse pessoal, senão vira ping-pong de notificação. Quem é responsável sai da lista de acompanhantes automaticamente — ninguém precisa ser avisado de si mesmo.</p>
+    </div>
+
+    <div class="escolha">
+      <div class="e-num">04</div>
+      <h3>"Travei" com motivo obrigatório</h3>
+      <p>Além de concluir, quem recebeu tem <strong>Comecei</strong> e <strong>Travei</strong>. Comecei muda o estado e coloca ▶️ no painel. Travei abre um modal que <strong>exige o motivo</strong> e manda DM na hora pra quem abriu, com o texto do impedimento.</p>
+      <p>Sem o motivo, o aviso não serve pra nada: "travou" sozinho informa que parou e esconde onde. Com o motivo, quem abriu descobre o impedimento no dia em que ele apareceu, e não na véspera do prazo — e na maior parte das vezes o impedimento é de outra pessoa resolver. O item passa a mostrar 🚧 com o impedimento no corpo, e <strong>Destravei</strong> devolve pro estado de andamento.</p>
+    </div>
+
+    <div class="escolha">
+      <div class="e-num">05</div>
+      <h3>A cobrança é do sistema, não da pessoa</h3>
+      <p>Essa é a razão de o projeto existir. Quem recebeu leva o resumo diário destacando <strong>vence em breve</strong>, <strong>vence hoje</strong> e <strong>atrasada</strong>. Quem abriu é avisado quando o prazo estoura e, se a demanda continuar aberta e vencida, <strong>a cada 7 dias</strong> — demanda muito atrasada não some do radar por cansaço.</p>
+      <p>Toda segunda-feira quem abriu recebe também <em>"o que você pediu e ainda não voltou"</em>, agrupado por pessoa. Uma vez por semana não invade, e fecha o buraco de só descobrir o problema quando o prazo já era.</p>
+      <p>Um detalhe de calendário que só aparece usando: como o cron roda de segunda a sexta, <strong>a véspera de sexta-feira precisa cobrir sábado, domingo e segunda</strong>. Sem isso, tudo que vencia no fim de semana chegava avisado com atraso.</p>
+    </div>
+
+    <div class="escolha">
+      <div class="e-num">06</div>
+      <h3>Cada pessoa vê só o que é dela</h3>
+      <p>O painel tem abas: <strong>Pra mim</strong>, <strong>Que eu abri</strong>, <strong>Concluídas</strong> e — só pra quem administra — <strong>Da equipe</strong>. Não existe mural com a pendência de todo mundo exposta.</p>
+      <p>Lista pública de pendências não aumenta entrega, aumenta encenação: as pessoas passam a escolher tarefa pequena pra manter a lista limpa. A aba escolhida fica salva por pessoa, então cada uma volta onde parou.</p>
+      <p>E dá pra <strong>repassar</strong>: quem abriu edita a demanda e troca o responsável. Mesmo número, mesmo histórico, os dois lados avisados. Editar também zera o registro de aviso de atraso — prazo novo volta a ser cobrado do zero, em vez de continuar marcado como vencido pra sempre.</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">06 · O que deu errado</div>
+    <h2>Quatro coisas que só apareceram com o sistema no ar</h2>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 1 · o anexo chegava sem permissão</div>
+      <h3>Arquivo enviado por modal nasce privado</h3>
+      <p>O formulário aceita anexo. Só que arquivo mandado dentro de um modal do Slack fica com a permissão de quem mandou — quem recebe clica no link e toma acesso negado. <strong>Fix:</strong> o Worker baixa o arquivo com o token do bot e <strong>reenvia dentro da DM</strong> de quem recebeu, via <code>files.getUploadURLExternal</code> → upload → <code>files.completeUploadExternal</code>. Acima de <strong>8 MB</strong> o Worker não segura o arquivo em memória e manda só o link. Exigiu os escopos <code>files:read</code> e <code>files:write</code> — e escopo novo só passa a valer depois de reinstalar o app, o que não é óbvio quando o erro aparece.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 2 · editar apagava anexo</div>
+      <h3>O Slack não devolve arquivo já enviado no modal</h3>
+      <p>Ao reabrir o formulário pra editar, o campo de anexo voltava vazio — o Slack não sabe pré-preencher esse campo. Como campo vazio significa "sem arquivos", salvar a edição <strong>apagava os anexos antigos</strong>. <strong>Fix:</strong> o campo simplesmente não aparece no formulário de edição, e o modal avisa quantos anexos continuam na demanda. <strong>Aprendizado: campo que não sabe se lembrar do próprio valor é melhor não existir naquela tela.</strong></p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 3 · só cabia um botão por item</div>
+      <h3>O acessório de um bloco aceita um elemento só</h3>
+      <p>Com Concluir, Comecei, Travei, Editar e Cancelar, a estrutura de bloco do Slack não fecha: o <code>accessory</code> aceita um único elemento. <strong>Fix:</strong> os botões foram pra um bloco de ações próprio e o detalhe da demanda desceu pro texto do item, pra não gastar um bloco a mais — a App Home tem limite de blocos e o painel de quem tem muita coisa aberta estourava.</p>
+    </div>
+
+    <div class="erro-block">
+      <div class="erro-titulo">Erro 4 · testar acordava a equipe</div>
+      <h3>Cada teste do resumo diário mandava DM de verdade</h3>
+      <p>Não dava pra conferir a rotina das 8h30 sem disparar mensagem pra gente real. <strong>Fix:</strong> um endpoint de diagnóstico que <strong>simula os resumos sem mandar nada</strong>, além de testar o token do bot e republicar o painel de um usuário específico. Ele lista nomes da equipe e republica tela, então não podia ficar aberto: sem o token certo, responde 404 em vez de 401 — página que não existe não convida a tentar de novo.</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section" style="background:#0a0e13">
+  <div class="container">
+    <div class="label">07 · Status honesto</div>
+    <h2>Por que isso ainda não é um case?</h2>
+    <p>A regra deste site é uma só: <strong>texto só vira case quando existe número real de impacto</strong>. Este não tem. O sistema entrou no ar em <strong>21 de agosto de 2026</strong> e o que existe até agora é uso de estreia — as primeiras demandas abertas, algumas já concluídas, uma cancelada, gente experimentando o comando pra ver o que acontece. Isso não é resultado. É gente descobrindo onde fica o botão.</p>
+    <p>Poderia render um texto com cara de vitória mesmo assim. A parte difícil já está pronta, as decisões de projeto são defensáveis, o print do painel fica bonito. Só que case sem número é propaganda com estrutura de documentação — e o dia em que este site publicar um desses, todos os outros passam a valer menos.</p>
+    <p>Então fica aqui, <strong>em observação</strong>: publicado, datado, com o mecanismo inteiro à mostra e sem resultado nenhum prometido. Se o número vier, o texto ganha o bloco de resultado e vai pra <a href="../cases">a lista de cases</a>. Se não vier, ele fica onde está e o texto muda pra explicar o que não funcionou.</p>
+    <div class="callout">
+      <p>"Tentativa publicada como vitória não é autoridade. É só barulho com fonte bonita."</p>
+    </div>
+  </div>
+</section>
+
+<section class="case-section">
+  <div class="container">
+    <div class="label">08 · O que vai ser medido</div>
+    <h2>Os números que vão decidir se isso funcionou</h2>
+    <p>Tudo isso sai do próprio banco, sem instrumentação extra — a tabela já guarda quem abriu, quem recebeu, quando, com que prazo e quando fechou. A revisão está marcada pra depois de trinta dias de uso.</p>
+    <div class="medir">
+      <dl>
+        <div>
+          <dt>Percentual concluído dentro do prazo</dt>
+          <dd>O número principal. Se demanda registrada não é entregue mais no prazo do que pedido solto na conversa, o sistema não resolveu nada — só criou lugar pra guardar culpa.</dd>
+        </div>
+        <div>
+          <dt>Tempo entre abrir e concluir</dt>
+          <dd>Mediana, não média: uma demanda esquecida há dois meses distorce a média e esconde o comportamento normal.</dd>
+        </div>
+        <div>
+          <dt>Quantas travam, e em quê</dt>
+          <dd>O motivo do "Travei" é texto livre, e é o campo mais interessante do banco. Se o mesmo impedimento aparece toda semana, o problema não é a demanda — é o processo atrás dela.</dd>
+        </div>
+        <div>
+          <dt>Proporção aberta como urgente</dt>
+          <dd>Se passar de um terço, o binário virou decoração e vai precisar de atrito: limite por semana, ou urgente só com prazo obrigatório.</dd>
+        </div>
+        <div>
+          <dt>Quantas voltam a ser cobradas depois de 7 dias</dt>
+          <dd>Demanda que reincide na cobrança semanal é sinal de pedido mal formulado, prazo irreal ou pessoa sobrecarregada. Nenhum dos três se resolve mandando outra DM.</dd>
+        </div>
+        <div>
+          <dt>Quantas pessoas <em>abrem</em> demanda, não só recebem</dt>
+          <dd>Se só quem coordena abre, isso não é ferramenta de equipe — é lista de ordens com interface bonita. O sinal de que pegou é a equipe abrindo demanda entre si e pra cima.</dd>
+        </div>
+      </dl>
+    </div>
+    <p>E existe a hipótese de que não funcione, que é a mais interessante de todas: <strong>o gargalo pode nunca ter sido o registro</strong>. Se as demandas passarem a ser registradas, cobradas, lembradas — e ainda assim não forem feitas —, o problema era carga de trabalho, e nenhum bot resolve isso. Esse resultado também vira texto.</p>
+  </div>
+</section>
+
+<section class="case-section" style="background:#0a0e13">
+  <div class="container">
+    <div class="label">Leitura relacionada</div>
+    <h2>Outras coisas que a equipe faz sem sair do Slack</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <a href="../cases/romaneio-scanner" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Logística · Slack</div>
+        <div style="font-size:16px;font-weight:500">O romaneio da coleta virou bipe de celular →</div>
+      </a>
+      <a href="../cases/ml-cancelamentos" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Slack</div>
+        <div style="font-size:16px;font-weight:500">Cancelamento pago no ML chega no Slack →</div>
+      </a>
+      <a href="../cases/motoboy-impressao" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Operação · Impressão</div>
+        <div style="font-size:16px;font-weight:500">Do pagamento à entrega em 10 minutos →</div>
+      </a>
+      <a href="../cases/crm-por-dentro" style="display:block;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;margin-bottom:8px">Vendas · Interface</div>
+        <div style="font-size:16px;font-weight:500">Escolhas de tela que mudaram o uso →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container row">
+    <div><strong style="color:var(--text);">nak.api.br</strong> · <a href="../">voltar pro laboratório</a></div>
+    <div><a href="mailto:labs@nak.api.br">labs@nak.api.br</a> · Em observação desde agosto de 2026</div>
+  </div>
+</footer>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c48dfb70ce8140ffa8ad30637454ad88"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

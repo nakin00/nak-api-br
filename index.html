@@ -95,7 +95,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--max:1100px;--radius:10px;--mono:ui-monospace,SFMono-Regular,"Cascadia Mono",Menlo,Consolas,monospace}
+:root{--bg:#0B0F14;--card:#111827;--border:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--accent:#3B82F6;--accent-2:#22C55E;--warn:#F59E0B;--max:1100px;--radius:10px;--mono:ui-monospace,SFMono-Regular,"Cascadia Mono",Menlo,Consolas,monospace}
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
 a{color:var(--accent);text-decoration:none}
@@ -167,6 +167,10 @@ section .section-sub{color:var(--muted);font-size:16px;margin:0 0 40px;max-width
 .case-card .meta-label.result{color:var(--accent-2)}
 .case-card .pessoal-badge{display:inline-block;font-family:var(--mono);font-size:10px;color:#a78bfa;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.25);padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
 .case-card .arrow{font-family:var(--mono);font-size:13px;color:var(--accent);margin-top:16px;display:inline-block}
+.case-card .obs-badge{display:inline-block;font-family:var(--mono);font-size:10px;color:var(--warn);background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.case-card .meta-label.status{color:var(--warn)}
+.case-card.obs:hover{border-color:var(--warn)}
+.case-card.obs .arrow{color:var(--warn)}
 .flow{font-family:var(--mono);font-size:13px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;white-space:pre;overflow-x:auto;line-height:1.7}
 .stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
 .stack-item{font-family:var(--mono);font-size:13px;color:var(--muted);padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:6px}
@@ -203,6 +207,7 @@ footer a{color:var(--muted)}
     <a href="/" class="logo">nak<span class="dot">.</span>api<span class="dot">.</span>br</a>
     <div class="links">
       <a href="#cases">Cases</a>
+      <a href="#observacao">Em observação</a>
       <a href="#filosofia">Filosofia</a>
       <a href="#stack">Stack</a>
       <a href="/sobre">Sobre</a>
@@ -254,6 +259,10 @@ footer a{color:var(--muted)}
     </div>
     <p class="changelog-intro">Não tem "Sobre nós" parado no tempo. Cada case novo ou revisão de case existente aparece aqui — com data. As últimas mudanças no conteúdo:</p>
     <ul class="changelog-list">
+      <li class="changelog-item">
+        <span class="changelog-date">25/08</span>
+        <span class="changelog-msg">em observação: <a href="observacao/slack-demandas"><strong>slack-demandas</strong></a> — demanda pedida no Slack vira item com dono e prazo. Publicado sem resultado medido, de propósito</span>
+      </li>
       <li class="changelog-item">
         <span class="changelog-date">01/08</span>
         <span class="changelog-msg">novo case <a href="cases/tray-frete"><strong>tray-frete</strong></a> — a tabela de frete da loja virou uma planilha, sem depender de fornecedor pra testar preço</span>
@@ -510,6 +519,37 @@ footer a{color:var(--muted)}
         <div class="tags"><span class="tag">em breve</span></div>
         <h3>Mais cases sendo documentados</h3>
         <p class="meta">ML coleta, ML etiquetas, separação por canal de envio, Correios Sheets, CTe Drive. Cada um com mesma estrutura: dor, impacto, solução, resultado, insight.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="observacao">
+  <div class="container">
+    <h2>Em observação</h2>
+    <p class="section-sub">Sistema no ar, resultado ainda não. Case aqui exige número real de impacto — enquanto ele não existe, o projeto fica nesta prateleira, com o mecanismo à mostra e nada prometido. Quando o número vier, o texto sobe pra <a href="#cases">cases</a>. Quando não vier, o texto conta o que não funcionou.</p>
+    <div class="grid">
+
+      <a href="observacao/slack-demandas" class="case-card obs">
+        <span class="obs-badge">● em observação</span>
+        <div class="tags">
+          <span class="tag">slack</span>
+          <span class="tag">cloudflare-workers</span>
+          <span class="tag">d1</span>
+          <span class="tag">app-home</span>
+          <span class="tag">cron</span>
+        </div>
+        <h3>Pedido feito no meio da conversa não vira tarefa de ninguém</h3>
+        <p class="meta"><span class="meta-label problem">Problema</span>O que se pede no Slack some no scroll. Sem dono, sem prazo, e a cobrança sobra pra quem pediu — que precisa lembrar de lembrar.</p>
+        <p class="meta"><span class="meta-label status">Status</span>No ar desde 21/08/2026. Uso de estreia, sem número que preste ainda. Revisão marcada pra depois de 30 dias, com os critérios já escritos no texto.</p>
+        <span class="arrow">ver o mecanismo →</span>
+      </a>
+
+      <div class="case-card" style="opacity:.4">
+        <div class="tags"><span class="tag">critério</span></div>
+        <h3>O que tira um projeto daqui</h3>
+        <p class="meta">Número medido de impacto: tempo devolvido, dinheiro, erro evitado ou volume processado. Sem isso, o projeto continua nesta seção — mesmo funcionando bem.</p>
       </div>
 
     </div>

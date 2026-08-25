@@ -4,7 +4,7 @@
 # Rodar quando publicar case novo:  powershell -File .tools\gerar-og.ps1
 # Ao publicar um case, adicione a linha dele em $paginas.
 #
-# Cores: azul = operacao/fiscal/logistica · verde = dinheiro/dados · roxo = pessoal.
+# Cores: azul = operacao/fiscal/logistica · verde = dinheiro/dados · roxo = pessoal · ambar = em observacao.
 
 Add-Type -AssemblyName System.Drawing
 $outDir = Join-Path $PSScriptRoot "..\og"
@@ -23,7 +23,8 @@ $paginas = @(
     @{ slug="ml-cancelamentos";      cat="OPERAÇÃO";                title="Cancelamento pago no ML chega no Slack em 5 min";                 accent="#3B82F6" },
     @{ slug="nf-auto-correcao";      cat="OPERAÇÃO · FISCAL";       title="Correção automática de NF rejeitada (quando a IA diz que não dá)"; accent="#3B82F6" },
     @{ slug="nf-emissao-automatica"; cat="OPERAÇÃO · FISCAL";       title="Bot fazendo a atividade principal de uma pessoa";                 accent="#3B82F6" },
-    @{ slug="gym-app";               cat="PESSOAL · PWA";           title="Tracker de academia no navegador, configurado por uma foto";      accent="#A78BFA" }
+    @{ slug="gym-app";               cat="PESSOAL · PWA";           title="Tracker de academia no navegador, configurado por uma foto";      accent="#A78BFA" },
+    @{ slug="slack-demandas";        cat="EM OBSERVAÇÃO · GESTÃO"; title="Pedido feito no meio da conversa não vira tarefa de ninguém";   accent="#F59E0B" }
 )
 
 function HexToColor($hex) {

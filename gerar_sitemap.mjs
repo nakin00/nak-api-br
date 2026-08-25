@@ -10,7 +10,7 @@ const dataDe = (f) => execSync(`git log -1 --format=%ad --date=short -- "${f}"`)
 
 const paginas = [
   { arquivo: 'index.html', loc: `${BASE}/`, freq: 'weekly', prio: '1.0' },
-  { arquivo: 'cases/index.html', loc: `${BASE}/cases`, freq: 'weekly', prio: '0.9' },
+  { arquivo: 'cases.html', loc: `${BASE}/cases`, freq: 'weekly', prio: '0.9' },
   { arquivo: 'sobre.html', loc: `${BASE}/sobre`, freq: 'monthly', prio: '0.7' },
 ];
 
@@ -26,7 +26,18 @@ const cases = globSync('cases/*.html')
   }))
   .sort((a, b) => b.data.localeCompare(a.data));
 
-const todas = [...paginas, ...cases];
+// Em observacao: no ar sem resultado medido. Prioridade menor que case.
+const observacao = globSync('observacao/*.html')
+  .map((f) => ({
+    arquivo: f,
+    loc: `${BASE}/observacao/${basename(f, '.html')}`,
+    freq: 'weekly',
+    prio: '0.6',
+    data: dataDe(f),
+  }))
+  .sort((a, b) => b.data.localeCompare(a.data));
+
+const todas = [...paginas, ...cases, ...observacao];
 
 const xml =
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +

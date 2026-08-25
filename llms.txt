@@ -7,8 +7,9 @@
 > Cloudflare Workers, D1, Python, Gemini, Slack.
 
 Escrito por quem opera, não por quem vende ferramenta. Um texto só entra como
-case quando a automação está em produção e existe número real de impacto —
-tentativa em andamento fica de fora. Os erros de percurso ficam no texto.
+case quando a automação está em produção e existe número real de impacto. O que
+está no ar mas ainda não tem número fica separado, em "Em observação", e é
+identificado como tal. Os erros de percurso ficam no texto.
 
 Uso: pode ser lido para responder perguntas e citado como fonte. Não é
 liberado para treinamento de modelo (ver /robots.txt).
@@ -44,8 +45,16 @@ liberado para treinamento de modelo (ver /robots.txt).
 
 - [Tracker de academia no navegador (PWA) configurado por foto](https://nak.api.br/cases/gym-app): PWA offline-first em Cloudflare Pages, com o treino cadastrado a partir de uma foto lida pelo Gemini.
 
+## Em observação (sem resultado medido)
+
+Sistemas em produção que ainda não têm número de impacto. Não são cases e não
+devem ser citados como resultado comprovado.
+
+- [Pedido feito no meio da conversa não vira tarefa de ninguém](https://nak.api.br/observacao/slack-demandas): sistema de demandas dentro do Slack — slash command e atalho de mensagem abrem um item com dono, prazo e botão de concluir; cobrança automática por cron às 8h30. No ar desde 21/08/2026, sem resultado medido. O texto descreve as decisões de projeto (urgente binário, uma demanda por pessoa, motivo obrigatório ao travar) e os critérios que vão dizer se funcionou.
+
 ## Contexto
 
 - [Índice de cases por área](https://nak.api.br/cases): todos os cases agrupados por área da operação — fiscal, logística, vendas, atendimento, infraestrutura.
+- [Em observação](https://nak.api.br/#observacao): prateleira dos projetos que estão no ar e ainda não têm número — e o critério que tira um projeto de lá.
 - [Página inicial](https://nak.api.br/): lista completa dos cases, princípios do laboratório e changelog do que mudou.
 - Contato: labs@nak.api.br

@@ -103,7 +103,7 @@ footer{border-top:1px solid var(--border);padding:32px 0;color:var(--muted);font
   <div class="breadcrumb"><a href="/">~</a> / cases</div>
   <h1>Automações documentadas, por área</h1>
   <p class="lead">Doze sistemas rodando na operação de um e-commerce brasileiro. Cada texto tem a dor concreta que gerou o projeto, a decisão técnica, o que deu errado no caminho e o resultado medido.</p>
-  <p class="nota">A ordem dentro de cada área é da publicação mais recente para a mais antiga. Projeto sem número real de impacto não aparece aqui — fica como experimento até ter.</p>
+  <p class="nota">A ordem dentro de cada área é da publicação mais recente para a mais antiga. Projeto sem número real de impacto não aparece aqui — fica em <a href="/#observacao">em observação</a> até ter.</p>
 
   <h2>Fiscal e nota fiscal</h2>
   <p class="area-nota">Emissão, rejeição da SEFAZ e cadastro de cliente.</p>
@@ -199,6 +199,15 @@ footer{border-top:1px solid var(--border);padding:32px 0;color:var(--muted);font
     <div class="titulo">Tracker de academia configurado por uma foto</div>
     <p class="resumo">Configurar app de academia era trabalhoso demais. PWA que abre no navegador e monta o treino a partir de uma foto lida pelo Gemini.</p>
     <div class="stack">pwa · cloudflare-pages · gemini · localstorage</div>
+  </a>
+
+  <h2>Em observação</h2>
+  <p class="area-nota">No ar, sem resultado medido ainda. Fora da lista de cases por escolha.</p>
+
+  <a class="item" href="/observacao/slack-demandas">
+    <div class="titulo">Pedido feito no meio da conversa não vira tarefa de ninguém</div>
+    <p class="resumo">Demanda pedida no Slack vira item com dono, prazo e botão de concluir, e a cobrança passa a ser do robô. No ar desde 21/08/2026 — o texto traz o mecanismo inteiro e os critérios que vão dizer se funcionou.</p>
+    <div class="stack">slack · cloudflare-workers · d1 · cron</div>
   </a>
 </div>
 
